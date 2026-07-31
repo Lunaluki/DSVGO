@@ -6,7 +6,7 @@
 
 <title>Luna – WhatsApp-Bot von Lukas</title>
 
-<meta name="description" content="Luna ist ein intelligenter WhatsApp-Bot von Lukas. Erfahre mehr über Funktionen, Entwicklung und die AGA-Gruppe.">
+<meta name="description" content="Luna ist ein intelligenter WhatsApp-Bot von Lukas. Informationen über Luna, Funktionen und die AGA-Gruppe.">
 
 <meta name="keywords" content="Luna WhatsApp Bot, Luna Bot, Lukas, AGA Gruppe, Monkey_Queen">
 
@@ -23,27 +23,33 @@
 }
 
 
-body {
-    min-height:100vh;
-    background:linear-gradient(135deg,#020617,#1d4ed8,#60a5fa);
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow-x:hidden;
-    overflow-y:auto;
+html {
+    scroll-behavior:smooth;
 }
 
 
+body {
+
+    min-height:100vh;
+    background:linear-gradient(135deg,#020617,#1d4ed8,#60a5fa);
+    color:white;
+    overflow-x:hidden;
+
+}
+
+
+/* Hintergrund Sterne */
+
 .star {
 
-    position:absolute;
+    position:fixed;
     width:8px;
     height:8px;
     background:white;
     border-radius:50%;
     opacity:.6;
     animation:stars 8s infinite linear;
+    z-index:0;
 
 }
 
@@ -62,10 +68,16 @@ body {
 
 
 
+/* Inhalt */
+
 .container {
 
+    position:relative;
+    z-index:1;
     max-width:850px;
-    padding:30px;
+    width:100%;
+    margin:auto;
+    padding:60px 30px;
     text-align:center;
     animation:show 2s ease;
 
@@ -85,8 +97,10 @@ body {
 h1 {
 
     font-size:65px;
+    margin-top:10px;
 
 }
+
 
 
 h1 span {
@@ -107,32 +121,55 @@ p {
 
 
 
+/* Glas Boxen */
+
 .box {
 
-    margin-top:30px;
-    padding:25px;
+    margin-top:35px;
+    padding:30px;
+
     background:rgba(255,255,255,0.12);
     border-radius:25px;
+
     backdrop-filter:blur(12px);
+
     animation:box 1.5s ease;
 
 }
 
 
 
+h2 {
+
+    margin-bottom:10px;
+
+}
+
+
+
+
 .button {
 
     display:inline-block;
-    margin-top:35px;
-    padding:15px 40px;
+
+    margin-top:40px;
+
+    padding:15px 45px;
+
     background:white;
+
     color:#2563eb;
+
     border-radius:40px;
+
     text-decoration:none;
+
     font-weight:bold;
+
     transition:.3s;
 
 }
+
 
 
 .button:hover {
@@ -143,47 +180,69 @@ p {
 
 
 
+
+/* Animationen */
+
+
 @keyframes float {
 
     50% {
+
         transform:translateY(-20px);
+
     }
 
 }
+
 
 
 @keyframes show {
 
     from {
+
         opacity:0;
         transform:translateY(50px);
+
     }
 
+
     to {
+
         opacity:1;
         transform:translateY(0);
+
     }
 
 }
+
 
 
 @keyframes box {
 
     from {
+
         opacity:0;
         transform:scale(.8);
+
     }
 
+
     to {
+
         opacity:1;
         transform:scale(1);
+
     }
 
 }
 
+
+
 </style>
 
+
 </head>
+
 
 
 <body>
@@ -205,9 +264,11 @@ p {
 </div>
 
 
+
 <h1>
 <span>Luna</span>
 </h1>
+
 
 
 <p>
@@ -215,6 +276,7 @@ Der intelligente WhatsApp-Bot von Lukas.
 Luna hilft Nutzern, beantwortet Fragen
 und wird ständig weiterentwickelt.
 </p>
+
 
 
 
@@ -241,8 +303,10 @@ Funktionen, Informationen und Antworten.
 
 <p>
 Luna wird von Lukas entwickelt und regelmäßig
-verbessert. Ziel ist es, einen zuverlässigen
-und hilfreichen WhatsApp-Bot anzubieten.
+verbessert.
+
+Das Ziel ist ein zuverlässiger und hilfreicher
+WhatsApp-Bot für Nutzer.
 </p>
 
 </div>
