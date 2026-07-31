@@ -1,1 +1,125 @@
-<meta http-equiv="refresh" content="0; url=DSVGO.html">
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+
+<title>Luna – WhatsApp-Bot von Lukas</title>
+
+<meta name="description" content="Luna ist ein moderner WhatsApp-Bot, entwickelt von Lukas. Entdecke die Funktionen von Luna.">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #111827, #2563eb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    animation: fadeIn 2s ease;
+}
+
+h1 {
+    font-size: 60px;
+    animation: float 3s infinite ease-in-out;
+}
+
+h1 span {
+    color: #60a5fa;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 20px;
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 35px;
+    background: white;
+    color: #2563eb;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.button:hover {
+    transform: scale(1.1);
+}
+
+.circle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    animation: move 8s infinite alternate;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes move {
+    from {
+        transform: translate(-200px,-100px);
+    }
+    to {
+        transform: translate(200px,100px);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="circle"></div>
+
+<div class="container">
+
+<h1>🌙 <span>Luna</span></h1>
+
+<p>
+Der intelligente WhatsApp-Bot von Lukas.
+Luna hilft Nutzern, beantwortet Fragen und wird ständig weiterentwickelt.
+</p>
+
+<a class="button" href="DSVGO.html">
+Datenschutz
+</a>
+
+</div>
+
+</body>
+</html>
