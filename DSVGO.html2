@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Luna – Entwicklerinformationen & technische Hinweise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Neuer schöner Luna‑Style (gleich wie Seite 1) -->
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: "Inter", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827, #1f2937);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #30363d;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            color: #f0f6fc;
+            font-weight: 700;
+        }
+
+        header p {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: #9ca3af;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h2 {
+            margin-top: 2.5rem;
+            font-size: 1.7rem;
+            color: #f0f6fc;
+            border-left: 4px solid #3b82f6;
+            padding-left: 0.7rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            margin-top: 1.5rem;
+            font-size: 1.3rem;
+            color: #e5e7eb;
+            font-weight: 500;
+        }
+
+        p, li {
+            color: #c9d1d9;
+            font-size: 1.05rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .box {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.25);
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #30363d;
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            margin: 1rem 0.5rem;
+            padding: 0.7rem 1.4rem;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Bild Style */
+        .image-box {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .image-box img {
+            width: 60%;
+            max-width: 400px;
+            border-radius: 12px;
+            border: 2px solid #30363d;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Luna – Offizielle Entwicklerinformationen</h1>
+    <p>Dies ist die zweite DSVGO‑Informationsseite für den WhatsApp‑Bot Luna.</p>
+
+    <!-- Navigation zwischen den Seiten -->
+    <a class="nav-btn" href="DSVGO.html">Zur Hauptseite</a>
+    <a class="nav-btn" href="DSVGO.html2">Entwicklerinfos</a>
+</header>
+
+<main>
+
+    <!-- Bildbereich -->
+    <div class="image-box">
+        <!-- Hier kommt dein Bild rein -->
+        <img src="image/luna.jpg" alt="Luna's Entwickler">
+        <p style="color:#9ca3af; margin-top:0.5rem;">(Bild aus dem Ordner /image)</p>
+    </div>
+
+    <section>
+        <h2>1. Verantwortlicher Entwickler</h2>
+        <p>
+            Der WhatsApp‑Bot <strong>Luna</strong> wird von einem einzelnen Entwickler betrieben.  
+            Dieser ist verantwortlich für:
+        </p>
+
+        <ul>
+            <li>den technischen Betrieb des Bots</li>
+            <li>die Speicherung und Löschung von Daten</li>
+            <li>die Sicherheit der Server</li>
+            <li>Updates und Fehlerbehebungen</li>
+            <li>die Einhaltung der Datenschutzrichtlinien</li>
+        </ul>
+
+        <p>
+            Der Entwickler stellt sicher, dass Luna nur die Daten verarbeitet, die für den Betrieb notwendig sind.
+        </p>
+    </section>
+
+    <section>
+        <h2>2. Kontakt für Datenschutzanfragen</h2>
+        <p>
+            Wenn du Fragen zur Datenverarbeitung hast oder eine vollständige Löschung deiner Daten wünschst,
+            kannst du den Entwickler direkt kontaktieren.
+        </p>
+
+        <div class="box">
+            <p><strong>Kontakt E‑Mail:</strong>luna.support.online.team@gmail.com</p>
+            <p><strong>Offizieller Kanal:</strong> <a href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21</a></p>
+        </div>
+
+        <p>
+            Über diese Kontaktwege können folgende Anliegen bearbeitet werden:
+        </p>
+
+        <ul>
+            <li>vollständige Datenlöschung</li>
+            <li>Fragen zur Speicherung von Telefonnummern</li>
+            <li>Fragen zu Tokens und technischen Abläufen</li>
+            <li>Probleme mit der Registrierung oder Abmeldung</li>
+            <li>Sicherheitsmeldungen oder Fehlerberichte</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Technische Hinweise des Entwicklers</h2>
+        <p>
+            Der Entwickler weist darauf hin, dass Luna technisch so aufgebaut ist, dass nur notwendige Daten
+            verarbeitet werden. Dazu gehören:
+        </p>
+
+        <ul>
+            <li>Telefonnummern bei Registrierung</li>
+            <li>Token‑Daten für die Funktionsfähigkeit</li>
+            <li>Gruppen‑IDs und Systemnachrichten</li>
+        </ul>
+
+        <p>
+            Bei <code>unregister</code> wird die Telefonnummer gelöscht.  
+            Tokens können technisch bestehen bleiben, weshalb eine indirekte Speicherung möglich ist.
+        </p>
+
+        <p>
+            Eine vollständige Löschung aller Daten ist nur über den Entwickler möglich.
+        </p>
+    </section>
+
+    <section>
+        <h2>4. Hinweise zum sicheren Betrieb</h2>
+        <p>
+            Der Entwickler stellt klar, dass Luna nur stabil funktioniert, wenn folgende Regeln eingehalten werden:
+        </p>
+
+        <ul>
+            <li>Luna nicht privat anschreiben</li>
+            <li>Luna nicht anrufen</li>
+            <li>Luna nicht zum Spammen verwenden</li>
+            <li>keine schädlichen Befehle senden</li>
+            <li>keine Versuche, Luna zu überlasten oder zu manipulieren</li>
+        </ul>
+
+        <p>
+            Diese Hinweise dienen dem Schutz des Bots und der Gruppen.
+        </p>
+    </section>
+
+    <section>
+        <h2>5. Erweiterte Datenschutzdetails</h2>
+        <p>
+            Der Entwickler garantiert, dass:
+        </p>
+
+        <ul>
+            <li>keine Daten an Dritte weitergegeben werden</li>
+            <li>keine Daten für Werbung genutzt werden</li>
+            <li>keine Daten verkauft werden</li>
+            <li>keine Inhalte dauerhaft gespeichert werden, die nicht notwendig sind</li>
+        </ul>
+
+        <p>
+            Luna ist ein Schutz‑Bot und kein Analyse‑ oder Marketing‑System.
+        </p>
+    </section>
+
+    <footer>
+        <p>Dies ist die zweite offizielle DSVGO‑Informationsseite für Luna.</p>
+        <p>Stand: 31. Juli 2026</p>
+    </footer>
+
+</main>
+
+</body>
+</html>
