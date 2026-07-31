@@ -5,7 +5,6 @@
     <title>Luna – Entwicklerinformationen & technische Hinweise</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Neuer schöner Luna‑Style (gleich wie Seite 1) -->
     <style>
         body {
             background: #0d1117;
@@ -112,7 +111,6 @@
             background: #2563eb;
         }
 
-        /* Bild Style */
         .image-box {
             text-align: center;
             margin-top: 2rem;
@@ -131,26 +129,22 @@
 
 <header>
     <h1>Luna – Offizielle Entwicklerinformationen</h1>
-    <p>Dies ist die zweite DSVGO‑Informationsseite für den WhatsApp‑Bot Luna.</p>
+    <p>Dies ist die zweite Informationsseite für den WhatsApp‑Bot Luna.</p>
 
-    <!-- Navigation zwischen den Seiten -->
-    <a class="nav-btn" href="DSVGO.html">Zur Hauptseite</a>
-    <a class="nav-btn" href="DSVGO.html2">Entwicklerinfos</a>
+    <a class="nav-btn" href="index.html">Zur Hauptseite</a>
 </header>
 
 <main>
 
-    <!-- Bildbereich -->
     <div class="image-box">
-        <!-- Hier kommt dein Bild rein -->
-        <img src="image/luna.jpg" alt="Luna's Entwickler">
+        <img src="image/luna.jpg" alt="Entwicklerbild">
         <p style="color:#9ca3af; margin-top:0.5rem;">(Bild aus dem Ordner /image)</p>
     </div>
 
     <section>
         <h2>1. Verantwortlicher Entwickler</h2>
         <p>
-            Der WhatsApp‑Bot <strong>Luna</strong> wird von einem einzelnen Entwickler betrieben.  
+            Der WhatsApp‑Bot <strong>Luna</strong> wird von einem einzelnen Entwickler betrieben.
             Dieser ist verantwortlich für:
         </p>
 
@@ -161,42 +155,27 @@
             <li>Updates und Fehlerbehebungen</li>
             <li>die Einhaltung der Datenschutzrichtlinien</li>
         </ul>
-
-        <p>
-            Der Entwickler stellt sicher, dass Luna nur die Daten verarbeitet, die für den Betrieb notwendig sind.
-        </p>
     </section>
 
     <section>
-        <h2>2. Kontakt für Datenschutzanfragen</h2>
-        <p>
-            Wenn du Fragen zur Datenverarbeitung hast oder eine vollständige Löschung deiner Daten wünschst,
-            kannst du den Entwickler direkt kontaktieren.
-        </p>
+        <h2>2. Kontakt & offizieller Kanal</h2>
+        <p>Für Datenschutzanfragen, Probleme oder vollständige Löschanfragen:</p>
 
         <div class="box">
-            <p><strong>Kontakt E‑Mail:</strong>luna.support.online.team@gmail.com</p>
-            <p><strong>Offizieller Kanal:</strong> <a href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21</a></p>
+            <p><strong>E‑Mail:</strong> luna.support.online.team@gmail.com</p>
+            <p><strong>WhatsApp‑Kanal:</strong> 
+                <a href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21" target="_blank">
+                    https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21
+                </a>
+            </p>
         </div>
-
-        <p>
-            Über diese Kontaktwege können folgende Anliegen bearbeitet werden:
-        </p>
-
-        <ul>
-            <li>vollständige Datenlöschung</li>
-            <li>Fragen zur Speicherung von Telefonnummern</li>
-            <li>Fragen zu Tokens und technischen Abläufen</li>
-            <li>Probleme mit der Registrierung oder Abmeldung</li>
-            <li>Sicherheitsmeldungen oder Fehlerberichte</li>
-        </ul>
     </section>
 
     <section>
-        <h2>3. Technische Hinweise des Entwicklers</h2>
+        <h2>3. Technische Hinweise</h2>
         <p>
-            Der Entwickler weist darauf hin, dass Luna technisch so aufgebaut ist, dass nur notwendige Daten
-            verarbeitet werden. Dazu gehören:
+            Luna verarbeitet ausschließlich Daten, die für den Betrieb notwendig sind.
+            Dazu gehören:
         </p>
 
         <ul>
@@ -206,21 +185,13 @@
         </ul>
 
         <p>
-            Bei <code>unregister</code> wird die Telefonnummer gelöscht.  
-            Tokens können technisch bestehen bleiben, weshalb eine indirekte Speicherung möglich ist.
-        </p>
-
-        <p>
-            Eine vollständige Löschung aller Daten ist nur über den Entwickler möglich.
+            Bei <code>unregister</code> wird die Telefonnummer gelöscht.
+            Tokens können technisch bestehen bleiben.
         </p>
     </section>
 
     <section>
         <h2>4. Hinweise zum sicheren Betrieb</h2>
-        <p>
-            Der Entwickler stellt klar, dass Luna nur stabil funktioniert, wenn folgende Regeln eingehalten werden:
-        </p>
-
         <ul>
             <li>Luna nicht privat anschreiben</li>
             <li>Luna nicht anrufen</li>
@@ -228,32 +199,10 @@
             <li>keine schädlichen Befehle senden</li>
             <li>keine Versuche, Luna zu überlasten oder zu manipulieren</li>
         </ul>
-
-        <p>
-            Diese Hinweise dienen dem Schutz des Bots und der Gruppen.
-        </p>
-    </section>
-
-    <section>
-        <h2>5. Erweiterte Datenschutzdetails</h2>
-        <p>
-            Der Entwickler garantiert, dass:
-        </p>
-
-        <ul>
-            <li>keine Daten an Dritte weitergegeben werden</li>
-            <li>keine Daten für Werbung genutzt werden</li>
-            <li>keine Daten verkauft werden</li>
-            <li>keine Inhalte dauerhaft gespeichert werden, die nicht notwendig sind</li>
-        </ul>
-
-        <p>
-            Luna ist ein Schutz‑Bot und kein Analyse‑ oder Marketing‑System.
-        </p>
     </section>
 
     <footer>
-        <p>Dies ist die zweite offizielle DSVGO‑Informationsseite für Luna.</p>
+        <p>Dies ist die zweite offizielle Informationsseite für Luna.</p>
         <p>Stand: 31. Juli 2026</p>
     </footer>
 
