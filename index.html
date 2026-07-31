@@ -5,121 +5,215 @@
 
 <title>Luna – WhatsApp-Bot von Lukas</title>
 
-<meta name="description" content="Luna ist ein moderner WhatsApp-Bot, entwickelt von Lukas. Entdecke die Funktionen von Luna.">
+<meta name="description" content="Luna ist ein intelligenter WhatsApp-Bot von Lukas. Entwickelt mit der Luna AGA-Gruppe und Community-Unterstützung.">
+
+<meta name="keywords" content="Luna, WhatsApp Bot, Lukas, AGA Gruppe, Chatbot">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
 }
 
 body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #111827, #2563eb);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    overflow: hidden;
+    min-height:100vh;
+    background:linear-gradient(135deg,#020617,#1d4ed8,#60a5fa);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
 }
+
+/* bewegte Sterne */
+.star {
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:white;
+    border-radius:50%;
+    animation:stars 8s infinite;
+    opacity:.5;
+}
+
+@keyframes stars {
+    from {
+        transform:translateY(100vh);
+    }
+    to {
+        transform:translateY(-100vh);
+    }
+}
+
 
 .container {
-    text-align: center;
-    animation: fadeIn 2s ease;
+    text-align:center;
+    max-width:800px;
+    padding:30px;
+    animation:show 2s ease;
 }
 
+
+.logo {
+    font-size:80px;
+    animation:float 3s infinite ease-in-out;
+}
+
+
 h1 {
-    font-size: 60px;
-    animation: float 3s infinite ease-in-out;
+    font-size:60px;
 }
 
 h1 span {
-    color: #60a5fa;
+    color:#93c5fd;
 }
+
 
 p {
-    margin-top: 20px;
-    font-size: 20px;
-    max-width: 600px;
-    line-height: 1.5;
+    font-size:20px;
+    line-height:1.6;
+    margin-top:20px;
 }
+
+
+.box {
+    margin-top:30px;
+    padding:25px;
+    background:rgba(255,255,255,.12);
+    border-radius:25px;
+    backdrop-filter:blur(10px);
+    animation:box 1.5s ease;
+}
+
 
 .button {
-    display: inline-block;
-    margin-top: 30px;
-    padding: 15px 35px;
-    background: white;
-    color: #2563eb;
-    text-decoration: none;
-    border-radius: 30px;
-    font-weight: bold;
-    transition: 0.3s;
+    display:inline-block;
+    margin-top:35px;
+    padding:15px 40px;
+    background:white;
+    color:#2563eb;
+    border-radius:40px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
 }
+
 
 .button:hover {
-    transform: scale(1.1);
+    transform:scale(1.15);
 }
 
-.circle {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    animation: move 8s infinite alternate;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 @keyframes float {
     50% {
-        transform: translateY(-15px);
+        transform:translateY(-20px);
     }
 }
 
-@keyframes move {
+
+@keyframes show {
     from {
-        transform: translate(-200px,-100px);
+        opacity:0;
+        transform:translateY(50px);
     }
     to {
-        transform: translate(200px,100px);
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+
+@keyframes box {
+    from {
+        opacity:0;
+        transform:scale(.8);
+    }
+    to {
+        opacity:1;
+        transform:scale(1);
     }
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<div class="circle"></div>
+
+<div class="star" style="left:10%;animation-delay:1s"></div>
+<div class="star" style="left:30%;animation-delay:3s"></div>
+<div class="star" style="left:50%;animation-delay:2s"></div>
+<div class="star" style="left:70%;animation-delay:5s"></div>
+<div class="star" style="left:90%;animation-delay:4s"></div>
+
 
 <div class="container">
 
-<h1>🌙 <span>Luna</span></h1>
+
+<div class="logo">🌙</div>
+
+
+<h1>
+<span>Luna</span>
+</h1>
+
 
 <p>
 Der intelligente WhatsApp-Bot von Lukas.
-Luna hilft Nutzern, beantwortet Fragen und wird ständig weiterentwickelt.
+Luna beantwortet Fragen, unterstützt Nutzer
+und wird ständig weiterentwickelt.
 </p>
+
+
+
+<div class="box">
+
+<h2>🤖 Was ist Luna?</h2>
+
+<p>
+Luna ist ein moderner WhatsApp-Bot,
+der von Lukas entwickelt wurde.
+Das Ziel ist ein hilfreicher und intelligenter Assistent
+für die Community.
+</p>
+
+</div>
+
+
+
+<div class="box">
+
+<h2>👥 Luna AGA-Gruppe</h2>
+
+<p>
+Die Luna AGA-Gruppe ist die Community hinter Luna.
+Dort werden Ideen gesammelt, Funktionen getestet
+und neue Entwicklungen unterstützt.
+</p>
+
+<p>
+Besonderer Dank geht an <b>Monky_Queen</b>
+für die Unterstützung innerhalb der Luna-Community.
+</p>
+
+</div>
+
+
 
 <a class="button" href="DSVGO.html">
 Datenschutz
 </a>
 
+
 </div>
+
 
 </body>
 </html>
