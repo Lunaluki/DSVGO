@@ -140,32 +140,44 @@ async function checkTicket() {
         return;
     }
 
-    const res = await fetch(`/tickets/${id}`);
-    const data = await res.json();
+    // DEINE FUNKTIONIERENDE BACKEND-URL
+    const url = `https://98e8cc9b-cd01-4bc9-9add-db01f09aa87c-00-247ravs8w2bsp.riker.replit.dev/tickets/${id}`;
 
-    if (!data || !data.ticketId) {
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data || !data.ticketId) {
+            resultBox.innerHTML = `
+                <div class="result">
+                    <p><strong>Kein Ticket gefunden.</strong></p>
+                    <p>Bitte überprüfe deine Ticketnummer.</p>
+                </div>
+            `;
+            return;
+        }
+
         resultBox.innerHTML = `
             <div class="result">
-                <p><strong>Kein Ticket gefunden.</strong></p>
-                <p>Bitte überprüfe deine Ticketnummer.</p>
+                <p><strong>Ticketnummer:</strong> ${data.ticketId}</p>
+                <p><strong>Status:</strong> 
+                    <span class="${data.status === "open" ? "status-open" : "status-closed"}">
+                        ${data.status}
+                    </span>
+                </p>
+                <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
+                <p><strong>Betreff:</strong> ${data.subject}</p>
+                <p><strong>Von:</strong> ${data.from}</p>
             </div>
         `;
-        return;
+    } catch (err) {
+        resultBox.innerHTML = `
+            <div class="result">
+                <p><strong>Fehler beim Abrufen des Tickets.</strong></p>
+                <p>Der Server antwortet nicht oder ist offline.</p>
+            </div>
+        `;
     }
-
-    resultBox.innerHTML = `
-        <div class="result">
-            <p><strong>Ticketnummer:</strong> ${data.ticketId}</p>
-            <p><strong>Status:</strong> 
-                <span class="${data.status === "open" ? "status-open" : "status-closed"}">
-                    ${data.status}
-                </span>
-            </p>
-            <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
-            <p><strong>Betreff:</strong> ${data.subject}</p>
-            <p><strong>Von:</strong> ${data.from}</p>
-        </div>
-    `;
 }
 </script>
 
