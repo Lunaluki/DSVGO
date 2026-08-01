@@ -97,7 +97,6 @@
             font-size: 0.95rem;
         }
 
-        /* Sanfte Glow-Animation für den Betreiberinnen-Text */
         .glow-text {
             animation: glow 3s ease-in-out infinite;
         }
@@ -106,6 +105,36 @@
             0% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px #ff9dd6; }
             50% { text-shadow: 0 0 15px #fff, 0 0 25px #ffe6f5, 0 0 35px #ff9dd6; }
             100% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px #ff9dd6; }
+        }
+
+        /* ⭐ Pulsierender Regenbogen-Button */
+        .join-btn {
+            display: block;
+            width: 220px;
+            margin: 2rem auto;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, #ff00ff, #ff6fbd, #ff2f9c, #ff8ccc);
+            background-size: 300% 300%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 0 20px rgba(255,255,255,0.7);
+            animation: pulse 1.8s infinite, rainbow 6s ease infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255,255,255,1); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
@@ -129,7 +158,6 @@
             Abo gegen Abo machen kann – mit Kanälen, Profilen und treuen Leuten.
         </p>
 
-        <!-- Monkie_Queen Text mit Glow -->
         <p class="glow-text"><strong>Betreiberin der Gruppe:</strong> Monkie_Queen</p>
 
         <p>
@@ -158,7 +186,6 @@
 
         <div class="box">
 
-            <!-- Gruppenbild direkt über dem Link -->
             <div class="image-box">
                 <img src="image/IMG-20260801-WA0008.jpg" alt="Gruppenbild">
                 <p style="color:#ffe6f5; margin-top:0.5rem;">(Offizielles Gruppenbild der AGA‑Gruppe)</p>
@@ -169,10 +196,15 @@
             <p>Wollt ihr in eine nice Gruppe mit Luna und tolles AGA machen mit treuen Leute?</p>
 
             <p><strong>Joint =&gt;</strong><br>
-                <a href="https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS?s=cl&p=a&mlu=4" target="_blank">
-                    https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS?s=cl&p=a&mlu=4
+                <a href="https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS" target="_blank">
+                    https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS
                 </a>
             </p>
+
+            <!-- ⭐ Neuer pulsierender Button -->
+            <a class="join-btn" href="https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS" target="_blank">
+                Beitreten
+            </a>
 
             <ul>
                 <li>Luna system mit Blackliste gegen/hater mobber, scammer</li>
