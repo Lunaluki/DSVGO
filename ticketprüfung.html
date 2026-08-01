@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Luna – Ticketstatus prüfen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: "Inter", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827, #1f2937);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #30363d;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            color: #f0f6fc;
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .box {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 2rem;
+            border-radius: 14px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.35);
+            margin-top: 2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            border-radius: 12px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: #f0f6fc;
+            font-size: 1.1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1.2rem;
+            margin-top: 1.4rem;
+            background: #3b82f6;
+            color: white;
+            font-weight: 700;
+            border-radius: 12px;
+            border: 1px solid #2563eb;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #111827;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+        }
+
+        .status-open {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .status-closed {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #3b82f6;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .back-btn:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Luna – Ticketstatus prüfen</h1>
+</header>
+
+<main>
+
+    <div class="box">
+        <h2>Ticketstatus abfragen</h2>
+        <p>Gib deine Ticketnummer ein, die du per E‑Mail erhalten hast:</p>
+
+        <input type="text" id="ticketId" placeholder="z. B. LUNA‑1722558123456">
+        <button onclick="checkTicket()">Ticket prüfen</button>
+
+        <div id="result"></div>
+
+        <a class="back-btn" href="index2.html">Zurück zur Informationsseite</a>
+    </div>
+
+</main>
+
+<script>
+async function checkTicket() {
+    const id = document.getElementById("ticketId").value.trim();
+    const resultBox = document.getElementById("result");
+
+    if (!id) {
+        resultBox.innerHTML = "<p>Bitte eine Ticketnummer eingeben.</p>";
+        return;
+    }
+
+    const res = await fetch(`/tickets/${id}`);
+    const data = await res.json();
+
+    if (!data || !data.ticketId) {
+        resultBox.innerHTML = `
+            <div class="result">
+                <p><strong>Kein Ticket gefunden.</strong></p>
+                <p>Bitte überprüfe deine Ticketnummer.</p>
+            </div>
+        `;
+        return;
+    }
+
+    resultBox.innerHTML = `
+        <div class="result">
+            <p><strong>Ticketnummer:</strong> ${data.ticketId}</p>
+            <p><strong>Status:</strong> 
+                <span class="${data.status === "open" ? "status-open" : "status-closed"}">
+                    ${data.status}
+                </span>
+            </p>
+            <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
+            <p><strong>Betreff:</strong> ${data.subject}</p>
+            <p><strong>Von:</strong> ${data.from}</p>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>
