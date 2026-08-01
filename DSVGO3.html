@@ -81,7 +81,7 @@
         }
 
         .image-box img {
-            width: 70%;
+            width: 100%;
             max-width: 450px;
             border-radius: 12px;
             border: 3px solid white;
@@ -110,8 +110,9 @@
         /* ⭐ Pulsierender Regenbogen-Button */
         .join-btn {
             display: block;
-            width: 220px;
-            margin: 2rem auto;
+            width: 80%;
+            max-width: 260px;
+            margin: 2rem auto 1rem auto;
             padding: 1rem 1.5rem;
             text-align: center;
             background: linear-gradient(45deg, #ff00ff, #ff6fbd, #ff2f9c, #ff8ccc);
@@ -136,6 +137,18 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .image-box img {
+                max-width: 100%;
+            }
+            .join-btn {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -158,6 +171,7 @@
             Abo gegen Abo machen kann – mit Kanälen, Profilen und treuen Leuten.
         </p>
 
+        <!-- Monkie_Queen Text mit Glow -->
         <p class="glow-text"><strong>Betreiberin der Gruppe:</strong> Monkie_Queen</p>
 
         <p>
@@ -186,6 +200,7 @@
 
         <div class="box">
 
+            <!-- Gruppenbild direkt über dem Link -->
             <div class="image-box">
                 <img src="image/IMG-20260801-WA0008.jpg" alt="Gruppenbild">
                 <p style="color:#ffe6f5; margin-top:0.5rem;">(Offizielles Gruppenbild der AGA‑Gruppe)</p>
@@ -195,13 +210,7 @@
 
             <p>Wollt ihr in eine nice Gruppe mit Luna und tolles AGA machen mit treuen Leute?</p>
 
-            <p><strong>Joint =&gt;</strong><br>
-                <a href="https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS" target="_blank">
-                    https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS
-                </a>
-            </p>
-
-            <!-- ⭐ Neuer pulsierender Button -->
+            <!-- ⭐ Pulsierender Beitreten-Button statt Link -->
             <a class="join-btn" href="https://chat.whatsapp.com/Fqo7x5eqVD4Lc7RzsZgRqS" target="_blank">
                 Beitreten
             </a>
