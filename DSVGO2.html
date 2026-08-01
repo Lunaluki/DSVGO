@@ -117,23 +117,33 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
         }
 
-        /* Neuer Kontakt-Button */
-        .contact-btn {
+        /* Buttons in der Box */
+        .support-btn, .contact-btn {
             display: block;
             width: 100%;
             text-align: center;
             padding: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 1.2rem;
             background: #3b82f6;
             color: white;
             font-weight: 600;
             border-radius: 10px;
             text-decoration: none;
+            border: 1px solid #2563eb;
             transition: 0.25s;
         }
 
-        .contact-btn:hover {
+        .support-btn:hover, .contact-btn:hover {
             background: #2563eb;
+        }
+
+        .contact-btn {
+            background: #10b981;
+            border-color: #059669;
+        }
+
+        .contact-btn:hover {
+            background: #059669;
         }
     </style>
 </head>
@@ -151,7 +161,7 @@
 
     <div class="image-box">
         <img src="image/luna.jpg" alt="Entwicklerbild">
-        <p style="color:#9ca3af; margin-top:0.5rem;">(Bild vom Entwickler Lukas Owner/Entwickler vom Luna projekt)</p>
+        <p style="color:#9ca3af; margin-top:0.5rem;">(Bild vom Entwickler Lukas Owner/Entwickler vom Luna Projekt)</p>
     </div>
 
     <section>
@@ -176,15 +186,16 @@
 
         <div class="box">
             <p><strong>E‑Mail:</strong> luna.support.online.team@gmail.com</p>
-            <p><strong>WhatsApp‑Kanal:</strong> 
-                <a href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21" target="_blank">
-                    https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21
-                </a>
-            </p>
 
-            <!-- Neuer Kontakt Button -->
-            <a class="contact-btn" href="Kontakt.html">Kontaktiere uns</a>
+            <!-- Neuer Unterstützungs-Button -->
+            <a class="support-btn" href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21" target="_blank">
+                Luna Team unterstützen
+            </a>
 
+            <!-- Kontakt Button -->
+            <a class="contact-btn" href="Kontakt.html">
+                Kontaktiere uns
+            </a>
         </div>
     </section>
 
