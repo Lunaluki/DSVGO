@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Kontakt – Luna Support</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: "Inter", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827, #1f2937);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #30363d;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: #f0f6fc;
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .contact-box {
+            background: #1f2937;
+            border: 1px solid #374151;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.25);
+            margin-top: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: #c9d1d9;
+            font-size: 1rem;
+        }
+
+        textarea {
+            height: 180px;
+            resize: none;
+        }
+
+        .send-btn {
+            display: block;
+            width: 100%;
+            margin-top: 1.8rem;
+            padding: 1rem;
+            background: #3b82f6;
+            color: white;
+            font-weight: 700;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            transition: 0.25s;
+        }
+
+        .send-btn:hover {
+            background: #2563eb;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #30363d;
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Luna – Support Kontaktformular</h1>
+</header>
+
+<main>
+
+    <div class="contact-box">
+        <label for="email">Deine E‑Mail-Adresse</label>
+        <input type="email" id="email" placeholder="z. B. name@gmail.com">
+
+        <label for="phone">Deine Telefonnummer (optional)</label>
+        <input type="text" id="phone" placeholder="z. B. +49 123 456789">
+
+        <label for="message">Schilder uns dein Problem</label>
+        <textarea id="message" placeholder="Beschreibe hier dein Anliegen..."></textarea>
+
+        <!-- Button später per JS/Backend senden -->
+        <a class="send-btn" href="#">Senden</a>
+    </div>
+
+</main>
+
+<footer>
+    <p>Luna Support – Kontaktseite</p>
+    <p>Stand: 31. Juli 2026</p>
+</footer>
+
+</body>
+</html>
