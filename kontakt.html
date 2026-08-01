@@ -38,7 +38,7 @@
         .contact-box {
             background: #1f2937;
             border: 1px solid #374151;
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 0 10px rgba(0,0,0,0.25);
             margin-top: 1.5rem;
@@ -79,6 +79,7 @@
             text-align: center;
             text-decoration: none;
             transition: 0.25s;
+            cursor: pointer;
         }
 
         .send-btn:hover {
@@ -113,8 +114,8 @@
         <label for="message">Schilder uns dein Problem</label>
         <textarea id="message" placeholder="Beschreibe hier dein Anliegen..."></textarea>
 
-        <!-- Button später per JS/Backend senden -->
-        <a class="send-btn" href="#">Senden</a>
+        <!-- FUNKTIONIERENDER SENDEN BUTTON -->
+        <button class="send-btn" onclick="openMail()">Senden</button>
     </div>
 
 </main>
@@ -123,6 +124,26 @@
     <p>Luna Support – Kontaktseite</p>
     <p>Stand: 31. Juli 2026</p>
 </footer>
+
+<script>
+function openMail() {
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const message = document.getElementById("message").value;
+
+    const mailtoLink =
+        "mailto:luna.support.online.team@gmail.com"
+        + "?subject=Support Anfrage"
+        + "&body="
+        + encodeURIComponent(
+            "Email: " + email + "\n"
+            + "Telefon: " + phone + "\n"
+            + "Nachricht:\n" + message
+        );
+
+    window.location.href = mailtoLink;
+}
+</script>
 
 </body>
 </html>
