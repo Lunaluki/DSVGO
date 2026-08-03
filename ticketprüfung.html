@@ -85,9 +85,25 @@
             font-weight: 700;
         }
 
+        .status-processing {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .status-developer {
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
         .status-closed {
             color: #ef4444;
             font-weight: 700;
+        }
+
+        .hint {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: #9ca3af;
         }
 
         .back-btn {
@@ -156,23 +172,43 @@ async function checkTicket() {
             return;
         }
 
-        // Status-Text umwandeln
         let statusText = "";
-        if (data.status === "open") statusText = "offen";
-        else if (data.status === "closed") statusText = "Ticket existiert nicht mehr";
-        else statusText = data.status;
+        let statusClass = "";
+
+        if (data.status === "open") {
+            statusText = "Dein Ticket wurde erfolgreich eingereicht und wird bald geprüft.";
+            statusClass = "status-open";
+        } 
+        else if (data.status === "processing") {
+            statusText = "Dein Ticket wird aktuell bearbeitet.";
+            statusClass = "status-processing";
+        }
+        else if (data.status === "developer") {
+            statusText = "Dein Ticket wird derzeit vom Entwickler überprüft.";
+            statusClass = "status-developer";
+        }
+        else if (data.status === "closed") {
+            statusText = "Dein Ticket wurde abgeschlossen. Du erhältst eine Bestätigung per E‑Mail.";
+            statusClass = "status-closed";
+        }
 
         resultBox.innerHTML = `
             <div class="result">
                 <p><strong>Ticketnummer:</strong> ${data.ticketId}</p>
+
                 <p><strong>Status:</strong> 
-                    <span class="${data.status === "open" ? "status-open" : "status-closed"}">
+                    <span class="${statusClass}">
                         ${statusText}
                     </span>
                 </p>
+
                 <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
                 <p><strong>Betreff:</strong> ${data.subject}</p>
                 <p><strong>Von:</strong> ${data.from}</p>
+
+                <p class="hint">
+                    Denk dran: Eine Ticketbearbeitung kann bis zu 24 Stunden oder mehrere Tage dauern.
+                </p>
             </div>
         `;
     } catch (err) {
