@@ -142,7 +142,6 @@ async function checkTicket() {
 
     const url = `https://meinserver-u317.onrender.com/tickets/${id}`;
 
-
     try {
         const res = await fetch(url);
         const data = await res.json();
@@ -157,12 +156,18 @@ async function checkTicket() {
             return;
         }
 
+        // Status-Text umwandeln
+        let statusText = "";
+        if (data.status === "open") statusText = "offen";
+        else if (data.status === "closed") statusText = "Ticket existiert nicht mehr";
+        else statusText = data.status;
+
         resultBox.innerHTML = `
             <div class="result">
                 <p><strong>Ticketnummer:</strong> ${data.ticketId}</p>
                 <p><strong>Status:</strong> 
                     <span class="${data.status === "open" ? "status-open" : "status-closed"}">
-                        ${data.status}
+                        ${statusText}
                     </span>
                 </p>
                 <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
