@@ -171,7 +171,7 @@ async function checkTicket() {
         let statusClass = "";
 
         if (data.status === "open") {
-            statusText = "Dein Ticket ist beim Entwickler angekommen und wird demnächst geprüft.";
+            statusText = "Dein Ticket wurde eingereicht und ist jetzt offen.";
             statusClass = "status-open";
         } 
         else if (data.status === "processing") {
@@ -179,7 +179,7 @@ async function checkTicket() {
             statusClass = "status-processing";
         } 
         else if (data.status === "closed") {
-            statusText = "Dein Ticket ist fertig bearbeitet und nicht mehr verfügbar. Du erhältst eine Bestätigung per E‑Mail.";
+            statusText = "Dein Ticket ist abgeschlossen und nicht mehr verfügbar. Du erhältst eine Bestätigung per E‑Mail.";
             statusClass = "status-closed";
         }
 
