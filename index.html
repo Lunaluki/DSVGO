@@ -1,308 +1,811 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <meta charset="UTF-8">
+    <title>Luna Bot – Next Gen WhatsApp Companion</title>
+    <meta name="description" content="Luna Bot ist ein moderner JavaScript WhatsApp-Bot von Lukas mit integrierten Sicherheitsfunktionen und Community-System.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b132b">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dsvgo.onrender.com/">
 
-<meta charset="UTF-8">
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #050814;
+            --bg-surface: rgba(15, 23, 42, 0.65);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --accent-pink: #f472b6;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --glow-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+            --radius-app: 28px;
+            --radius-card: 20px;
+            --wa-bg: #0b141a;
+            --wa-card-in: #202c33;
+            --wa-card-out: #005c4b;
+        }
 
-<title>Luna Bot – Intelligenter JavaScript WhatsApp-Bot</title>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<meta name="description" content="Luna Bot ist ein moderner JavaScript WhatsApp-Bot von Lukas. Erfahre mehr über Funktionen, Sicherheit und die Entwicklung des Projekts.">
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg-deep);
+        }
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        body {
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 16px;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-<meta name="robots" content="index, follow">
+        /* Dynamic Star Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #090d16 60%, #030712 100%);
+            overflow: hidden;
+        }
 
-<link rel="canonical" href="https://dsvgo.onrender.com/">
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #fff;
+            animation: floatStar 10s infinite linear;
+        }
 
-<meta property="og:title" content="Luna Bot – Intelligenter WhatsApp-Bot">
+        @keyframes floatStar {
+            0% { transform: translateY(105vh) scale(0.8); opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
 
-<meta property="og:description" content="Ein moderner JavaScript WhatsApp-Bot von Lukas mit Sicherheitsfunktionen und Community-Unterstützung.">
+        .glow-orb {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
 
-<meta property="og:url" content="https://dsvgo.onrender.com/">
+        .orb-1 { top: -5%; left: 10%; background: var(--accent-purple); }
+        .orb-2 { bottom: 10%; right: 5%; background: var(--accent-blue); }
 
-<meta property="og:type" content="website">
+        /* Main App Container UI */
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 860px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-app);
+            padding: 36px 28px;
+            box-shadow: var(--glow-shadow), 0 30px 60px rgba(0,0,0,0.7);
+            animation: appAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-<style>
+        @keyframes appAppear {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
-* {
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
+        /* App Top Header Bar */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 28px;
+        }
 
-html {
-    scroll-behavior:smooth;
-}
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 99px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #34d399;
+            letter-spacing: 0.04em;
+        }
 
-body {
-    min-height:100vh;
-    background:linear-gradient(135deg,#020617,#1d4ed8,#60a5fa);
-    color:white;
-    overflow-x:hidden;
-}
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            animation: pulse 2s infinite;
+        }
 
-/* Sterne Hintergrund */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
 
-.star {
-    position:fixed;
-    width:8px;
-    height:8px;
-    background:white;
-    border-radius:50%;
-    opacity:.6;
-    animation:stars 8s infinite linear;
-    z-index:0;
-}
+        /* Hero Header Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
 
-@keyframes stars {
-    from {
-        transform:translateY(100vh);
-    }
-    to {
-        transform:translateY(-100vh);
-    }
-}
+        .hero-logo {
+            font-size: 80px;
+            line-height: 1;
+            margin-bottom: 12px;
+            display: inline-block;
+            filter: drop-shadow(0 0 20px rgba(129, 140, 248, 0.6));
+            animation: moonBob 4s ease-in-out infinite;
+        }
 
+        @keyframes moonBob {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
 
-/* Hauptbereich */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
 
-.container {
-    position:relative;
-    z-index:1;
-    max-width:850px;
-    width:100%;
-    margin:auto;
-    padding:60px 30px;
-    text-align:center;
-    animation:show 2s ease;
-}
+        .gradient-title {
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
+        .hero-sub {
+            font-size: 1.05rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            max-width: 620px;
+            margin: 0 auto;
+        }
 
-.logo {
-    font-size:90px;
-    animation:float 3s infinite ease-in-out;
-}
+        /* LIVE SMARTPHONE PREVIEW SECTION */
+        .phone-section {
+            margin: 40px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        .phone-section-title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
 
-h1 {
-    font-size:65px;
-    margin-top:10px;
-}
+        .phone-section-desc {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 24px;
+        }
 
-h1 span {
-    color:#93c5fd;
-}
+        .phone-frame {
+            width: 100%;
+            max-width: 360px;
+            height: 640px;
+            background: #000000;
+            border-radius: 44px;
+            border: 10px solid #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
 
+        /* Smartphone Notch */
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 24px;
+            background: #1e293b;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
 
-p {
-    font-size:20px;
-    line-height:1.6;
-    margin-top:20px;
-}
+        .camera-dot {
+            width: 10px;
+            height: 10px;
+            background: #090d16;
+            border-radius: 50%;
+        }
 
+        /* WhatsApp Header */
+        .phone-header {
+            background: #1f2c34;
+            padding: 34px 16px 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-/* Glas Boxen */
+        .bot-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+        }
 
-.box {
-    margin-top:35px;
-    padding:30px;
-    background:rgba(255,255,255,0.12);
-    border-radius:25px;
-    backdrop-filter:blur(12px);
-    animation:box 1.5s ease;
-    text-align:left;
-}
+        .bot-meta h5 {
+            color: #e9edef;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
 
+        .bot-meta p {
+            color: #00a884;
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
 
-h2 {
-    margin-bottom:10px;
-    font-size:28px;
-    color:#93c5fd;
-}
+        /* WhatsApp Chat Window */
+        .chat-window {
+            flex: 1;
+            background: var(--wa-bg);
+            padding: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+        }
 
+        .chat-bubble {
+            max-width: 85%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            animation: popMsg 0.25s ease-out;
+            position: relative;
+            word-break: break-word;
+        }
 
-.button {
-    display:inline-block;
-    margin-top:40px;
-    padding:15px 45px;
-    background:white;
-    color:#2563eb;
-    border-radius:40px;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-}
+        @keyframes popMsg {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        .bubble-in {
+            align-self: flex-start;
+            background: var(--wa-card-in);
+            color: #e9edef;
+            border-top-left-radius: 2px;
+        }
 
-.button:hover {
-    transform:scale(1.15);
-}
+        .bubble-out {
+            align-self: flex-end;
+            background: var(--wa-card-out);
+            color: #e9edef;
+            border-top-right-radius: 2px;
+        }
 
+        .msg-time {
+            font-size: 0.62rem;
+            color: rgba(241, 245, 249, 0.6);
+            float: right;
+            margin-left: 8px;
+            margin-top: 4px;
+        }
 
-/* Animationen */
+        /* Interactive Action Buttons inside Phone */
+        .phone-quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #111b21;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-@keyframes float {
+        .quick-btn {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent-blue);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-    50% {
-        transform:translateY(-20px);
-    }
+        .quick-btn:hover {
+            background: var(--accent-blue);
+            color: #000;
+        }
 
-}
+        /* Input Area */
+        .phone-input-bar {
+            background: #111b21;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
+        .phone-input {
+            flex: 1;
+            background: #2a3942;
+            border: none;
+            outline: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
 
-@keyframes show {
+        .send-btn {
+            background: #00a884;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #fff;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
 
-    from {
-        opacity:0;
-        transform:translateY(50px);
-    }
+        /* Mobile App Profile "~me" Cards */
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
 
-    to {
-        opacity:1;
-        transform:translateY(0);
-    }
+        .profile-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-card);
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
 
-}
+        .profile-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
 
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            display: grid;
+            place-items: center;
+            font-size: 1.6rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
 
-@keyframes box {
+        .profile-info h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-    from {
-        opacity:0;
-        transform:scale(.8);
-    }
+        .command-tag {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.12);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
 
-    to {
-        opacity:1;
-        transform:scale(1);
-    }
+        .profile-info p {
+            font-size: 0.84rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
 
-}
+        /* Feature Section Cards */
+        .app-card {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
 
+        .app-card:hover {
+            border-color: rgba(129, 140, 248, 0.4);
+        }
 
-/* Handy Optimierung */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-@media(max-width:600px){
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+        }
 
-h1 {
-    font-size:45px;
-}
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
 
-.logo {
-    font-size:70px;
-}
+        .card-body {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
 
-p {
-    font-size:18px;
-}
+        /* Highlight Partnership Section */
+        .partner-card {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), rgba(129, 140, 248, 0.08));
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            position: relative;
+        }
 
-.container {
-    padding:40px 20px;
-}
+        .partner-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 99px;
+        }
 
-}
+        .partner-link {
+            color: var(--accent-gold);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-gold);
+            transition: all 0.2s;
+        }
 
-</style>
+        .partner-link:hover {
+            color: #fff;
+            border-bottom-style: solid;
+        }
 
+        /* App Footer & Action Buttons */
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 32px;
+            align-items: center;
+        }
+
+        .btn-main {
+            width: 100%;
+            max-width: 360px;
+            padding: 16px 28px;
+            border-radius: 99px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(56, 189, 248, 0.6);
+        }
+
+        .app-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            border-top: 1px solid var(--border-glass);
+            padding-top: 20px;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            .app-shell {
+                padding: 24px 18px;
+            }
+            .hero-logo {
+                font-size: 64px;
+            }
+            .profiles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
-
 <body>
 
+    <!-- Stars Background -->
+    <div class="ambient-bg">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="star" style="left:10%; width:3px; height:3px; animation-delay:0s; animation-duration:8s;"></div>
+        <div class="star" style="left:25%; width:4px; height:4px; animation-delay:2s; animation-duration:12s;"></div>
+        <div class="star" style="left:45%; width:2px; height:2px; animation-delay:4s; animation-duration:7s;"></div>
+        <div class="star" style="left:65%; width:4px; height:4px; animation-delay:1s; animation-duration:10s;"></div>
+        <div class="star" style="left:85%; width:3px; height:3px; animation-delay:3s; animation-duration:9s;"></div>
+    </div>
 
-<div class="star" style="left:10%;animation-delay:1s"></div>
-<div class="star" style="left:30%;animation-delay:3s"></div>
-<div class="star" style="left:50%;animation-delay:2s"></div>
-<div class="star" style="left:70%;animation-delay:5s"></div>
-<div class="star" style="left:90%;animation-delay:4s"></div>
+    <!-- App Main Glass Card -->
+    <div class="app-shell">
+        
+        <!-- App Top Bar -->
+        <div class="app-header">
+            <div style="font-weight:700; font-size:0.9rem; letter-spacing:0.05em; color:var(--text-sub);">
+                LUNA OS v2.4
+            </div>
+            <div class="status-badge">
+                <span class="status-dot"></span> BOT SYSTEM ONLINE
+            </div>
+        </div>
 
+        <!-- Hero Title -->
+        <div class="hero">
+            <div class="hero-logo">🌙</div>
+            <h1><span class="gradient-title">Luna Bot</span></h1>
+            <p class="hero-sub">
+                Der intelligente, hochmoderne JavaScript WhatsApp-Bot von Lukas. Entwickelt für erstklassigen Alltagssupport, innovative Automation und maximale Nutzersicherheit.
+            </p>
+        </div>
 
+        <!-- LIVE SMARTPHONE PREVIEW -->
+        <div class="phone-section">
+            <div class="phone-section-title">📱 Live Smartphone-Vorschau</div>
+            <div class="phone-section-desc">Klicke auf die Buttons oder tippe einen Befehl, um Luna Bot live zu testen:</div>
+            
+            <div class="phone-frame">
+                <div class="phone-notch">
+                    <div class="camera-dot"></div>
+                </div>
 
-<div class="container">
+                <div class="phone-header">
+                    <div class="bot-avatar">🌙</div>
+                    <div class="bot-meta">
+                        <h5>Luna Bot ✨</h5>
+                        <p>online | v2.4 Active</p>
+                    </div>
+                </div>
 
+                <div class="chat-window" id="chatWindow">
+                    <div class="chat-bubble bubble-in">
+                        Willkommen beim offiziellen Luna Bot Test-Chat! 🚀<br>Tippe <b>~help</b> oder nutze die Buttons unten, um zu starten.
+                        <span class="msg-time">12:00</span>
+                    </div>
+                </div>
 
-<div class="logo">
-🌙
+                <div class="phone-quick-actions">
+                    <button class="quick-btn" onclick="triggerCmd('~register')">📝 ~register</button>
+                    <button class="quick-btn" onclick="triggerCmd('~play')">🎮 ~play</button>
+                    <button class="quick-btn" onclick="triggerCmd('~me Lukas')">👑 ~me Lukas</button>
+                    <button class="quick-btn" onclick="triggerCmd('~me Monkey_Queen')">🐵 ~me MQ</button>
+                    <button class="quick-btn" onclick="triggerCmd('~aga')">🛡️ AGA Status</button>
+                </div>
+
+                <div class="phone-input-bar">
+                    <input type="text" id="phoneInput" class="phone-input" placeholder="Nachricht eingeben..." onkeypress="handleKey(event)">
+                    <button class="send-btn" onclick="sendUserMsg()">➔</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ~me App Profiles Grid -->
+        <div class="profiles-grid">
+            
+            <!-- Lukas Profile -->
+            <div class="profile-card">
+                <div class="avatar">👑</div>
+                <div class="profile-info">
+                    <h4>Lukas <span class="command-tag">~me</span></h4>
+                    <p>Owner & Haupt-Entwickler von Luna Bot. Zuständig für Code, Architektur & Security.</p>
+                </div>
+            </div>
+
+            <!-- Monkey_Queen Profile -->
+            <div class="profile-card">
+                <div class="avatar">🐵</div>
+                <div class="profile-info">
+                    <h4>Monkey_Queen <span class="command-tag">~me</span></h4>
+                    <p>Rechte Hand des Owners, AGA-Inhaberin ("Hankies") & Strategie-Kopf im Team.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Content Cards -->
+        <div class="app-card">
+            <div class="card-header">
+                <div class="card-icon">🤖</div>
+                <div class="card-title">Was ist Luna Bot?</div>
+            </div>
+            <div class="card-body">
+                Luna ist ein vollwertiger WhatsApp-Assistent auf moderner JavaScript-Basis. Er erleichtert die Chat-Verwaltung, beantwortet Fragen in Echtzeit und sorgt für ein geschütztes, sauberes Klima in Gruppen.
+            </div>
+        </div>
+
+        <div class="app-card">
+            <div class="card-header">
+                <div class="card-icon">👥</div>
+                <div class="card-title">AGA-Gruppe & Schutz-System</div>
+            </div>
+            <div class="card-body">
+                Die <strong>AGA-Gruppe</strong> beschleunigt organisches Kanalwachstum durch gezielte Werbung & gegenseitigen Support. 
+                <br><br>
+                <strong>Das Sicherheitsherz:</strong> Luna läuft im Hintergrund aktiv mit, blockiert automatisch Spam, wehrt schädliche Links ab und schützt gezielt jüngere Mitglieder vor digitalen Gefahren.
+            </div>
+        </div>
+
+<!-- Highlighted Partnership Box (Maxi) -->
+<div class="app-card partner-card">
+    <span class="partner-badge">Partnerschaft</span>
+    <div class="card-header">
+        <div class="card-icon" style="background:rgba(244,114,182,0.15); color:var(--accent-pink);">🤝</div>
+        <div class="card-title">Partner-Netzwerk</div>
+    </div>
+    <div class="card-body">
+        Dieses Projekt kooperiert eng mit starken Partnern. Besuche auch die offizielle Seite von <strong>Maxi</strong> unter 
+        <a href="https://maxichen.onimai.ch/" target="_blank" rel="noopener" class="partner-link">maxichen.onimai.ch</a>.
+    </div>
 </div>
+        <!-- Actions -->
+        <div class="action-area">
+            <a class="btn-main" href="DSVGO.html">
+                <span>🔒</span> Datenschutzerklärung (DSGVO)
+            </a>
+        </div>
 
+        <!-- Footer -->
+        <div class="app-footer">
+            © <span id="year"></span> Luna Bot Project · Powered by JavaScript & Node.js
+        </div>
 
-<h1>
-<span>Luna Bot</span>
-</h1>
+    </div>
 
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
 
-<p>
-Luna ist ein moderner JavaScript WhatsApp-Bot von Lukas.
-Der Bot unterstützt Nutzer im Alltag, beantwortet Fragen und bietet intelligente Sicherheitsfunktionen.
-</p>
+        // LIVE CHAT SIMULATION SCRIPT
+        const chatWin = document.getElementById('chatWindow');
 
+        function getTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
 
+        function appendMsg(text, type) {
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${type === 'out' ? 'bubble-out' : 'bubble-in'}`;
+            bubble.innerHTML = text + `<span class="msg-time">${getTime()}</span>`;
+            chatWin.appendChild(bubble);
+            chatWin.scrollTop = chatWin.scrollHeight;
+        }
 
-<div class="box">
+        function triggerCmd(cmd) {
+            appendMsg(cmd, 'out');
+            setTimeout(() => {
+                botRespond(cmd);
+            }, 600);
+        }
 
-<h2>🤖 Was ist der Luna WhatsApp-Bot?</h2>
+        function sendUserMsg() {
+            const input = document.getElementById('phoneInput');
+            const val = input.value.trim();
+            if(!val) return;
+            
+            appendMsg(val, 'out');
+            input.value = '';
+            
+            setTimeout(() => {
+                botRespond(val);
+            }, 600);
+        }
 
-<p>
-Luna ist ein intelligenter WhatsApp-Bot, der mit JavaScript entwickelt wurde.
-Das Projekt wurde erstellt, um einen zuverlässigen digitalen Helfer bereitzustellen.
-Durch verschiedene Funktionen unterstützt Luna bei der Verwaltung von Chats und sorgt für eine bessere Nutzererfahrung.
-</p>
+        function handleKey(e) {
+            if(e.key === 'Enter') sendUserMsg();
+        }
 
-</div>
-
-
-
-<div class="box">
-
-<h2>⚙️ Entwicklung von Luna</h2>
-
-<p>
-Luna wird von Lukas regelmäßig weiterentwickelt und verbessert.
-Das Ziel des Projekts ist ein stabiler, sicherer und kostenloser Helfer für WhatsApp mit modernen Funktionen.
-</p>
-
-</div>
-
-
-
-
-<div class="box">
-
-<h2>👥 AGA-Gruppe & Luna Team</h2>
-
-<p>
-Die AGA-Gruppe ist eine organisierte Plattform für Creator, die ihr Kanalwachstum durch das Prinzip „Abo gegen Abo“ (AGA) und gezielte Kanalwerbung beschleunigen möchten. Unter der Leitung der Inhaber bieten wir eine strukturierte Umgebung für den gegenseitigen Support.Die Rolle von Luna Das Luna Projekt ist das Sicherheitsherz unserer Gruppe. Luna überwacht die Community aktiv im Hintergrund, filtert Spam und wehrt ungeeignete Inhalte ab. Unser wichtigstes Ziel ist es, die Gruppe, die Inhaber und insbesondere jüngere Mitglieder (Kinder) effektiv vor digitalen Gefahren zu schützen.
-</p>
-
-</div>
-
-
-
-
-<div class="box">
-
-<h2>⭐ Monkey_Queen im Luna Projekt</h2>
-
-<p>
-Monkey_Queen unterstützt das Luna-Projekt und die AGA Gruppen aktiv.
-Sie hilft bei Ideen, Austausch und der Weiterentwicklung gemeinsamer Projekte sie ist die Rechte Hand des owners, und Inhaberin der Hankies mit den frechen monkys einer AGA Gruppe
-</p>
-
-</div>
-
-
-
-<a class="button" href="DSVGO.html">
-Datenschutzerklärung (DSGVO)
-</a>
-
-
-
-</div>
-
-
+        function botRespond(rawCmd) {
+            const cmd = rawCmd.toLowerCase();
+            
+            if(cmd.includes('register')) {
+                appendMsg(`✅ <b>Luna Register:</b><br>Willkommen im Team! Du wurdest erfolgreich in der Luna-Datenbank registriert. 🎉<br><i>Level 1 | XP: 0</i>`, 'in');
+            } else if(cmd.includes('play')) {
+                appendMsg(`🎮 <b>Luna Arcade:</b><br>Spiel gestartet! Werfe Münze... 🪙<br> Ergebnis: <b>Kopf!</b> Du gewinnst +50 Luna Coins! 🏆`, 'in');
+            } else if(cmd.includes('lukas')) {
+                appendMsg(`👑 <b>Profil: Lukas</b><br>Rolle: Owner & Dev<br>Status: System Online 🟢<br>Security Level: Maximum`, 'in');
+            } else if(cmd.includes('monkey') || cmd.includes('mq')) {
+                appendMsg(`🐵 <b>Profil: Monkey_Queen</b><br>Rolle: Co-Owner & AGA Inhaberin<br>Titel: Hankies Boss 👑`, 'in');
+            } else if(cmd.includes('aga')) {
+                appendMsg(`🛡️ <b>AGA Schutz-System:</b><br>Status: Aktiv 🟢<br>Spam-Filter: Bereit<br>Mitglieder-Schutz: 100%`, 'in');
+            } else if(cmd.includes('help')) {
+                appendMsg(`✨ <b>Luna Befehle:</b><br>• ~register (Anmelden)<br>• ~play (Mini-Game)<br>• ~me Lukas / MQ<br>• ~aga (Schutz-Status)`, 'in');
+            } else {
+                appendMsg(`🌙 Luna schaut verwirrt... Versuch es mit <b>~help</b> oder klicke auf die Schnellwahl-Buttons!`, 'in');
+            }
+        }
+    </script>
 </body>
 </html>
-```
