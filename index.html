@@ -1,50 +1,89 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" prefix="og: https://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
-    <title>Luna Bot – Next Gen WhatsApp Companion</title>
-    <meta name="description" content="Luna Bot ist ein intelligenter JavaScript WhatsApp-Bot von Lukas mit integrierten Sicherheitsfunktionen und Community-System.">
+    <title>Luna Bot – Next Gen WhatsApp Automation & Security Companion</title>
+    
+    <!-- KRANKE SEO & OPEN GRAPH META-TAGS FOR GOOGLE RANKING -->
+    <meta name="description" content="Luna Bot v2.4: Der modernste JavaScript WhatsApp-Bot von Lukas & Monkey_Queen. Mit Anti-Spam, AGA-Schutzsystem, Automatisierung & Mini-Games. Jetzt live testen!">
+    <meta name="keywords" content="WhatsApp Bot, Luna Bot, Lukas WhatsApp Bot, AGA Schutzsystem, JavaScript Bot, Node.js WhatsApp, WhatsApp Automatisierung, WhatsApp Security, Anti Spam Bot WhatsApp">
+    <meta name="author" content="Lukas & Monkey_Queen">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#030712">
-    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0b132b">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://dsvgo.onrender.com/">
 
-    <!-- Fonts -->
+    <!-- Open Graph / Facebook / WhatsApp Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dsvgo.onrender.com/">
+    <meta property="og:title" content="Luna Bot – Next Gen WhatsApp Companion">
+    <meta property="og:description" content="Intelligente WhatsApp-Automatisierung, AGA-Schutzsystem & Community-Features von Lukas. Exklusiv & High-Speed.">
+    <meta property="og:image" content="https://dsvgo.onrender.com/assets/preview.png">
+    <meta property="og:locale" content="de_DE">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Luna Bot – Next Gen WhatsApp Companion">
+    <meta name="twitter:description" content="Intelligente WhatsApp-Automatisierung mit Anti-Spam & AGA-Schutzsystem. Now Live!">
+
+    <!-- JSON-LD Structured Data (Google Rich Snippets) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Luna Bot",
+      "operatingSystem": "WhatsApp, Node.js, Cloud",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "EUR"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Lukas"
+      },
+      "description": "Moderner JavaScript WhatsApp-Bot mit integriertem Anti-Spam, AGA Schutzsystem und Community-Verwaltung."
+    }
+    </script>
+
+    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-deep: #030712;
             --bg-surface: rgba(15, 23, 42, 0.75);
-            --accent-cyan: #06b6d4;
             --accent-blue: #38bdf8;
             --accent-purple: #818cf8;
-            --accent-pink: #ec4899;
-            --accent-gold: #f59e0b;
-            --accent-green: #10b981;
+            --accent-pink: #f472b6;
+            --accent-gold: #fbbf24;
+            --accent-red: #ef4444;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
             --border-glass: rgba(255, 255, 255, 0.12);
-            --border-glow: rgba(56, 189, 248, 0.4);
+            --glow-shadow: 0 0 40px rgba(56, 189, 248, 0.2);
+            --radius-app: 28px;
+            --radius-card: 20px;
             --wa-bg: #0b141a;
             --wa-card-in: #202c33;
             --wa-card-out: #005c4b;
+            --wa-card-system: rgba(17, 27, 33, 0.85);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         html {
             scroll-behavior: smooth;
             background: var(--bg-deep);
-            color-scheme: dark;
         }
 
         body {
@@ -58,209 +97,178 @@
             position: relative;
         }
 
-        /* Dynamic Canvas Stars Background */
-        #bgCanvas {
+        /* Dynamic Cosmic Ambient Background */
+        .ambient-bg {
             position: fixed;
             inset: 0;
             z-index: 0;
-            pointer-events: none;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #090d16 60%, #030712 100%);
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
+            animation: floatStar 10s infinite linear;
+        }
+
+        @keyframes floatStar {
+            0% { transform: translateY(105vh) scale(0.8); opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
         .glow-orb {
-            position: fixed;
-            width: 500px;
-            height: 500px;
+            position: absolute;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
-            filter: blur(140px);
-            opacity: 0.25;
+            filter: blur(100px);
+            opacity: 0.35;
             pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 12s ease-in-out infinite alternate;
         }
 
-        .orb-1 { top: -10%; left: -5%; background: var(--accent-purple); }
-        .orb-2 { bottom: -10%; right: -5%; background: var(--accent-cyan); }
-        .orb-3 { top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--accent-pink); opacity: 0.15; }
-
-        @keyframes orbFloat {
-            0% { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.15) translate(30px, -20px); }
-        }
+        .orb-1 { top: -5%; left: 10%; background: var(--accent-purple); }
+        .orb-2 { bottom: 10%; right: 5%; background: var(--accent-blue); }
+        .orb-3 { top: 40%; left: 60%; background: var(--accent-pink); opacity: 0.15; }
 
         /* Main App Container UI */
         .app-shell {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 960px;
+            max-width: 900px;
             background: var(--bg-surface);
-            backdrop-filter: blur(30px) saturate(200%);
-            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
             border: 1px solid var(--border-glass);
-            border-radius: 36px;
+            border-radius: var(--radius-app);
             padding: 40px 32px;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.15), 0 30px 60px rgba(0,0,0,0.8);
+            box-shadow: var(--glow-shadow), 0 30px 60px rgba(0,0,0,0.8);
             animation: appAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes appAppear {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Top Header Bar */
+        /* App Top Header Bar */
         .app-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding-bottom: 24px;
             border-bottom: 1px solid var(--border-glass);
-            margin-bottom: 32px;
-        }
-
-        .sys-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--accent-cyan);
-            letter-spacing: 0.1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sys-tag::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--accent-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-cyan);
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 16px;
+            padding: 6px 14px;
             background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 99px;
             font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--accent-green);
+            font-weight: 600;
+            color: #34d399;
             letter-spacing: 0.04em;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: var(--accent-green);
+            background: #34d399;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-green);
-            animation: pulse 1.8s infinite;
+            box-shadow: 0 0 10px #34d399;
+            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .live-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            font-family: 'Fira Code', monospace;
         }
 
         /* Hero Header Section */
         .hero {
             text-align: center;
-            margin-bottom: 44px;
-        }
-
-        .hero-logo-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 16px;
+            margin-bottom: 36px;
         }
 
         .hero-logo {
-            font-size: 90px;
+            font-size: 80px;
             line-height: 1;
-            display: block;
-            filter: drop-shadow(0 0 35px rgba(129, 140, 248, 0.8));
+            margin-bottom: 12px;
+            display: inline-block;
+            filter: drop-shadow(0 0 25px rgba(129, 140, 248, 0.7));
             animation: moonBob 4s ease-in-out infinite;
         }
 
         @keyframes moonBob {
-            0%, 100% { transform: translateY(0) rotate(-4deg); }
-            50% { transform: translateY(-12px) rotate(4deg); }
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
         }
 
         h1 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 3.8rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 14px;
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
         }
 
         .gradient-title {
-            background: linear-gradient(135deg, #ffffff 0%, var(--accent-cyan) 40%, var(--accent-purple) 75%, var(--accent-pink) 100%);
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
         }
 
         .hero-sub {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: var(--text-sub);
-            line-height: 1.65;
-            max-width: 680px;
+            line-height: 1.6;
+            max-width: 650px;
             margin: 0 auto;
-            font-weight: 400;
-        }
-
-        .hero-badges {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .badge-chip {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            padding: 6px 14px;
-            border-radius: 99px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
         }
 
         /* LIVE SMARTPHONE PREVIEW SECTION */
         .phone-section {
-            margin: 48px 0;
+            margin: 40px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .phone-section-title {
-            font-family: 'Space Grotesk', sans-serif;
             text-align: center;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: #fff;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .phone-section-desc {
             text-align: center;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-sub);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .phone-frame {
@@ -269,25 +277,26 @@
             height: 680px;
             background: #000000;
             border-radius: 48px;
-            border: 10px solid #1e293b;
-            box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.9), 0 0 45px rgba(56, 189, 248, 0.35);
+            border: 11px solid #1e293b;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.25);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .phone-frame:hover {
-            box-shadow: 0 35px 80px -10px rgba(0, 0, 0, 0.95), 0 0 60px rgba(129, 140, 248, 0.5);
+            transform: scale(1.01);
         }
 
+        /* Smartphone Dynamic Island Notch */
         .phone-notch {
             position: absolute;
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
+            width: 120px;
             height: 26px;
             background: #1e293b;
             border-bottom-left-radius: 18px;
@@ -304,14 +313,7 @@
             height: 10px;
             background: #090d16;
             border-radius: 50%;
-            box-shadow: inset 0 0 3px rgba(255,255,255,0.2);
-        }
-
-        .speaker-bar {
-            width: 40px;
-            height: 4px;
-            background: #090d16;
-            border-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* WhatsApp Header */
@@ -320,48 +322,76 @@
             padding: 36px 16px 12px 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .phone-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .bot-avatar {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
             display: grid;
             place-items: center;
-            font-size: 1.3rem;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .bot-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border: 2px solid #1f2c34;
+            border-radius: 50%;
         }
 
         .bot-meta h5 {
             color: #e9edef;
-            font-size: 0.98rem;
+            font-size: 0.95rem;
             font-weight: 600;
         }
 
         .bot-meta p {
             color: #00a884;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        }
+
+        .sound-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .sound-toggle:hover {
+            color: #fff;
         }
 
         /* WhatsApp Chat Window */
         .chat-window {
             flex: 1;
             background: var(--wa-bg);
-            padding: 16px 14px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+            background-size: 16px 16px;
+            padding: 14px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
             scroll-behavior: smooth;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 16px 16px;
         }
 
         .chat-window::-webkit-scrollbar {
@@ -369,23 +399,23 @@
         }
         .chat-window::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
+            border-radius: 4px;
         }
 
         .chat-bubble {
-            max-width: 88%;
-            padding: 10px 13px;
-            border-radius: 14px;
-            font-size: 0.84rem;
-            line-height: 1.48;
+            max-width: 85%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            line-height: 1.45;
             animation: popMsg 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             word-break: break-word;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         @keyframes popMsg {
-            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            from { opacity: 0; transform: translateY(8px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
@@ -403,11 +433,40 @@
             border-top-right-radius: 2px;
         }
 
+        /* Special Animated WhatsApp System/Kick Notice */
+        .bubble-system {
+            align-self: center;
+            background: var(--wa-card-system);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            font-size: 0.74rem;
+            text-align: center;
+            border-radius: 10px;
+            padding: 6px 14px;
+            max-width: 92%;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+            animation: systemShake 0.4s ease-in-out;
+        }
+
+        @keyframes systemShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        .user-removed-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
         .msg-time {
             font-size: 0.62rem;
-            color: rgba(241, 245, 249, 0.55);
+            color: rgba(241, 245, 249, 0.5);
             float: right;
-            margin-left: 10px;
+            margin-left: 8px;
             margin-top: 4px;
         }
 
@@ -423,26 +482,40 @@
 
         .quick-btn {
             background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.25);
             color: var(--accent-blue);
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            padding: 6px 11px;
+            padding: 5px 10px;
             border-radius: 99px;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .quick-btn:hover {
             background: var(--accent-blue);
             color: #000;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .quick-btn-danger {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .quick-btn-danger:hover {
+            background: var(--accent-red);
+            color: #fff;
         }
 
         /* Input Area */
         .phone-input-bar {
             background: #111b21;
-            padding: 10px 12px 14px 12px;
+            padding: 10px 12px;
             display: flex;
             gap: 8px;
             align-items: center;
@@ -454,215 +527,163 @@
             border: 1px solid transparent;
             outline: none;
             color: #fff;
-            padding: 9px 16px;
-            border-radius: 22px;
-            font-size: 0.82rem;
+            padding: 9px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             transition: border-color 0.2s;
         }
 
         .phone-input:focus {
-            border-color: #00a884;
+            border-color: var(--accent-blue);
         }
 
         .send-btn {
             background: #00a884;
             border: none;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             color: #fff;
             display: grid;
             place-items: center;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: transform 0.2s, background 0.2s;
+            font-size: 0.85rem;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        .send-btn:hover {
-            transform: scale(1.08);
-            background: #02be94;
+        .send-btn:active {
+            transform: scale(0.9);
         }
 
-        /* Mobile App Profile Cards */
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-            margin: 36px 0 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        /* Mobile App Profile "~me" Cards */
         .profiles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px;
+            gap: 16px;
             margin-bottom: 32px;
         }
 
         .profile-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-glass);
-            border-radius: 24px;
+            border-radius: var(--radius-card);
             padding: 20px;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
 
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.35s;
-        }
-
         .profile-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             background: rgba(255, 255, 255, 0.06);
-            border-color: var(--border-glow);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.2);
-        }
-
-        .profile-card:hover::before {
-            opacity: 1;
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
 
         .avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
             display: grid;
             place-items: center;
-            font-size: 1.8rem;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            font-size: 1.6rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .profile-info {
-            position: relative;
-            z-index: 1;
         }
 
         .profile-info h4 {
-            font-size: 1.08rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #fff;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
         .command-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--accent-cyan);
-            background: rgba(6, 182, 212, 0.15);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            padding: 2px 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.12);
+            padding: 2px 6px;
             border-radius: 6px;
         }
 
         .profile-info p {
-            font-size: 0.86rem;
+            font-size: 0.84rem;
             color: var(--text-sub);
-            margin-top: 6px;
-            line-height: 1.45;
+            margin-top: 4px;
+            line-height: 1.4;
         }
 
-        /* Feature Section Cards Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px;
-            margin-bottom: 24px;
-        }
-
+        /* Feature Section Cards */
         .app-card {
             background: rgba(255, 255, 255, 0.025);
             border: 1px solid var(--border-glass);
-            border-radius: 24px;
+            border-radius: var(--radius-card);
             padding: 24px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
         }
 
         .app-card:hover {
-            border-color: var(--accent-purple);
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border-color: rgba(129, 140, 248, 0.4);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 14px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .card-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.25);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(56, 189, 248, 0.1);
             color: var(--accent-blue);
             display: grid;
             place-items: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
         .card-title {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #fff;
         }
 
         .card-body {
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             color: var(--text-sub);
             line-height: 1.6;
         }
 
         /* Highlight Partnership Section */
         .partner-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(129, 140, 248, 0.08));
-            border: 1px solid rgba(236, 72, 153, 0.35);
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), rgba(129, 140, 248, 0.08));
+            border: 1px solid rgba(244, 114, 182, 0.3);
             position: relative;
-        }
-
-        .partner-card:hover {
-            border-color: var(--accent-pink);
-            box-shadow: 0 10px 35px rgba(236, 72, 153, 0.2);
         }
 
         .partner-badge {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 16px;
+            right: 16px;
             background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
             color: #fff;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 5px 12px;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
             border-radius: 99px;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
         }
 
         .partner-link {
@@ -671,264 +692,226 @@
             text-decoration: none;
             border-bottom: 1px dashed var(--accent-gold);
             transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
         }
 
         .partner-link:hover {
             color: #fff;
             border-bottom-style: solid;
-            text-shadow: 0 0 8px var(--accent-gold);
         }
 
-        /* Feature Highlights Badges */
-        .feature-list {
-            list-style: none;
-            margin-top: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.88rem;
-            color: #cbd5e1;
-        }
-
-        .feature-item::before {
-            content: '⚡';
-            font-size: 0.8rem;
-        }
-
-        /* Actions & Footer */
+        /* App Footer & Action Buttons */
         .action-area {
             display: flex;
             flex-direction: column;
             gap: 14px;
-            margin-top: 40px;
+            margin-top: 32px;
             align-items: center;
         }
 
         .btn-main {
             width: 100%;
-            max-width: 380px;
-            padding: 18px 32px;
+            max-width: 360px;
+            padding: 16px 28px;
             border-radius: 99px;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 100%);
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
             color: #ffffff;
-            font-size: 1.05rem;
-            font-weight: 800;
+            font-size: 1rem;
+            font-weight: 700;
             text-decoration: none;
             text-align: center;
-            box-shadow: 0 10px 30px -5px rgba(56, 189, 248, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.4);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            letter-spacing: 0.02em;
+            gap: 10px;
         }
 
         .btn-main:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 18px 40px -5px rgba(56, 189, 248, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(56, 189, 248, 0.6);
         }
 
         .app-footer {
-            margin-top: 32px;
+            margin-top: 28px;
             text-align: center;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-sub);
             border-top: 1px solid var(--border-glass);
-            padding-top: 24px;
+            padding-top: 20px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        .footer-tech {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--accent-cyan);
-            opacity: 0.8;
-        }
-
-        /* Responsive Fixes */
-        @media (max-width: 640px) {
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
             .app-shell {
-                padding: 28px 18px;
-                border-radius: 28px;
+                padding: 24px 16px;
             }
             .hero-logo {
-                font-size: 70px;
+                font-size: 64px;
             }
-            .profiles-grid, .features-grid {
+            .profiles-grid {
                 grid-template-columns: 1fr;
             }
-            .phone-frame {
-                height: 620px;
+            .live-stats {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Dynamic Stars Canvas -->
-    <canvas id="bgCanvas"></canvas>
+    <!-- Dynamic Cosmic Background -->
+    <div class="ambient-bg">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+        <div class="star" style="left:10%; width:3px; height:3px; animation-delay:0s; animation-duration:8s;"></div>
+        <div class="star" style="left:25%; width:4px; height:4px; animation-delay:2s; animation-duration:12s;"></div>
+        <div class="star" style="left:45%; width:2px; height:2px; animation-delay:4s; animation-duration:7s;"></div>
+        <div class="star" style="left:65%; width:4px; height:4px; animation-delay:1s; animation-duration:10s;"></div>
+        <div class="star" style="left:85%; width:3px; height:3px; animation-delay:3s; animation-duration:9s;"></div>
+    </div>
 
-    <!-- Glowing Orbs -->
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-    <div class="glow-orb orb-3"></div>
-
-    <!-- Main Glass Shell -->
-    <div class="app-shell">
+    <!-- Main Application Container -->
+    <main class="app-shell">
         
-        <!-- Header -->
-        <div class="app-header">
-            <div class="sys-tag">
-                LUNA OS v2.4 // ENGINE ONLINE
+        <!-- App Top Bar -->
+        <header class="app-header">
+            <div style="font-weight:700; font-size:0.9rem; letter-spacing:0.05em; color:var(--text-sub);">
+                LUNA OS <span style="color:var(--accent-blue);">v2.4 PRIME</span>
             </div>
-            <div class="status-badge">
-                <span class="status-dot"></span> SYSTEM HIGHLY ACTIVE
+            
+            <div class="live-stats">
+                <span>PING: <strong id="pingVal" style="color:#34d399;">14ms</strong></span>
+                <span>UPTIME: <strong id="uptimeVal" style="color:var(--accent-purple);">99.9%</strong></span>
             </div>
-        </div>
 
-        <!-- Hero -->
-        <div class="hero">
-            <div class="hero-logo-wrapper">
-                <span class="hero-logo">🌙</span>
+            <div class="status-badge">
+                <span class="status-dot"></span> BOT SYSTEM ONLINE
             </div>
+        </header>
+
+        <!-- Hero Title -->
+        <section class="hero">
+            <div class="hero-logo">🌙</div>
             <h1><span class="gradient-title">Luna Bot</span></h1>
             <p class="hero-sub">
-                Der hochmoderne JavaScript WhatsApp-Bot von Lukas. Entwickelt für ultimative Gruppen-Automation, Echtzeit-Support, Entertainment & unknackbaren Community-Schutz.
+                Der intelligente, hochmoderne JavaScript WhatsApp-Bot von Lukas. Entwickelt für erstklassigen Alltagssupport, innovative Automation und maximale Nutzersicherheit.
             </p>
-            <div class="hero-badges">
-                <span class="badge-chip">⚡ Node.js v20+</span>
-                <span class="badge-chip">🔒 Cyber-Security AGA</span>
-                <span class="badge-chip">🎮 Multi-Arcade</span>
-                <span class="badge-chip">🛡️ Anti-Spam AI</span>
-            </div>
-        </div>
+        </section>
 
-        <!-- Live Smartphone Interactive Preview -->
-        <div class="phone-section">
-            <div class="phone-section-title">
-                📱 Live Simulator Console
-            </div>
-            <div class="phone-section-desc">Testet Luna Bot in Echtzeit. Klickt auf Befehle oder tippt frei in den Chat:</div>
+        <!-- LIVE SMARTPHONE PREVIEW -->
+        <section class="phone-section">
+            <div class="phone-section-title">📱 Live Interactive Chat Simulator</div>
+            <div class="phone-section-desc">Testen Sie Luna Bot in Echtzeit! Klicken Sie auf die Quick-Action Buttons oder nutzen Sie den Mod-Kick-Befehl:</div>
             
             <div class="phone-frame">
+                <!-- Dynamic Island / Notch -->
                 <div class="phone-notch">
-                    <div class="speaker-bar"></div>
                     <div class="camera-dot"></div>
                 </div>
 
+                <!-- WhatsApp Header -->
                 <div class="phone-header">
-                    <div class="bot-avatar">🌙</div>
-                    <div class="bot-meta">
-                        <h5>Luna Bot ✨</h5>
-                        <p><span style="width:6px;height:6px;background:#00a884;border-radius:50%;display:inline-block;"></span> online | v2.4 Active</p>
+                    <div class="phone-header-left">
+                        <div class="bot-avatar">🌙</div>
+                        <div class="bot-meta">
+                            <h5>Luna Bot ✨</h5>
+                            <p>online | v2.4 Active</p>
+                        </div>
                     </div>
+                    <button class="sound-toggle" onclick="toggleAudio()" id="soundBtn" title="Sound Effekte umschalten">🔔</button>
                 </div>
 
+                <!-- WhatsApp Chat Window -->
                 <div class="chat-window" id="chatWindow">
                     <div class="chat-bubble bubble-in">
-                        Willkommen beim offiziellen <b>Luna Bot Terminal</b>! 🚀<br>
-                        Tippe <b>~help</b> oder nutze die Quick-Befehle unten, um loszulegen.
+                        Willkommen beim offiziellen Luna Bot Test-Chat! 🚀<br>Tippe <b>~help</b> oder nutze die Buttons unten, um zu starten.
                         <span class="msg-time">12:00</span>
                     </div>
                 </div>
 
+                <!-- Quick Action Buttons -->
                 <div class="phone-quick-actions">
                     <button class="quick-btn" onclick="triggerCmd('~register')">📝 ~register</button>
                     <button class="quick-btn" onclick="triggerCmd('~play')">🎮 ~play</button>
                     <button class="quick-btn" onclick="triggerCmd('~me Lukas')">👑 ~me Lukas</button>
-                    <button class="quick-btn" onclick="triggerCmd('~me Monkey_Queen')">🐵 ~me MQ</button>
+                    <button class="quick-btn" onclick="triggerCmd('~me MQ')">🐵 ~me MQ</button>
                     <button class="quick-btn" onclick="triggerCmd('~aga')">🛡️ AGA Status</button>
-                    <button class="quick-btn" onclick="triggerCmd('~stats')">📊 ~stats</button>
+                    <button class="quick-btn quick-btn-danger" onclick="triggerCmd('~kick @Nico')">💥 ~kick @Nico</button>
                 </div>
 
+                <!-- Input Area -->
                 <div class="phone-input-bar">
-                    <input type="text" id="phoneInput" class="phone-input" placeholder="Befehl eingeben (z.B. ~help)..." onkeypress="handleKey(event)">
+                    <input type="text" id="phoneInput" class="phone-input" placeholder="Nachricht oder Befehl z.B. ~kick @User..." onkeypress="handleKey(event)">
                     <button class="send-btn" onclick="sendUserMsg()">➔</button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Profiles Section -->
-        <div class="section-title">👥 Team & Core Profiles</div>
-        <div class="profiles-grid">
+        <!-- ~me App Profiles Grid -->
+        <section class="profiles-grid">
             
             <!-- Lukas Profile -->
-            <div class="profile-card">
+            <article class="profile-card">
                 <div class="avatar">👑</div>
                 <div class="profile-info">
-                    <h4>Lukas <span class="command-tag">Bot Creator / OWNER</span></h4>
-                    <p>Haupt-Entwickler von Luna Bot. Verantwortlich für Kern-Architektur, JavaScript-Engines & Hochleistungs-Sicherheit systemsweit.</p>
+                    <h4>Lukas <span class="command-tag">Bot Entwickler / OWNER</span></h4>
+                    <p>Owner & Haupt-Entwickler von Luna Bot. Zuständig für Code, Architektur & High-Security Integrationen.</p>
                 </div>
-            </div>
+            </article>
 
             <!-- Monkey_Queen Profile -->
-            <div class="profile-card">
+            <article class="profile-card">
                 <div class="avatar">🐵</div>
                 <div class="profile-info">
-                    <h4>Monkey_Queen <span class="command-tag">Co-Owner / Admin</span></h4>
-                    <p>Rechte Hand des Owners, AGA-Inhaberin ("Hankies Boss") & strategischer Kopf im Community- & Schutzmanagement.</p>
+                    <h4>Monkey_Queen <span class="command-tag">Rechte Hand / Admin</span></h4>
+                    <p>Rechte Hand des Owners, AGA-Inhaberin ("Hankies") & Strategie-Kopf im Community-Team.</p>
                 </div>
+            </article>
+
+        </section>
+
+        <!-- Content Cards -->
+        <section class="app-card">
+            <div class="card-header">
+                <div class="card-icon">🤖</div>
+                <h3 class="card-title">Was ist Luna Bot?</h3>
             </div>
-
-        </div>
-
-        <!-- Features Grid -->
-        <div class="section-title">⚡ Core Architecture & Power Features</div>
-        <div class="features-grid">
-            
-            <div class="app-card">
-                <div class="card-header">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">Was ist Luna Bot?</div>
-                </div>
-                <div class="card-body">
-                    Luna ist ein vollwertiger, extrem schneller WhatsApp-Assistent auf moderner Node.js/JavaScript-Basis. Er automatisiert Chat-Verwaltung, bietet Rich-Media Support und sorgt rund um die Uhr für Reaktionszeiten im Millisekundenbereich.
-                </div>
+            <div class="card-body">
+                Luna ist ein vollwertiger WhatsApp-Assistent auf moderner JavaScript-Basis. Er erleichtert die Chat-Verwaltung, beantwortet Fragen in Echtzeit und sorgt für ein geschütztes, sauberes Klima in Gruppen.
             </div>
+        </section>
 
-            <div class="app-card">
-                <div class="card-header">
-                    <div class="card-icon">🛡️</div>
-                    <div class="card-title">AGA Schutz-Matrix</div>
-                </div>
-                <div class="card-body">
-                    Die <strong>AGA-Gruppe</strong> pusht organisches Wachstum durch gezielte Werbung & Kooperationen.
-                    <ul class="feature-list">
-                        <li class="feature-item">Automatisierter Spam- & Phishing-Filter</li>
-                        <li class="feature-item">Echtzeit-Schutz für jüngere Mitglieder</li>
-                        <li class="feature-item">Sicherer Schutz vor Raid-Versuchen</li>
-                    </ul>
-                </div>
+        <section class="app-card">
+            <div class="card-header">
+                <div class="card-icon">👥</div>
+                <h3 class="card-title">AGA-Gruppe & Schutz-System</h3>
             </div>
-
-            <!-- Highlighted Partnership Box -->
-            <div class="app-card partner-card">
-                <span class="partner-badge">Official Partner</span>
-                <div class="card-header">
-                    <div class="card-icon" style="background:rgba(236, 72, 153, 0.15); border-color:rgba(236,72,153,0.3); color:var(--accent-pink);">🤝</div>
-                    <div class="card-title">Partner-Netzwerk Premium</div>
-                </div>
-                <div class="card-body">
-                    Luna Bot kooperiert eng mit exklusiven Partnern. Besuche die offizielle Plattform von <strong>Maxi</strong> unter 
-                    <a href="https://maxichen.onimai.ch/" target="_blank" rel="noopener" class="partner-link">maxichen.onimai.ch ↗</a> für zusätzliche Tools und Vernetzung.
-                </div>
+            <div class="card-body">
+                Die <strong>AGA-Gruppe</strong> beschleunigt organisches Kanalwachstum durch gezielte Werbung & gegenseitigen Support. 
+                <br><br>
+                <strong>Das Sicherheitsherz:</strong> Luna läuft im Hintergrund aktiv mit, blockiert automatisch Spam, wehrt schädliche Links ab und schützt gezielt jüngere Mitglieder vor digitalen Gefahren.
             </div>
+        </section>
 
-        </div>
+        <!-- Highlighted Partnership Box (Maxi) -->
+        <section class="app-card partner-card">
+            <span class="partner-badge">Partnerschaft</span>
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(244,114,182,0.15); color:var(--accent-pink);">🤝</div>
+                <h3 class="card-title">Partner-Netzwerk</h3>
+            </div>
+            <div class="card-body">
+                Dieses Projekt kooperiert eng mit starken Partnern. Besuche auch die offizielle Seite von <strong>Maxi</strong> unter 
+                <a href="https://maxichen.onimai.ch/" target="_blank" rel="noopener" class="partner-link">maxichen.onimai.ch</a>.
+            </div>
+        </section>
 
-        <!-- Action Button -->
+        <!-- Actions -->
         <div class="action-area">
             <a class="btn-main" href="DSVGO.html">
                 <span>🔒</span> Datenschutzerklärung (DSGVO)
@@ -936,79 +919,66 @@
         </div>
 
         <!-- Footer -->
-        <div class="app-footer">
-            <div>© <span id="year"></span> Luna Bot Project · All Rights Reserved.</div>
-            <div class="footer-tech">POWERED BY JAVASCRIPT // NODE.JS // HIGH PERFORMANCE CORE</div>
-        </div>
+        <footer class="app-footer">
+            <div>© <span id="year"></span> Luna Bot Project · Powered by JavaScript & Node.js Engine</div>
+            <div style="font-size: 0.72rem; opacity: 0.7;">Entwickelt mit Leidenschaft für maximale WhatsApp-Automatisierung & Nutzersicherheit.</div>
+        </footer>
 
-    </div>
+    </main>
 
-    <!-- Scripts -->
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        /* Interactive Particle Background Canvas */
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
+        // SIMULATOR SOUND ENGINE (Web Audio API - No External Files Required!)
+        let soundEnabled = true;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
 
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function initAudio() {
+            if(!audioCtx) audioCtx = new AudioCtx();
         }
 
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        function playSound(type) {
+            if(!soundEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
 
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedY = Math.random() * -0.5 - 0.2;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.8 + 0.2;
-            }
-
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-
-                if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10) {
-                    this.reset();
-                    this.y = canvas.height + 10;
+                if (type === 'msgIn') {
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'msgOut') {
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime); // A4
+                    osc.frequency.exponentialRampToValueAtTime(587.33, audioCtx.currentTime + 0.08); // D5
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'kick') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
                 }
-            }
-
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            } catch(e) { console.log('Audio error:', e); }
         }
 
-        for (let i = 0; i < 70; i++) {
-            particles.push(new Particle());
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundBtn').textContent = soundEnabled ? '🔔' : '🔕';
         }
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animateParticles);
-        }
-
-        animateParticles();
-
-        /* LIVE CHAT SIMULATION LOGIC */
+        // LIVE CHAT SIMULATION SCRIPT
         const chatWin = document.getElementById('chatWindow');
 
         function getTime() {
@@ -1018,8 +988,17 @@
 
         function appendMsg(text, type) {
             const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${type === 'out' ? 'bubble-out' : 'bubble-in'}`;
-            bubble.innerHTML = text + `<span class="msg-time">${getTime()}</span>`;
+            
+            if (type === 'system') {
+                bubble.className = 'chat-bubble bubble-system';
+                bubble.innerHTML = text;
+                playSound('kick');
+            } else {
+                bubble.className = `chat-bubble ${type === 'out' ? 'bubble-out' : 'bubble-in'}`;
+                bubble.innerHTML = text + `<span class="msg-time">${getTime()}</span>`;
+                playSound(type === 'out' ? 'msgOut' : 'msgIn');
+            }
+
             chatWin.appendChild(bubble);
             chatWin.scrollTop = chatWin.scrollHeight;
         }
@@ -1028,7 +1007,7 @@
             appendMsg(cmd, 'out');
             setTimeout(() => {
                 botRespond(cmd);
-            }, 500);
+            }, 550);
         }
 
         function sendUserMsg() {
@@ -1041,7 +1020,7 @@
             
             setTimeout(() => {
                 botRespond(val);
-            }, 500);
+            }, 550);
         }
 
         function handleKey(e) {
@@ -1051,25 +1030,41 @@
         function botRespond(rawCmd) {
             const cmd = rawCmd.toLowerCase();
             
-            if(cmd.includes('register')) {
-                appendMsg(`✅ <b>Luna Register Engine:</b><br>Willkommen im Luna-System! Registrierung erfolgreich.<br><i>Level: 1 | XP: 0 | VIP Status: Inaktiv</i>`, 'in');
+            // SPECIAL ANIMATED KICK MODERATION SYSTEM
+            if(cmd.includes('kick')) {
+                // Extract mentioned user or default
+                let targetUser = rawCmd.split(' ')[1] || '@Nutzer';
+                if(!targetUser.startsWith('@')) targetUser = '@' + targetUser;
+
+                appendMsg(`⚡ <b>Moderations-Befehl erkannt:</b><br>Prüfe Berechtigungen... Admin-Status verifiziert. Remove-Prozess eingeleitet für <b>${targetUser}</b>. 🚨`, 'in');
+                
+                // Trigger system WhatsApp removal event shortly after
+                setTimeout(() => {
+                    appendMsg(`<div class="user-removed-card">🚫 <span>Luna Bot hat <b>${targetUser}</b> aus der Gruppe entfernt.</span></div>`, 'system');
+                }, 1200);
+
+            } else if(cmd.includes('register')) {
+                appendMsg(`✅ <b>Luna Register:</b><br>Willkommen im Team! Du wurdest erfolgreich in der Luna-Datenbank registriert. 🎉<br><i>Level 1 | XP: 0 | Rank: Member</i>`, 'in');
             } else if(cmd.includes('play')) {
-                const coins = Math.floor(Math.random() * 100) + 10;
-                appendMsg(`🎮 <b>Luna Cyber-Arcade:</b><br>Würfel geworfen... 🎲<br>Ergebnis: <b>Gewonnen!</b> Du erhältst <b>+${coins} Luna Coins</b> 🪙`, 'in');
+                appendMsg(`🎮 <b>Luna Arcade:</b><br>Spiel gestartet! Werfe Münze... 🪙<br> Ergebnis: <b>Kopf!</b> Du gewinnst +50 Luna Coins! 🏆`, 'in');
             } else if(cmd.includes('lukas')) {
-                appendMsg(`👑 <b>Profil: Lukas</b><br>Rolle: Owner & Master Dev 🛠️<br>System Access: Unlimited<br>Status: Full Encryption Active 🟢`, 'in');
+                appendMsg(`👑 <b>Profil: Lukas</b><br>Rolle: Owner & Dev<br>Status: System Online 🟢<br>Security Level: Maximum (Full Access)`, 'in');
             } else if(cmd.includes('monkey') || cmd.includes('mq')) {
-                appendMsg(`🐵 <b>Profil: Monkey_Queen</b><br>Rolle: Co-Owner & AGA Lead 👑<br>Titel: Hankies Boss<br>Status: Protected 🟢`, 'in');
+                appendMsg(`🐵 <b>Profil: Monkey_Queen</b><br>Rolle: Co-Owner & AGA Inhaberin<br>Titel: Hankies Boss 👑<br>Status: Active Admin ⚡`, 'in');
             } else if(cmd.includes('aga')) {
-                appendMsg(`🛡️ <b>AGA Cyber-Security:</b><br>Anti-Spam Filter: 100% ONLINE<br>Mitglieder-Schutz: Aktiv<br>Gefahren-Shield: Max Level 🛡️`, 'in');
-            } else if(cmd.includes('stats')) {
-                appendMsg(`📊 <b>Luna Live Stats:</b><br>Uptime: 99.9%<br>Ping: 12ms ⚡<br>Befehle ausgeführt: 148,290+`, 'in');
+                appendMsg(`🛡️ <b>AGA Schutz-System:</b><br>Status: Aktiv 🟢<br>Spam-Filter: Bereit<br>Mitglieder-Schutz: 100%<br>Verschlüsselung: AES-256`, 'in');
             } else if(cmd.includes('help')) {
-                appendMsg(`✨ <b>Luna High-Tech Commands:</b><br>• ~register (Account erstellen)<br>• ~play (Arcade Minigame)<br>• ~me Lukas / MQ (Entwickler Profil)<br>• ~aga (Schutz-Status)<br>• ~stats (Live Performance)`, 'in');
+                appendMsg(`✨ <b>Luna Befehle Übersicht:</b><br>• ~register (Anmelden)<br>• ~play (Mini-Game)<br>• ~me Lukas / MQ<br>• ~aga (Schutz-Status)<br>• ~kick @Nutzer (Moderation)`, 'in');
             } else {
-                appendMsg(`🌙 Luna analysiert deine Nachricht... Befehl unbekannt! Nutze <b>~help</b> oder die Schnellbuttons.`, 'in');
+                appendMsg(`🌙 Luna schaut verwirrt... Versuch es mit <b>~help</b> oder nutze <b>~kick @User</b>, um das Schutz-System zu testen!`, 'in');
             }
         }
+
+        // Live Simulated Network Latency Flicker
+        setInterval(() => {
+            const ping = Math.floor(Math.random() * (22 - 11 + 1)) + 11;
+            document.getElementById('pingVal').textContent = ping + 'ms';
+        }, 4000);
     </script>
 </body>
 </html>
