@@ -1,243 +1,614 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" prefix="og: https://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
-    <title>Luna – Entwicklerinformationen & technische Hinweise</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Luna Bot – Entwicklerinformationen & Support</title>
+    
+    <!-- SEO & METADATA -->
+    <meta name="description" content="Offizielle Entwicklerinformationen & Support-Kanäle für den WhatsApp-Bot Luna. Technische Hinweise, Kontakte und Ticketprüfung.">
+    <meta name="keywords" content="Luna Bot Developer, Lukas Luna Bot, Luna Support, WhatsApp Bot Technik, Luna Ticketprüfung">
+    <meta name="author" content="Lukas & Monkey_Queen">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b132b">
+    <meta name="robots" content="index, follow">
 
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Luna Bot – Entwickler & Support">
+    <meta property="og:description" content="Offizielle technische Informationen und Kontaktdaten des Luna-Bot-Entwicklerteams.">
+    <meta property="og:locale" content="de_DE">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            background: #0d1117;
-            color: #c9d1d9;
-            font-family: "Inter", Arial, sans-serif;
+        :root {
+            --bg-deep: #030712;
+            --bg-surface: rgba(15, 23, 42, 0.75);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --accent-green: #34d399;
+            --accent-emerald: #10b981;
+            --accent-amber: #fbbf24;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --glow-shadow: 0 0 40px rgba(56, 189, 248, 0.2);
+            --radius-app: 28px;
+            --radius-card: 20px;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            line-height: 1.8;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        header {
-            background: linear-gradient(135deg, #111827, #1f2937);
-            padding: 3rem 2rem;
-            text-align: center;
-            border-bottom: 1px solid #30363d;
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg-deep);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.4rem;
-            color: #f0f6fc;
-            font-weight: 700;
+        body {
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 16px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        header p {
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            color: #9ca3af;
+        /* Ambient Background Orbit */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #090d16 60%, #030712 100%);
+            overflow: hidden;
         }
 
-        main {
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
+            animation: floatStar 10s infinite linear;
+        }
+
+        @keyframes floatStar {
+            0% { transform: translateY(105vh) scale(0.8); opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .orb-1 { top: -5%; right: 10%; background: var(--accent-purple); }
+        .orb-2 { bottom: 10%; left: 5%; background: var(--accent-blue); }
+
+        /* App Shell */
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
             max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
+            background: var(--bg-surface);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-app);
+            padding: 40px 32px;
+            box-shadow: var(--glow-shadow), 0 30px 60px rgba(0,0,0,0.8);
+            animation: appAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        h2 {
-            margin-top: 2.5rem;
-            font-size: 1.7rem;
-            color: #f0f6fc;
-            border-left: 4px solid #3b82f6;
-            padding-left: 0.7rem;
-            font-weight: 600;
+        @keyframes appAppear {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        p, li {
-            color: #c9d1d9;
-            font-size: 1.05rem;
+        /* App Header Navigation */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        ul {
-            padding-left: 1.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .box {
-            background: #1f2937;
-            border: 1px solid #374151;
-            padding: 2rem;
-            border-radius: 14px;
-            margin-top: 2rem;
-            box-shadow: 0 0 15px rgba(0,0,0,0.35);
-        }
-
-        footer {
-            margin-top: 3rem;
-            padding: 2rem;
-            text-align: center;
-            border-top: 1px solid #30363d;
-            color: #9ca3af;
-            font-size: 0.95rem;
-        }
-
-        a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        a:hover {
-            text-decoration: underline;
+        .header-nav-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
-            display: inline-block;
-            margin: 1rem 0.5rem;
-            padding: 0.7rem 1.4rem;
-            background: #3b82f6;
-            color: white;
-            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 99px;
+            color: #fff;
             text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 600;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
 
         .nav-btn:hover {
-            background: #2563eb;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
         }
 
-        .image-box {
+        /* Hero Image Container */
+        .developer-avatar-wrapper {
             text-align: center;
-            margin-top: 2rem;
+            margin-bottom: 30px;
         }
 
-        .image-box img {
-            width: 60%;
-            max-width: 400px;
-            border-radius: 12px;
-            border: 2px solid #30363d;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        .avatar-frame {
+            position: relative;
+            display: inline-block;
+            padding: 6px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.3);
         }
 
-        .support-btn, .contact-btn {
+        .avatar-img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 20px;
             display: block;
-            width: 100%;
+            border: 2px solid var(--bg-deep);
+        }
+
+        .avatar-caption {
+            color: var(--text-sub);
+            font-size: 0.88rem;
+            margin-top: 10px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Titles */
+        .hero {
             text-align: center;
-            padding: 1.2rem;
-            margin-top: 1.4rem;
-            background: #3b82f6;
-            color: white;
+            margin-bottom: 36px;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.7rem);
             font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .gradient-title {
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Cards */
+        .section-card {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-card);
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .card-header-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .card-num {
+            width: 38px;
+            height: 38px;
             border-radius: 12px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: var(--accent-blue);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        p {
+            font-size: 0.98rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 14px 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        li {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        li::before {
+            content: "⚡";
+            font-size: 0.85rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        /* Contact & Button Box */
+        .contact-box {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            display: grid;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .email-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .subject-hint {
+            font-size: 0.83rem;
+            color: var(--accent-purple);
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+
+        .time-hint {
+            font-size: 0.83rem;
+            color: var(--accent-amber);
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+
+        .copy-chip {
+            background: rgba(56, 189, 248, 0.2);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .copy-chip:hover {
+            background: var(--accent-blue);
+            color: #000;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
             text-decoration: none;
-            border: 1px solid #2563eb;
-            transition: 0.25s;
-            font-size: 1.1rem;
+            transition: all 0.25s;
+            border: 1px solid transparent;
+            cursor: pointer;
         }
 
-        .support-btn:hover {
-            background: #2563eb;
+        .btn-support {
+            background: linear-gradient(135deg, #2563eb, var(--accent-blue));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
-        .contact-btn {
-            background: #10b981;
-            border-color: #059669;
+        .btn-support:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
         }
 
-        .contact-btn:hover {
-            background: #059669;
+        .btn-contact {
+            background: linear-gradient(135deg, #059669, var(--accent-green));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-ticket {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-glass);
+            color: #fff;
+        }
+
+        .btn-ticket:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-glass);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timestamp {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            font-family: 'Fira Code', monospace;
+        }
+
+        @media (max-width: 600px) {
+            .app-shell { padding: 24px 16px; }
+            .footer-nav { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Luna – Offizielle Entwicklerinformationen</h1>
-    <p>Dies ist die zweite Informationsseite für den WhatsApp‑Bot Luna.</p>
-
-    <a class="nav-btn" href="index.html">Zur Hauptseite</a>
-    <a class="nav-btn" href="DSVGO3.html">AGA Gruppe</a>
-</header>
-
-<main>
-
-    <div class="image-box">
-        <img src="image/luna.jpg" alt="Entwicklerbild">
-        <p style="color:#9ca3af; margin-top:0.5rem;">(Bild vom Entwickler Lukas Owner/Entwickler vom Luna Projekt)</p>
+    <!-- Dynamic Background -->
+    <div class="ambient-bg">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="star" style="left:10%; width:3px; height:3px; animation-delay:0s; animation-duration:8s;"></div>
+        <div class="star" style="left:60%; width:4px; height:4px; animation-delay:3s; animation-duration:12s;"></div>
+        <div class="star" style="left:85%; width:2px; height:2px; animation-delay:1s; animation-duration:7s;"></div>
     </div>
 
-    <section>
-        <h2>1. Verantwortlicher Entwickler</h2>
-        <p>
-            Der WhatsApp‑Bot <strong>Luna</strong> wird von einem einzelnen Entwickler betrieben.
-            Dieser ist verantwortlich für:
-        </p>
+    <!-- Main App Container -->
+    <main class="app-shell">
+        
+        <!-- Header Bar -->
+        <header class="app-header">
+            <div class="header-nav-group">
+                <a href="index.html" class="nav-btn">➔ Hauptseite</a>
+                <a href="DSVGO3.html" class="nav-btn">AGA Gruppe ➔</a>
+            </div>
 
-        <ul>
-            <li>den technischen Betrieb des Bots</li>
-            <li>die Speicherung und Löschung von Daten</li>
-            <li>die Sicherheit der Server</li>
-            <li>Updates und Fehlerbehebungen</li>
-            <li>die Einhaltung der Datenschutzrichtlinien</li>
-        </ul>
-    </section>
+            <div style="font-family:'Fira Code', monospace; font-size:0.8rem; color:var(--accent-purple);">
+                [ PAGE 02 / DEV INFO ]
+            </div>
+        </header>
 
-    <section>
-        <h2>2. Kontakt & offizieller Kanal</h2>
-        <p>Für Datenschutzanfragen, Probleme oder vollständige Löschanfragen:</p>
-
-        <div class="box">
-            <p><strong>E‑Mail:</strong> luna.support.online.team@gmail.com</p>
-
-            <a class="support-btn" href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21" target="_blank">
-                Luna Team unterstützen
-            </a>
-
-            <a class="contact-btn" href="kontakt.html">
-                Kontaktiere uns
-            </a>
-
-            <!-- ⭐ EIN NEUER BUTTON FÜR TICKETPRÜFUNG ⭐ -->
-            <a class="contact-btn" href="ticketprüfung.html">
-                Ticket prüfen
-            </a>
+        <!-- Developer Hero Image -->
+        <div class="developer-avatar-wrapper">
+            <div class="avatar-frame">
+                <img src="image/luna.jpg" alt="Lukas - Entwickler von Luna Bot" class="avatar-img" onerror="this.src='https://via.placeholder.com/180/0f172a/38bdf8?text=Lukas+Dev'">
+            </div>
+            <div class="avatar-caption">Lukas – Owner & Lead Developer</div>
         </div>
-    </section>
 
-    <section>
-        <h2>3. Technische Hinweise</h2>
-        <p>
-            Luna verarbeitet ausschließlich Daten, die für den Betrieb notwendig sind.
-            Dazu gehören:
-        </p>
+        <!-- Hero Header -->
+        <section class="hero">
+            <h1><span class="gradient-title">Entwickler & Support</span></h1>
+            <p style="color:var(--text-sub); font-size:1rem; max-width:620px; margin:0 auto;">
+                Offizielle Dokumentation der Systemarchitektur, Support-Kanäle und Ticket-Prüfung von Luna.
+            </p>
+        </section>
 
-        <ul>
-            <li>Telefonnummern bei Registrierung</li>
-            <li>Token‑Daten für die Funktionsfähigkeit</li>
-            <li>Gruppen‑IDs und Systemnachrichten</li>
-        </ul>
+        <!-- 1. VERANTWORTLICHER ENTWICKLER -->
+        <section class="section-card">
+            <div class="card-header-title">
+                <div class="card-num">01</div>
+                <h2>Verantwortlicher Entwickler</h2>
+            </div>
+            <p>
+                Der WhatsApp-Bot <strong>Luna</strong> wird von einem einzelnen Hauptentwickler (Lukas) gewartet und weiterentwickelt. Dies garantiert kurze Wege bei Sicherheitsupdates und klare Verantwortlichkeiten.
+            </p>
+            <p>Der Betreiber ist vollumfänglich zuständig für:</p>
+            <ul>
+                <li>Den unterbrechungsfreien technischen Betrieb des Botsystems</li>
+                <li>Die ordnungsgemäße Speicherung, Pflege und Löschung aller Daten</li>
+                <li>Die Absicherung der Serverinfrastruktur gegen Angriffe</li>
+                <li>Regelmäßige Sicherheits-Updates und Bugfixes</li>
+                <li>Die strikte Einhaltung der geltenden Datenschutzrichtlinien</li>
+            </ul>
+        </section>
 
-        <p>
-            Bei <code>unregister</code> wird die Telefonnummer gelöscht.
-            Tokens können technisch bestehen bleiben.
-        </p>
-    </section>
+        <!-- 2. KONTAKT & E-MAIL SUPPORT -->
+        <section class="section-card">
+            <div class="card-header-title">
+                <div class="card-num">02</div>
+                <h2>Kontakt & Support-E-Mail</h2>
+            </div>
+            <p>
+                Für technische Fragen, Fehlerberichte, DSGVO-Löschanfragen oder Supportanliegen kannst du uns direkt per E-Mail kontaktieren.
+            </p>
 
-    <section>
-        <h2>4. Hinweise zum sicheren Betrieb</h2>
-        <ul>
-            <li>Luna nicht privat anschreiben</li>
-            <li>Luna nicht anrufen</li>
-            <li>Luna nicht zum Spammen verwenden</li>
-            <li>keine schädlichen Befehle senden</li>
-            <li>keine Versuche, Luna zu überlasten oder zu manipulieren</li>
-        </ul>
-    </section>
+            <div class="contact-box">
+                <div class="email-display">
+                    <span>luna.support.online.team@gmail.com</span>
+                    <button class="copy-chip" onclick="copyEmail()">E-Mail kopieren</button>
+                </div>
+                
+                <div class="subject-hint">
+                    📌 <strong>Wichtiger Hinweis:</strong> Sende deine Anfrage bitte zwingend mit dem Betreff <code>lunasupport</code>, damit deine Mail automatisch vom Ticketsystem erfasst und priorisiert wird.
+                </div>
 
-    <footer>
-        <p>Dies ist die zweite offizielle Informationsseite für Luna.</p>
-        <p>Stand: 31. Juli 2026</p>
-    </footer>
+                <a href="mailto:luna.support.online.team@gmail.com?subject=lunasupport" class="action-btn btn-contact" style="margin-top:6px;">
+                    ✉️ Direkt E-Mail senden (mit Betreff "lunasupport")
+                </a>
 
-</main>
+                <a href="https://whatsapp.com/channel/0029VbCKbk7DzgTHuiZ7Ts21" target="_blank" class="action-btn btn-support">
+                    📢 Luna Team auf WhatsApp unterstützen
+                </a>
 
+                <a href="kontakt.html" class="action-btn btn-ticket">
+                    📝 Alternativ: Kontaktformular nutzen
+                </a>
+            </div>
+        </section>
+
+        <!-- 3. WAS KANN DIE TICKETPRÜFUNG & BEARBEITUNGSZEIT? -->
+        <section class="section-card">
+            <div class="card-header-title">
+                <div class="card-num">03</div>
+                <h2>Was kann die Support-Ticketprüfung?</h2>
+            </div>
+            <p>
+                Mit unserem Online-Ticketprüfer kannst du jederzeit transparent den aktuellen Bearbeitungsstand deiner Supportanfragen und DSGVO-Anträge nachverfolgen.
+            </p>
+
+            <div class="time-hint">
+                ⏳ <strong>Hinweis zur Bearbeitungszeit:</strong> Die Bearbeitung eines Support-Tickets erfolgt in der Regel innerhalb von <strong>24 Stunden</strong>. Je nach Aufkommen oder Komplexität des Anliegens kann die Bearbeitung jedoch auch <strong>einige Tage</strong> in Anspruch nehmen. Wir bitten um Verständnis!
+            </div>
+
+            <p style="margin-top: 14px;">Das System ermöglicht dir unter anderem Folgendes:</p>
+            <ul>
+                <li><strong>Status-Abfrage in Echtzeit:</strong> Prüfe, ob dein Ticket in Bearbeitung, wartend oder bereits abgeschlossen ist.</li>
+                <li><strong>DSGVO-Löschbestätigung:</strong> Verfolge nach, ob deine Daten und Verknüpfungen (Tokens/Telefonnummer) bereits vollständig aus der Datenbank entfernt wurden.</li>
+                <li><strong>Entsperranträge (Unban):</strong> Überprüfe den Bearbeitungsstand von Anträgen zur Aufhebung automatischer System-Sperren.</li>
+                <li><strong>Rückmeldungen der Entwickler:</strong> Lies direkte Antworten und Hinweise vom Luna-Entwicklerteam zu deiner Anfrage.</li>
+            </ul>
+
+            <div style="margin-top: 16px;">
+                <a href="ticketprüfung.html" class="action-btn btn-ticket" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.1);">
+                    🔍 Jetzt Ticket-Status prüfen ➔
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. TECHNISCHE HINWEISE -->
+        <section class="section-card">
+            <div class="card-header-title">
+                <div class="card-num">04</div>
+                <h2>Technische Hinweise</h2>
+            </div>
+            <p>
+                Luna ist so konzipiert, dass ausschließlich verarbeitungsrelevante Systemdaten temporär vorgehalten werden.
+            </p>
+            <ul>
+                <li><strong>Telefonnummern:</strong> Werden ausschließlich bei aktiver Registrierung verarbeitet.</li>
+                <li><strong>Token-System:</strong> Verschlüsselte Identifikatoren gewährleisten den Betrieb ohne Klartextdaten.</li>
+                <li><strong>Gruppen-IDs:</strong> Dienen der Zuordnung von Moderationseinstellungen und Schutzfiltern.</li>
+            </ul>
+            <p>
+                Bei Ausführung von <code>unregister</code> wird die Telefonnummer umgehend entfernt. Technische Session-Tokens verfallen automatisch serverseitig.
+            </p>
+        </section>
+
+        <!-- 5. SICHERHEITSHINWEISE -->
+        <section class="section-card">
+            <div class="card-header-title">
+                <div class="card-num">05</div>
+                <h2>Regeln für sicheren Betrieb</h2>
+            </div>
+            <p>Um die Systemstabilität für alle Gruppen zu gewährleisten, gilt strikt:</p>
+            <ul>
+                <li>Luna nicht für private Chats (DMs) anschreiben</li>
+                <li>Keine Sprach- oder Videoanrufe an die Bot-Nummer tätigen</li>
+                <li>Keine Versuche, die Bot-Infrastruktur durch Spam zu überlasten</li>
+                <li>Kein Senden von schädlichen Skripten, Crashtexten oder Command-Injections</li>
+            </ul>
+        </section>
+
+        <!-- Footer Bar -->
+        <footer class="footer-nav">
+            <div class="timestamp">Stand: 31. Juli 2026 • Developer Docs v2.6</div>
+            <a href="DSVGO.html" class="nav-btn" style="border-color:rgba(56, 189, 248, 0.4);">
+                📋 Zurück zur Datenschutzerklärung (Seite 1)
+            </a>
+        </footer>
+
+    </main>
+
+    <script>
+        function copyEmail() {
+            navigator.clipboard.writeText('luna.support.online.team@gmail.com');
+            alert('Support E-Mail (luna.support.online.team@gmail.com) wurde in die Zwischenablage kopiert! Bitte denke an den Betreff "lunasupport".');
+        }
+    </script>
 </body>
 </html>
