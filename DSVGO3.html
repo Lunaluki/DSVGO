@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        :root {
+            --pink-main: #ff4fae;
+            --pink-dark: #ff2f9c;
+            --pink-light: #ff9dd6;
+            --pink-glow: #ff007f;
+            --pink-neon: #ff00ff;
+        }
+
         body {
-            background: #ff4fae; /* Screenshot-Pink */
+            background: #110515; /* Dunkler Kontrast-Hintergrund, damit das Edge-Lighting stark leuchtet */
             color: white;
             font-family: "Inter", Arial, sans-serif;
             margin: 0;
@@ -16,10 +24,11 @@
         }
 
         header {
-            background: #ff2f9c; /* dunkleres Pink */
+            background: linear-gradient(135deg, #ff2f9c, #aa0055);
             padding: 3rem 2rem;
             text-align: center;
-            border-bottom: 2px solid #ff8ccc;
+            border-bottom: 2px solid var(--pink-light);
+            box-shadow: 0 0 30px rgba(255, 47, 156, 0.4);
         }
 
         header h1 {
@@ -27,6 +36,7 @@
             font-size: 2.4rem;
             color: white;
             font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         header p {
@@ -37,18 +47,22 @@
 
         .nav-btn {
             display: inline-block;
-            margin: 1rem 0.5rem;
+            margin: 0.5rem;
             padding: 0.7rem 1.4rem;
-            background: white;
-            color: #ff2f9c;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: 0.2s;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
         }
 
         .nav-btn:hover {
-            background: #ffe6f5;
+            background: #ffffff;
+            color: var(--pink-dark);
+            box-shadow: 0 0 15px #ffffff;
         }
 
         main {
@@ -61,18 +75,54 @@
             margin-top: 2.5rem;
             font-size: 1.7rem;
             color: white;
-            border-left: 4px solid #ffffff;
+            border-left: 4px solid var(--pink-light);
             padding-left: 0.7rem;
             font-weight: 600;
+            text-shadow: 0 0 10px var(--pink-neon);
         }
 
-        .box {
-            background: #ff6fbd;
-            border: 2px solid #ff9dd6;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-top: 1.5rem;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        /* 🌟 SAMSUNG GALAXY EDGE LIGHTING BOX (Wandernder Lichtstrahl-Rand) 🌟 */
+        .edge-box {
+            position: relative;
+            border-radius: 16px;
+            padding: 2px; /* Dichte des Leuchtstreifens */
+            background: transparent;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Der rotierende Neon-Lichtstrahl hinter dem Rand */
+        .edge-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent 0deg,
+                transparent 140deg,
+                var(--pink-neon) 180deg,
+                #ffffff 200deg,
+                var(--pink-glow) 220deg,
+                transparent 260deg
+            );
+            animation: rotateEdge 3.5s linear infinite;
+        }
+
+        @keyframes rotateEdge {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Der innere Inhalt der Karte */
+        .edge-box-content {
+            position: relative;
+            z-index: 1;
+            background: #1e0924; /* Dunkler Innenbereich für maximalen Glow-Kontrast */
+            border-radius: 14px;
+            padding: 1.8rem;
         }
 
         .image-box {
@@ -84,30 +134,22 @@
             width: 100%;
             max-width: 450px;
             border-radius: 12px;
-            border: 3px solid white;
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            border: 2px solid var(--pink-light);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
         }
 
-        footer {
-            margin-top: 3rem;
-            padding: 2rem;
-            text-align: center;
-            border-top: 2px solid #ff8ccc;
-            color: #ffe6f5;
-            font-size: 0.95rem;
-        }
-
+        /* Glow-Text Effekte */
         .glow-text {
             animation: glow 3s ease-in-out infinite;
         }
 
         @keyframes glow {
-            0% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px #ff9dd6; }
-            50% { text-shadow: 0 0 15px #fff, 0 0 25px #ffe6f5, 0 0 35px #ff9dd6; }
-            100% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px #ff9dd6; }
+            0% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px var(--pink-neon); }
+            50% { text-shadow: 0 0 15px #fff, 0 0 25px var(--pink-glow), 0 0 35px var(--pink-neon); }
+            100% { text-shadow: 0 0 5px #fff, 0 0 10px #ffe6f5, 0 0 20px var(--pink-neon); }
         }
 
-        /* ⭐ Pulsierender Regenbogen-Button */
+        /* ⭐ Pulsierender Regenbogen- / Pink-Button */
         .join-btn {
             display: block;
             width: 80%;
@@ -115,21 +157,21 @@
             margin: 2rem auto 1rem auto;
             padding: 1rem 1.5rem;
             text-align: center;
-            background: linear-gradient(45deg, #ff00ff, #ff6fbd, #ff2f9c, #ff8ccc);
+            background: linear-gradient(45deg, #ff00ff, var(--pink-main), var(--pink-dark), #ff8ccc);
             background-size: 300% 300%;
             color: white;
             font-weight: 700;
             font-size: 1.3rem;
             border-radius: 12px;
             text-decoration: none;
-            box-shadow: 0 0 20px rgba(255,255,255,0.7);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
             animation: pulse 1.8s infinite, rainbow 6s ease infinite;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
-            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255,255,255,1); }
-            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 255, 0.6); }
+            50% { transform: scale(1.06); box-shadow: 0 0 35px rgba(255, 0, 255, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 255, 0.6); }
         }
 
         @keyframes rainbow {
@@ -138,16 +180,56 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Support- & Info-Boxen im Innenteil */
+        .support-card {
+            background: rgba(255, 47, 156, 0.15);
+            border: 1px solid rgba(255, 157, 214, 0.4);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .code-highlight {
+            background: var(--pink-neon);
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-family: monospace;
+            box-shadow: 0 0 8px var(--pink-neon);
+        }
+
+        .btn-action-small {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+        }
+
+        .btn-action-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--pink-neon);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--pink-dark);
+            color: #ffe6f5;
+            font-size: 0.95rem;
+        }
+
         @media (max-width: 600px) {
-            header h1 {
-                font-size: 2rem;
-            }
-            .image-box img {
-                max-width: 100%;
-            }
-            .join-btn {
-                font-size: 1.2rem;
-            }
+            header h1 { font-size: 1.8rem; }
+            .image-box img { max-width: 100%; }
+            .join-btn { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -164,82 +246,135 @@
 
 <main>
 
+    <!-- SECTION 1 -->
     <section>
         <h2>1. AGA – Abo gegen Abo Gruppe</h2>
-        <p>
-            Diese Gruppe ist eine <strong>AGA‑Gruppe</strong>, wo man mit vielen netten Menschen
-            Abo gegen Abo machen kann – mit Kanälen, Profilen und treuen Leuten.
-        </p>
+        <div class="edge-box">
+            <div class="edge-box-content">
+                <p>
+                    Diese Gruppe ist eine <strong>AGA‑Gruppe</strong>, wo man mit vielen netten Menschen
+                    Abo gegen Abo machen kann – mit Kanälen, Profilen und treuen Leuten.
+                </p>
 
-        <!-- Monkie_Queen Text mit Glow -->
-        <p class="glow-text"><strong>Betreiberin der Gruppe:</strong> Monkie_Queen</p>
+                <p class="glow-text"><strong>Betreiberin der Gruppe:</strong> Monkie_Queen</p>
 
-        <p>
-            Monkie_Queen ist die Königin dieser AGA‑Gruppe – eine warmherzige, liebevolle und
-            unglaublich hilfsbereite Seele. Mit ihrer ruhigen Art, ihrem Verständnis und ihrer
-            positiven Energie sorgt sie dafür, dass sich jeder in der Gruppe sicher, willkommen
-            und gesehen fühlt.
-        </p>
+                <p>
+                    Monkie_Queen ist die Königin dieser AGA‑Gruppe – eine warmherzige, liebevolle und
+                    unglaublich hilfsbereite Seele. Mit ihrer ruhigen Art, ihrem Verständnis und ihrer
+                    positiven Energie sorgt sie dafür, dass sich jeder in der Gruppe sicher, willkommen
+                    und gesehen fühlt.
+                </p>
 
-        <p>
-            Sie unterstützt die Menschen und Kinder in der Community dabei, ihre Abos zu steigern,
-            neue Follower zu gewinnen und ihre Kanäle wachsen zu lassen. Mit Geduld, Herz und
-            echtem Engagement begleitet sie jeden Schritt, motiviert, hilft und stärkt die Gruppe
-            wie eine wahre Königin.
-        </p>
+                <p>
+                    Sie unterstützt die Menschen und Kinder in der Community dabei, ihre Abos zu steigern,
+                    neue Follower zu gewinnen und ihre Kanäle wachsen zu lassen. Mit Geduld, Herz und
+                    echtem Engagement begleitet sie jeden Schritt, motiviert, hilft und stärkt die Gruppe
+                    wie eine wahre Königin.
+                </p>
 
-        <p>
-            Dank Monkie_Queen ist diese AGA‑Gruppe nicht nur ein Ort zum Tauschen – sondern ein
-            Zuhause voller Liebe, Respekt und Zusammenhalt. Eine Community, die durch sie lebt,
-            wächst und jeden Tag ein bisschen heller strahlt.
-        </p>
+                <p>
+                    Dank Monkie_Queen ist diese AGA‑Gruppe nicht nur ein Ort zum Tauschen – sondern ein
+                    Zuhause voller Liebe, Respekt und Zusammenhalt. Eine Community, die durch sie lebt,
+                    wächst und jeden Tag ein bisschen heller strahlt.
+                </p>
+            </div>
+        </div>
     </section>
 
+    <!-- SECTION 2 -->
     <section>
         <h2>2. Gruppenchat‑Einladung</h2>
+        <div class="edge-box">
+            <div class="edge-box-content">
 
-        <div class="box">
+                <div class="image-box">
+                    <img src="image/IMG-20260801-WA0008.jpg" alt="Gruppenbild" onerror="this.src='https://via.placeholder.com/450x250/ff2f9c/ffffff?text=AGA+Gruppenbild'">
+                    <p style="color:#ffe6f5; margin-top:0.5rem;">(Offizielles Gruppenbild der AGA‑Gruppe)</p>
+                </div>
 
-            <!-- Gruppenbild direkt über dem Link -->
-            <div class="image-box">
-                <img src="image/IMG-20260801-WA0008.jpg" alt="Gruppenbild">
-                <p style="color:#ffe6f5; margin-top:0.5rem;">(Offizielles Gruppenbild der AGA‑Gruppe)</p>
+                <p style="text-align:center; margin-top:1rem;"><strong>Gruppenchat‑Einladung</strong></p>
+                <p style="text-align:center;">Wollt ihr in eine nice Gruppe mit Luna und tolles AGA machen mit treuen Leute?</p>
+
+                <a class="join-btn" href="https://chat.whatsapp.com/EL1drHDP7Yn2f5W7E5Jyxh" target="_blank">
+                    Beitreten
+                </a>
+
+                <ul>
+                    <li>Luna System mit Blackliste gegen Hater, Mobber & Scammer</li>
+                    <li>Begrüßung: Jeder der reinkommt, wird lieb auf süße Weise begrüßt</li>
+                    <li>Spaß, nette Menschen am Start & treues AGA</li>
+                </ul>
+
+                <p><strong>⚠️ Attention ⚠️</strong><br>
+                    Spam is not allowed because Luna system can be banning.
+                </p>
+
+                <p><strong>Hinweis:</strong><br>
+                    Solltest du der Gruppe beitreten, stimmst du automatisch der DSGVO zu. Wir übernehmen keine Haftung.
+                </p>
+
+                <p><strong>⚠️ Hinweis zur Datenspeicherung ⚠️</strong><br>
+                    Luna sichert die Gruppe und speichert deine Telefonnummer zur Authentifizierung. Eine vollständige Löschung deiner Daten kann jederzeit mit dem Befehl <span class="code-highlight">~unregister</span> ausgelöst werden.
+                </p>
+
+                <p>Das ☆『Luna Team』☆ freut sich auf dich! Teile diesen Link zur Gruppe gerne weiter.</p>
+
             </div>
+        </div>
+    </section>
 
-            <p><strong>Gruppenchat‑Einladung</strong></p>
+    <!-- SECTION 3 -->
+    <section>
+        <h2>3. E-Mail-Support & Kontakt</h2>
+        <div class="edge-box">
+            <div class="edge-box-content">
+                <p>Hast du Fragen, Probleme in der Gruppe oder benötigst du Unterstützung bezüglich des Bots?</p>
+                
+                <div class="support-card">
+                    <p style="margin:0;">📧 <strong>Support-E-Mail:</strong> <span class="code-highlight">luna.support.online.team@gmail.com</span></p>
+                    <p style="margin-top:0.8rem;">
+                        📌 <strong>WICHTIGER BETREFF-HINWEIS:</strong> Bitte sende deine E-Mail zwingend mit dem Betreff <span class="code-highlight">lunasupport</span>, damit deine Nachricht automatisch vom Ticketsystem erfasst und bearbeitet wird.
+                    </p>
+                    <a class="btn-action-small" href="mailto:luna.support.online.team@gmail.com?subject=lunasupport">
+                        ✉️ Jetzt E-Mail mit Betreff "lunasupport" senden
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <p>Wollt ihr in eine nice Gruppe mit Luna und tolles AGA machen mit treuen Leute?</p>
+    <!-- SECTION 4 -->
+    <section>
+        <h2>4. Support-Ticketprüfung</h2>
+        <div class="edge-box">
+            <div class="edge-box-content">
+                <p>
+                    Über unsere Online-Ticketprüfung kannst du jederzeit den genauen Bearbeitungsstand deiner Supportanfragen und Anträge nachverfolgen.
+                </p>
 
-            <!-- ⭐ Pulsierender Beitreten-Button statt Link -->
-            <a class="join-btn" href="https://chat.whatsapp.com/EL1drHDP7Yn2f5W7E5Jyxh" target="_blank">
-                Beitreten
-            </a>
+                <div class="support-card" style="border-color:var(--pink-neon);">
+                    <p style="margin:0;">
+                        ⏳ <strong>Bearbeitungszeit:</strong> Ein Support-Ticket benötigt in der Regel bis zu <strong>24 Stunden</strong>. In Einzelfällen oder bei höherem Aufkommen kann die Bearbeitung auch <strong>einige Tage</strong> dauern. Wir bitten um etwas Geduld!
+                    </p>
+                </div>
 
-            <ul>
-                <li>Luna system mit Blackliste gegen/hater mobber, scammer</li>
-                <li>Begrüßung jeder der rein kommt wird lieb begrüßt auf süßer Weise</li>
-                <li>Spaß nette Menschen am Start treues AGA</li>
-            </ul>
+                <p style="margin-top: 1rem;"><strong>Was kann die Ticketprüfung?</strong></p>
+                <ul>
+                    <li><strong>Echtzeit-Status:</strong> Prüfen, ob dein Ticket wartet, in Bearbeitung oder gelöst ist.</li>
+                    <li><strong>DSGVO-Löschstatus:</strong> Bestätigung einsehen, ob deine Daten aus der Datenbank entfernt wurden.</li>
+                    <li><strong>Entsperranträge (Unban):</strong> Den Status von Anträgen zur Aufhebung automatischer Sperren prüfen.</li>
+                    <li><strong>Entwickler-Rückmeldungen:</strong> Direkte Antworten vom Entwicklerteam einsehen.</li>
+                </ul>
 
-            <p><strong>⚠️ Attention ⚠️</strong><br>
-                Spam is not allowed because Luna system can be banning
-            </p>
-
-            <p><strong>Hinweis:</strong><br>
-                solltest du in die gruppe beitreten stimmst du Automatisch der DSGVO zu wir übernehme keine Haftung
-            </p>
-
-            <p><strong>⚠️ Hinweis ⚠️</strong><br>
-                Luna sichert die Gruppe wie Speicher deine Telefon Nummer eine Löschung kann mit ~unregister ausgelöst werden falls du nicht einverstanden bist
-            </p>
-
-            <p>Das ☆『Luna Team』☆ freut sich auf dich Teile diesen Link zur Gruppe wenn du magst</p>
-
+                <a class="btn-action-small" href="ticketprüfung.html">
+                    🔍 Zum Ticket-Prüfer ➔
+                </a>
+            </div>
         </div>
     </section>
 
     <footer>
-        <p>Dies ist die dritte offizielle AGA‑Seite.</p>
+        <p>Dies ist die dritte offizielle AGA‑Seite der Luna-Community.</p>
         <p>Stand: 31. Juli 2026</p>
     </footer>
 
