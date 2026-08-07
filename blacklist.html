@@ -1,43 +1,3 @@
-<?php
-// Datei, in der die Nummern gespeichert werden
-$file = 'meldungen.json';
-
-// Wenn das Formular abgeschickt wurde
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fan = trim($_POST['fanName'] ?? '');
-    $number = trim($_POST['badNumber'] ?? '');
-    $reason = trim($_POST['reason'] ?? '');
-
-    if (!empty($fan) && !empty($number)) {
-        // Bestehende Meldungen laden
-        $meldungen = [];
-        if (file_exists($file)) {
-            $meldungen = json_decode(file_get_contents($file), true) ?? [];
-        }
-
-        // Neue Meldung vorne hinzufügen
-        array_unshift($meldungen, [
-            'fan' => htmlspecialchars($fan),
-            'number' => htmlspecialchars($number),
-            'reason' => htmlspecialchars($reason ? $reason : 'Kein Grund angegeben'),
-            'date' => date('d.m.Y H:i')
-        ]);
-
-        // In die Datei speichern
-        file_put_contents($file, json_encode($meldungen, JSON_PRETTY_PRINT));
-        
-        // Seite neu laden, damit der Eintrag sofort in der Tabelle steht
-        header("Location: blacklist.php");
-        exit;
-    }
-}
-
-// Meldungen für die Tabelle laden
-$meldungen = [];
-if (file_exists($file)) {
-    $meldungen = json_decode(file_get_contents($file), true) ?? [];
-}
-?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -240,6 +200,17 @@ if (file_exists($file)) {
             font-weight: bold;
         }
 
+        .user-box {
+            background: rgba(255, 47, 156, 0.1);
+            border: 1px solid var(--pink-light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         footer {
             margin-top: 4rem;
             padding: 2rem;
@@ -260,25 +231,39 @@ if (file_exists($file)) {
 
 <main>
 
-    <!-- NUMMER MELDEN FORMULAR -->
-    <section>
+    <!-- KONTO-BEREICH (VORNAMEN ERSTELLEN) -->
+    <section id="loginSection">
+        <h2>0. Dein Profil-Konto erstellen</h2>
+        <div class="edge-box">
+            <div class="edge-box-content">
+                <p>Gib deinen Vornamen oder Fan-Namen ein, damit man weiß, wer die Nummer gemeldet hat:</p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <input type="text" id="usernameInput" placeholder="Dein Vorname / Fan-Name (z.B. Alex)">
+                </div>
+                <button class="btn-action" onclick="saveUser()">Konto aktivieren & Weiter</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- NUMMER MELDEN FORMULAR (Wird erst angezeigt, wenn Vorname da ist) -->
+    <section id="reportSection" style="display: none;">
+        <div class="user-box">
+            <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);"></strong></span>
+            <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Ändern</button>
+        </div>
+
         <h2>1. Nummer an das Luna Team melden</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <form method="POST" action="">
-                    <div class="form-group">
-                        <label for="fanName">Dein Luna Fan-Name:</label>
-                        <input type="text" id="fanName" name="fanName" placeholder="z. B. LunaFan_Alex" required>
-                    </div>
-
+                <form id="reportForm" onsubmit="submitReport(event)">
                     <div class="form-group">
                         <label for="badNumber">Telefonnummer (Format: 4917666724481):</label>
-                        <input type="text" id="badNumber" name="badNumber" placeholder="4917666724481" required>
+                        <input type="text" id="badNumber" placeholder="4917666724481" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="reason">Grund der Meldung:</label>
-                        <textarea id="reason" name="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
+                        <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
                     </div>
 
                     <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
@@ -292,33 +277,22 @@ if (file_exists($file)) {
         <h2>2. Aktuelle Blacklist (Öffentlich)</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <p>Hier siehst du alle gemeldeten Nummern, welches Luna-Fan-Konto sie gemeldet hat und den Status.</p>
+                <p>Hier siehst du alle gemeldeten Nummern und welches Luna-Konto sie gemeldet hat.</p>
                 
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Luna Fan</th>
-                                <th>Gemeldete Nummer</th>
+                                <th>Gemeldet von</th>
+                                <th>Nummer</th>
                                 <th>Grund</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php if (empty($meldungen)): ?>
-                                <tr>
-                                    <td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher wurden keine Nummern gemeldet.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($meldungen as $m): ?>
-                                    <tr>
-                                        <td><strong><?php echo $m['fan']; ?></strong></td>
-                                        <td><code><?php echo $m['number']; ?></code></td>
-                                        <td><?php echo $m['reason']; ?></td>
-                                        <td><span class="badge-reported">Gemeldet</span></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <tbody id="blacklistTable">
+                            <tr>
+                                <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade Blacklist...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -331,6 +305,98 @@ if (file_exists($file)) {
     </footer>
 
 </main>
+
+<script>
+    const API_BASE = "https://meinserver-u317.onrender.com"; // Deine Render-URL
+
+    // Beim Laden prüfen, ob schon ein Vorname im Browser gespeichert ist
+    window.onload = function() {
+        const savedUser = localStorage.getItem("luna_blacklist_user");
+        if (savedUser) {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("reportSection").style.display = "block";
+            document.getElementById("displayUser").innerText = savedUser;
+        }
+        loadBlacklist();
+    };
+
+    function saveUser() {
+        const name = document.getElementById("usernameInput").value.trim();
+        if (!name) {
+            alert("Bitte gib einen gültigen Vornamen ein!");
+            return;
+        }
+        localStorage.setItem("luna_blacklist_user", name);
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("reportSection").style.display = "block";
+        document.getElementById("displayUser").innerText = name;
+    }
+
+    function logoutUser() {
+        localStorage.removeItem("luna_blacklist_user");
+        document.getElementById("reportSection").style.display = "none";
+        document.getElementById("loginSection").style.display = "block";
+    }
+
+    // Nummer an Render-Server senden
+    async function submitReport(event) {
+        event.preventDefault();
+        const fan = localStorage.getItem("luna_blacklist_user");
+        const number = document.getElementById("badNumber").value.trim();
+        const reason = document.getElementById("reason").value.trim();
+
+        try {
+            const res = await fetch(`${API_BASE}/api/blacklist`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fan, number, reason })
+            });
+
+            if (res.ok) {
+                alert("✅ Nummer erfolgreich an das Luna Team gemeldet!");
+                document.getElementById("badNumber").value = "";
+                document.getElementById("reason").value = "";
+                loadBlacklist(); // Tabelle aktualisieren
+            } else {
+                alert("❌ Fehler beim Speichern.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("❌ Verbindung zum Server fehlgeschlagen.");
+        }
+    }
+
+    // Blacklist von Render-Server laden und in der Tabelle anzeigen
+    async function loadBlacklist() {
+        try {
+            const res = await fetch(`${API_BASE}/api/blacklist`);
+            if (!res.ok) throw new Error("Fehler beim Laden");
+            const data = await res.json();
+
+            const tbody = document.getElementById("blacklistTable");
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher wurden keine Nummern gemeldet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td><strong>${escapeHtml(item.fan)}</strong></td>
+                    <td><code>${escapeHtml(item.number)}</code></td>
+                    <td>${escapeHtml(item.reason || 'Kein Grund angegeben')}</td>
+                    <td><span class="badge-reported">Gemeldet</span></td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Liste.</td></tr>`;
+        }
+    }
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+</script>
 
 </body>
 </html>
