@@ -191,13 +191,39 @@
             color: var(--pink-light);
         }
 
+        /* Status Badges & Blink Effekte */
         .badge-reported {
             background: #ff2f9c;
             color: white;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
             font-size: 0.85rem;
             font-weight: bold;
+        }
+
+        .badge-caution {
+            background: #eab308;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-danger-blink {
+            background: #ef4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            animation: blinkStatus 1s infinite;
+        }
+
+        @keyframes blinkStatus {
+            0% { opacity: 1; box-shadow: 0 0 10px #ef4444; }
+            50% { opacity: 0.3; box-shadow: none; }
+            100% { opacity: 1; box-shadow: 0 0 10px #ef4444; }
         }
 
         .user-box {
@@ -245,7 +271,7 @@
         </div>
     </section>
 
-    <!-- NUMMER MELDEN FORMULAR (Wird erst angezeigt, wenn Vorname da ist) -->
+    <!-- NUMMER MELDEN FORMULAR -->
     <section id="reportSection" style="display: none;">
         <div class="user-box">
             <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);"></strong></span>
@@ -277,7 +303,7 @@
         <h2>2. Aktuelle Blacklist (Öffentlich)</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <p>Hier siehst du alle gemeldeten Nummern und welches Luna-Konto sie gemeldet hat.</p>
+                <p>Hier siehst du alle gemeldeten Nummern, wie oft sie gemeldet wurden und den aktuellen Gefahrenstatus.</p>
                 
                 <div style="overflow-x: auto;">
                     <table>
@@ -286,12 +312,13 @@
                                 <th>Gemeldet von</th>
                                 <th>Nummer</th>
                                 <th>Grund</th>
+                                <th>Meldungen</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="blacklistTable">
                             <tr>
-                                <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade Blacklist...</td>
+                                <td colspan="5" style="text-align:center; color:var(--pink-light);">Lade Blacklist...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -309,7 +336,6 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com"; // Deine Render-URL
 
-    // Beim Laden prüfen, ob schon ein Vorname im Browser gespeichert ist
     window.onload = function() {
         const savedUser = localStorage.getItem("luna_blacklist_user");
         if (savedUser) {
@@ -338,7 +364,6 @@
         document.getElementById("loginSection").style.display = "block";
     }
 
-    // Nummer an Render-Server senden
     async function submitReport(event) {
         event.preventDefault();
         const fan = localStorage.getItem("luna_blacklist_user");
@@ -352,13 +377,16 @@
                 body: JSON.stringify({ fan, number, reason })
             });
 
+            const data = await res.json();
+
             if (res.ok) {
-                alert("✅ Nummer erfolgreich an das Luna Team gemeldet!");
+                alert("✅ Nummer erfolgreich gemeldet!");
                 document.getElementById("badNumber").value = "";
                 document.getElementById("reason").value = "";
-                loadBlacklist(); // Tabelle aktualisieren
+                loadBlacklist();
             } else {
-                alert("❌ Fehler beim Speichern.");
+                // Falls das Backend meldet, dass Du oder Deine IP die Nummer bereits gemeldet haben
+                alert("⚠️ " + (data.error || "Du hast diese Nummer bereits gemeldet oder sie ist gesperrt."));
             }
         } catch (err) {
             console.error(err);
@@ -366,7 +394,6 @@
         }
     }
 
-    // Blacklist von Render-Server laden und in der Tabelle anzeigen
     async function loadBlacklist() {
         try {
             const res = await fetch(`${API_BASE}/api/blacklist`);
@@ -375,21 +402,36 @@
 
             const tbody = document.getElementById("blacklistTable");
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher wurden keine Nummern gemeldet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--pink-light);">Bisher wurden keine Nummern gemeldet.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = data.map(item => `
-                <tr>
-                    <td><strong>${escapeHtml(item.fan)}</strong></td>
-                    <td><code>${escapeHtml(item.number)}</code></td>
-                    <td>${escapeHtml(item.reason || 'Kein Grund angegeben')}</td>
-                    <td><span class="badge-reported">Gemeldet</span></td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = data.map(item => {
+                // Dynamischer Status basierend auf der Anzahl der Meldungen (count)
+                let count = item.count || 1;
+                let statusBadge = '';
+
+                if (count >= 3) {
+                    statusBadge = `<span class="badge-danger-blink">🚨 GEFAHR (${count}x)</span>`;
+                } else if (count === 2) {
+                    statusBadge = `<span class="badge-caution">⚠️ Vorsicht (2x)</span>`;
+                } else {
+                    statusBadge = `<span class="badge-reported">Gemeldet (1x)</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(item.fan)}</strong></td>
+                        <td><code>${escapeHtml(item.number)}</code></td>
+                        <td>${escapeHtml(item.reason || 'Kein Grund angegeben')}</td>
+                        <td style="text-align:center; font-weight:bold;">${count}</td>
+                        <td>${statusBadge}</td>
+                    </tr>
+                `;
+            }).join('');
         } catch (err) {
             console.error(err);
-            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Liste.</td></tr>`;
+            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Liste.</td></tr>`;
         }
     }
 
