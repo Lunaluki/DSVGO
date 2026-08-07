@@ -191,7 +191,6 @@
             color: var(--pink-light);
         }
 
-        /* Status Badges & Blink Effekte */
         .badge-reported {
             background: #ff2f9c;
             color: white;
@@ -257,16 +256,13 @@
 
 <main>
 
-    <!-- KONTO-BEREICH (VORNAMEN ERSTELLEN) -->
-    <section id="loginSection">
-        <h2>0. Dein Profil-Konto erstellen</h2>
+    <!-- KONTO-BEREICH / LOGIN-HINWEIS -->
+    <section id="loginSection" style="display: none;">
+        <h2>0. Anmeldung erforderlich</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <p>Gib deinen Vornamen oder Fan-Namen ein, damit man weiß, wer die Nummer gemeldet hat:</p>
-                <div class="form-group" style="margin-top: 1rem;">
-                    <input type="text" id="usernameInput" placeholder="Dein Vorname / Fan-Name (z.B. Alex)">
-                </div>
-                <button class="btn-action" onclick="saveUser()">Konto aktivieren & Weiter</button>
+                <p>Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können.</p>
+                <a class="btn-action" href="login.html" style="text-align: center; text-decoration: none; display: block; margin-top: 1rem;">Zum Login</a>
             </div>
         </div>
     </section>
@@ -275,7 +271,7 @@
     <section id="reportSection" style="display: none;">
         <div class="user-box">
             <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);"></strong></span>
-            <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Ändern</button>
+            <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Abmelden</button>
         </div>
 
         <h2>1. Nummer an das Luna Team melden</h2>
@@ -283,8 +279,10 @@
             <div class="edge-box-content">
                 <form id="reportForm" onsubmit="submitReport(event)">
                     <div class="form-group">
-                        <label for="badNumber">Telefonnummer (Format: 4917666724481):</label>
-                        <input type="text" id="badNumber" placeholder="4917666724481" required>
+                        <label for="badNumber">Telefonnummer (Nur Ziffern, z.B. 4917666724481):</label>
+                        <!-- Verhindert das Tippen von Buchstaben/Namen im Frontend -->
+                        <input type="tel" id="badNumber" placeholder="4917666724481" 
+                               oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
                     </div>
                     
                     <div class="form-group">
@@ -336,45 +334,63 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com"; // Deine Render-URL
 
-    window.onload = function() {
-        const savedUser = localStorage.getItem("luna_blacklist_user");
-        if (savedUser) {
-            document.getElementById("loginSection").style.display = "none";
-            document.getElementById("reportSection").style.display = "block";
-            document.getElementById("displayUser").innerText = savedUser;
+    window.onload = async function() {
+        const token = localStorage.getItem("luna_user_token");
+        
+        if (!token) {
+            // Nicht eingeloggt -> Login-Hinweis zeigen
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("reportSection").style.display = "none";
+        } else {
+            // Token prüfen und Profildaten laden
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/me`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    document.getElementById("loginSection").style.display = "none";
+                    document.getElementById("reportSection").style.display = "block";
+                    // Zeigt den echten Account-Namen oder Username an
+                    document.getElementById("displayUser").innerText = data.data.name || data.data.username;
+                } else {
+                    // Ungültiger Token
+                    localStorage.removeItem("luna_user_token");
+                    document.getElementById("loginSection").style.display = "block";
+                    document.getElementById("reportSection").style.display = "none";
+                }
+            } catch (err) {
+                console.error("Auth Check Fehler:", err);
+            }
         }
         loadBlacklist();
     };
 
-    function saveUser() {
-        const name = document.getElementById("usernameInput").value.trim();
-        if (!name) {
-            alert("Bitte gib einen gültigen Vornamen ein!");
-            return;
-        }
-        localStorage.setItem("luna_blacklist_user", name);
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("reportSection").style.display = "block";
-        document.getElementById("displayUser").innerText = name;
-    }
-
     function logoutUser() {
-        localStorage.removeItem("luna_blacklist_user");
-        document.getElementById("reportSection").style.display = "none";
-        document.getElementById("loginSection").style.display = "block";
+        localStorage.removeItem("luna_user_token");
+        window.location.reload();
     }
 
     async function submitReport(event) {
         event.preventDefault();
-        const fan = localStorage.getItem("luna_blacklist_user");
+        const token = localStorage.getItem("luna_user_token");
         const number = document.getElementById("badNumber").value.trim();
         const reason = document.getElementById("reason").value.trim();
+
+        if (!token) {
+            alert("⚠️ Du musst eingeloggt sein, um eine Nummer zu melden!");
+            return;
+        }
 
         try {
             const res = await fetch(`${API_BASE}/api/blacklist`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ fan, number, reason })
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // Schickt den echten Token ans Backend!
+                },
+                body: JSON.stringify({ number, reason })
             });
 
             const data = await res.json();
@@ -385,8 +401,7 @@
                 document.getElementById("reason").value = "";
                 loadBlacklist();
             } else {
-                // Falls das Backend meldet, dass Du oder Deine IP die Nummer bereits gemeldet haben
-                alert("⚠️ " + (data.error || "Du hast diese Nummer bereits gemeldet oder sie ist gesperrt."));
+                alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer."));
             }
         } catch (err) {
             console.error(err);
@@ -407,7 +422,6 @@
             }
 
             tbody.innerHTML = data.map(item => {
-                // Dynamischer Status basierend auf der Anzahl der Meldungen (count)
                 let count = item.count || 1;
                 let statusBadge = '';
 
