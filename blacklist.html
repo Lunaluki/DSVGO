@@ -300,7 +300,7 @@
         <h2>2. Meine gemeldeten Nummern</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <p>Aus Datenschutzgründen siehst hier **nur du** exklusiv die Nummern, die du persönlich gemeldet hast.</p>
+                <p>Aus Datenschutzgründen siehst hier <strong>nur du</strong> exklusiv die Nummern, die du persönlich gemeldet hast.</p>
                 
                 <div style="overflow-x: auto;">
                     <table>
@@ -352,7 +352,6 @@
                     document.getElementById("myReportsSection").style.display = "block";
                     document.getElementById("displayUser").innerText = data.data.name || data.data.username;
                     
-                    // Lädt jetzt ausschließlich die Nummern des eingeloggten Users
                     loadMyBlacklist(token);
                 } else {
                     localStorage.removeItem("luna_user_token");
@@ -376,6 +375,9 @@
         const token = localStorage.getItem("luna_user_token");
         const number = document.getElementById("badNumber").value.trim();
         const reason = document.getElementById("reason").value.trim();
+        
+        // Hole den Namen des Users direkt aus dem Anzeigeelement
+        const fan = document.getElementById("displayUser").innerText.trim();
 
         if (!token) {
             alert("⚠️ Du musst eingeloggt sein, um eine Nummer zu melden!");
@@ -389,7 +391,7 @@
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ number, reason })
+                body: JSON.stringify({ fan, number, reason })
             });
 
             const data = await res.json();
@@ -410,7 +412,6 @@
 
     async function loadMyBlacklist(token) {
         try {
-            // Holt NUR die eigenen Meldungen vom neuen privaten Endpunkt ab
             const res = await fetch(`${API_BASE}/api/blacklist/my`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
