@@ -237,16 +237,27 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
+    // 📱 Eindeutige Geräte-ID im Browser des Laptops erzeugen/abrufen
+    function getDeviceIdentifier() {
+        let deviceId = localStorage.getItem("luna_device_id");
+        if (!deviceId) {
+            deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+            localStorage.setItem("luna_device_id", deviceId);
+        }
+        return deviceId;
+    }
+
     async function registerUser(event) {
         event.preventDefault();
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value.trim();
+        const deviceId = getDeviceIdentifier(); // <--- Geräte-ID holen
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password, deviceId }) // <--- Mit an Server senden
             });
 
             const data = await res.json();
