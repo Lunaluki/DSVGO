@@ -255,7 +255,7 @@
                 // Token im localStorage speichern (wichtig für die Erkennung auf der Hauptseite)
                 localStorage.setItem("luna_user_token", data.token);
                 alert("✅ Erfolgreich eingeloggt!");
-                window.location.href = "index.html"; // Zurück zur Hauptseite / Meldeportal
+                window.location.href = "blacklist.html"; // Zurück zur Hauptseite / Meldeportal
             } else {
                 alert("⚠️ " + (data.error || "Falscher Benutzername oder falsches Passwort."));
             }
