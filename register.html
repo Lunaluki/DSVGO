@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>AGA – Luna Registrierung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --pink-main: #ff4fae;
+            --pink-dark: #ff2f9c;
+            --pink-light: #ff9dd6;
+            --pink-glow: #ff007f;
+            --pink-neon: #ff00ff;
+        }
+
+        body {
+            background: #110515;
+            color: white;
+            font-family: "Inter", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff2f9c, #aa0055);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--pink-light);
+            box-shadow: 0 0 30px rgba(255, 47, 156, 0.4);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        header p {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: #ffe6f5;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn:hover {
+            background: #ffffff;
+            color: var(--pink-dark);
+            box-shadow: 0 0 15px #ffffff;
+        }
+
+        main {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h2 {
+            margin-top: 2.5rem;
+            font-size: 1.7rem;
+            color: white;
+            border-left: 4px solid var(--pink-light);
+            padding-left: 0.7rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px var(--pink-neon);
+        }
+
+        .edge-box {
+            position: relative;
+            border-radius: 16px;
+            padding: 2px;
+            background: transparent;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .edge-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent 0deg,
+                transparent 140deg,
+                var(--pink-neon) 180deg,
+                #ffffff 200deg,
+                var(--pink-glow) 220deg,
+                transparent 260deg
+            );
+            animation: rotateEdge 3.5s linear infinite;
+        }
+
+        @keyframes rotateEdge {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .edge-box-content {
+            position: relative;
+            z-index: 1;
+            background: #1e0924;
+            border-radius: 14px;
+            padding: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: bold;
+            color: var(--pink-light);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 157, 214, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--pink-neon);
+            box-shadow: 0 0 10px var(--pink-neon);
+        }
+
+        .btn-action {
+            display: inline-block;
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            transition: 0.2s;
+        }
+
+        .btn-action:hover {
+            box-shadow: 0 0 25px var(--pink-neon);
+            transform: translateY(-2px);
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #ffe6f5;
+        }
+
+        .switch-link a {
+            color: var(--pink-light);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--pink-dark);
+            color: #ffe6f5;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Luna Blacklist & Meldeportal</h1>
+    <p>Erstelle einen Account, um die Community zu schützen.</p>
+    <a class="nav-btn" href="index.html">Zur Startseite</a>
+</header>
+
+<main>
+    <h2>Account registrieren</h2>
+    <div class="edge-box">
+        <div class="edge-box-content">
+            <form id="registerForm" onsubmit="registerUser(event)">
+                <div class="form-group">
+                    <label for="regUsername">Benutzername:</label>
+                    <input type="text" id="regUsername" placeholder="Dein Benutzername" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword">Passwort:</label>
+                    <input type="password" id="regPassword" placeholder="Sicheres Passwort" required>
+                </div>
+
+                <button type="submit" class="btn-action">Registrieren</button>
+            </form>
+
+            <div class="switch-link">
+                Bereits einen Account? <a href="login.html">Hier einloggen</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>☆『Luna Team』☆ – Schutzsystem für die AGA Community</p>
+</footer>
+
+<script>
+    const API_BASE = "https://meinserver-u317.onrender.com";
+
+    async function registerUser(event) {
+        event.preventDefault();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value.trim();
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("✅ Registrierung erfolgreich! Du kannst dich jetzt einloggen.");
+                window.location.href = "login.html";
+            } else {
+                alert("⚠️ " + (data.error || "Fehler bei der Registrierung."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("❌ Verbindung zum Server fehlgeschlagen.");
+        }
+    }
+</script>
+
+</body>
+</html>
