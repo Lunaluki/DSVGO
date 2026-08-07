@@ -280,7 +280,6 @@
                 <form id="reportForm" onsubmit="submitReport(event)">
                     <div class="form-group">
                         <label for="badNumber">Telefonnummer (Nur Ziffern, z.B. 4917666724481):</label>
-                        <!-- Verhindert das Tippen von Buchstaben/Namen im Frontend -->
                         <input type="tel" id="badNumber" placeholder="4917666724481" 
                                oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
                     </div>
@@ -296,27 +295,26 @@
         </div>
     </section>
 
-    <!-- ÖFFENTLICHE BLACKLIST -->
-    <section>
-        <h2>2. Aktuelle Blacklist (Öffentlich)</h2>
+    <!-- MEINE GEMELDETEN NUMMERN -->
+    <section id="myReportsSection" style="display: none;">
+        <h2>2. Meine gemeldeten Nummern</h2>
         <div class="edge-box">
             <div class="edge-box-content">
-                <p>Hier siehst du alle gemeldeten Nummern, wie oft sie gemeldet wurden und den aktuellen Gefahrenstatus.</p>
+                <p>Aus Datenschutzgründen siehst hier **nur du** exklusiv die Nummern, die du persönlich gemeldet hast.</p>
                 
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Gemeldet von</th>
                                 <th>Nummer</th>
                                 <th>Grund</th>
-                                <th>Meldungen</th>
+                                <th>Meldungen (Gesamt)</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="blacklistTable">
                             <tr>
-                                <td colspan="5" style="text-align:center; color:var(--pink-light);">Lade Blacklist...</td>
+                                <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade deine Meldungen...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -332,17 +330,16 @@
 </main>
 
 <script>
-    const API_BASE = "https://meinserver-u317.onrender.com"; // Deine Render-URL
+    const API_BASE = "https://meinserver-u317.onrender.com";
 
     window.onload = async function() {
         const token = localStorage.getItem("luna_user_token");
         
         if (!token) {
-            // Nicht eingeloggt -> Login-Hinweis zeigen
             document.getElementById("loginSection").style.display = "block";
             document.getElementById("reportSection").style.display = "none";
+            document.getElementById("myReportsSection").style.display = "none";
         } else {
-            // Token prüfen und Profildaten laden
             try {
                 const res = await fetch(`${API_BASE}/api/auth/me`, {
                     headers: { "Authorization": `Bearer ${token}` }
@@ -352,19 +349,21 @@
                 if (res.ok && data.success) {
                     document.getElementById("loginSection").style.display = "none";
                     document.getElementById("reportSection").style.display = "block";
-                    // Zeigt den echten Account-Namen oder Username an
+                    document.getElementById("myReportsSection").style.display = "block";
                     document.getElementById("displayUser").innerText = data.data.name || data.data.username;
+                    
+                    // Lädt jetzt ausschließlich die Nummern des eingeloggten Users
+                    loadMyBlacklist(token);
                 } else {
-                    // Ungültiger Token
                     localStorage.removeItem("luna_user_token");
                     document.getElementById("loginSection").style.display = "block";
                     document.getElementById("reportSection").style.display = "none";
+                    document.getElementById("myReportsSection").style.display = "none";
                 }
             } catch (err) {
                 console.error("Auth Check Fehler:", err);
             }
         }
-        loadBlacklist();
     };
 
     function logoutUser() {
@@ -388,7 +387,7 @@
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // Schickt den echten Token ans Backend!
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({ number, reason })
             });
@@ -399,7 +398,7 @@
                 alert("✅ Nummer erfolgreich gemeldet!");
                 document.getElementById("badNumber").value = "";
                 document.getElementById("reason").value = "";
-                loadBlacklist();
+                loadMyBlacklist(token);
             } else {
                 alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer."));
             }
@@ -409,15 +408,18 @@
         }
     }
 
-    async function loadBlacklist() {
+    async function loadMyBlacklist(token) {
         try {
-            const res = await fetch(`${API_BASE}/api/blacklist`);
+            // Holt NUR die eigenen Meldungen vom neuen privaten Endpunkt ab
+            const res = await fetch(`${API_BASE}/api/blacklist/my`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
             if (!res.ok) throw new Error("Fehler beim Laden");
             const data = await res.json();
 
             const tbody = document.getElementById("blacklistTable");
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--pink-light);">Bisher wurden keine Nummern gemeldet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Du hast bisher keine Nummern gemeldet.</td></tr>`;
                 return;
             }
 
@@ -435,7 +437,6 @@
 
                 return `
                     <tr>
-                        <td><strong>${escapeHtml(item.fan)}</strong></td>
                         <td><code>${escapeHtml(item.number)}</code></td>
                         <td>${escapeHtml(item.reason || 'Kein Grund angegeben')}</td>
                         <td style="text-align:center; font-weight:bold;">${count}</td>
@@ -445,7 +446,7 @@
             }).join('');
         } catch (err) {
             console.error(err);
-            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Liste.</td></tr>`;
+            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden deiner Liste.</td></tr>`;
         }
     }
 
