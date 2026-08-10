@@ -1,306 +1,429 @@
 <!DOCTYPE html>
+
 <html lang="de">
+
 <head>
+
     <meta charset="UTF-8">
+
     <title>Luna Support – Kontakt</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
+
     <style>
+
         :root {
+
             --blue-glow: #00d2ff;
+
             --blue-neon: #3b82f6;
+
             --blue-dark: #1d4ed8;
+
             --bg-dark: #0a0f1d;
+
             --card-bg: #0f172a;
+
         }
+
+
 
         body {
+
             background: var(--bg-dark);
+
             color: #e2e8f0;
+
             font-family: "Inter", Arial, sans-serif;
+
             margin: 0;
+
             padding: 0;
+
             line-height: 1.6;
+
         }
+
+
 
         header {
+
             background: linear-gradient(135deg, #0f172a, #1e293b);
+
             padding: 3rem 2rem;
+
             text-align: center;
+
             border-bottom: 2px solid var(--blue-neon);
+
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+
         }
+
+
 
         header h1 {
+
             margin: 0;
+
             font-size: 2.4rem;
+
             color: #ffffff;
+
             font-weight: 800;
+
             text-shadow: 0 0 12px var(--blue-glow);
+
         }
+
+
 
         main {
+
             max-width: 800px;
+
             margin: 0 auto;
+
             padding: 2rem;
+
             animation: fadeInUp 0.8s ease;
+
         }
+
+
 
         /* 🌟 EDGE LIGHTING BOX (Wandernder blauer Lichtstrahl) 🌟 */
+
         .edge-box {
+
             position: relative;
+
             border-radius: 16px;
+
             padding: 2px;
+
             background: transparent;
+
             overflow: hidden;
+
             margin-top: 1.5rem;
+
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
         }
+
+
 
         .edge-box::before {
+
             content: '';
+
             position: absolute;
+
             top: -50%;
+
             left: -50%;
+
             width: 200%;
+
             height: 200%;
+
             background: conic-gradient(
+
                 transparent 0deg,
+
                 transparent 140deg,
+
                 var(--blue-glow) 180deg,
+
                 #ffffff 200deg,
+
                 var(--blue-neon) 220deg,
+
                 transparent 260deg
+
             );
+
             animation: rotateEdge 3.5s linear infinite;
+
         }
+
+
 
         @keyframes rotateEdge {
+
             0% { transform: rotate(0deg); }
+
             100% { transform: rotate(360deg); }
+
         }
+
+
 
         .edge-box-content {
+
             position: relative;
+
             z-index: 1;
+
             background: var(--card-bg);
+
             border-radius: 14px;
+
             padding: 2rem;
+
         }
+
+
 
         label {
+
             display: block;
+
             margin-top: 1.2rem;
+
             font-weight: 600;
+
             color: #f1f5f9;
+
         }
+
+
 
         input, textarea {
+
             width: 100%;
+
             padding: 1rem;
+
             margin-top: 0.5rem;
+
             border-radius: 10px;
+
             border: 1px solid #334155;
+
             background: #090d16;
+
             color: #f8fafc;
+
             font-size: 1rem;
+
             transition: 0.25s;
+
             box-sizing: border-box;
+
         }
+
+
 
         input:focus, textarea:focus {
+
             border-color: var(--blue-glow);
+
             outline: none;
+
             box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+
         }
+
+
 
         textarea {
+
             height: 180px;
+
             resize: none;
+
         }
 
-        /* 📸 Screenshot Upload Styling */
-        .upload-dropzone {
-            border: 2px dashed #334155;
-            background: #090d16;
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.25s;
-            margin-top: 0.5s;
-        }
 
-        .upload-dropzone:hover {
-            border-color: var(--blue-glow);
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
-        }
-
-        .upload-dropzone p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: 0.95rem;
-        }
-
-        .upload-dropzone span {
-            color: var(--blue-glow);
-            font-weight: 600;
-        }
-
-        #file-input {
-            display: none;
-        }
-
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        .preview-thumb {
-            position: relative;
-            width: 70px;
-            height: 70px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--blue-neon);
-            background: #090d16;
-        }
-
-        .preview-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
 
         .send-btn {
+
             display: block;
+
             width: 100%;
+
             margin-top: 2rem;
+
             padding: 1.1rem;
+
             background: linear-gradient(135deg, var(--blue-neon), var(--blue-dark));
+
             color: white;
+
             font-weight: 700;
+
             border: none;
+
             border-radius: 12px;
+
             text-align: center;
+
             transition: 0.3s;
+
             cursor: pointer;
+
             font-size: 1.1rem;
+
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+
         }
+
+
 
         .send-btn:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 0 25px var(--blue-glow);
+
         }
+
+
 
         footer {
+
             margin-top: 3rem;
+
             padding: 2rem;
+
             text-align: center;
+
             border-top: 1px solid #1e293b;
+
             color: #94a3b8;
+
             font-size: 0.95rem;
+
         }
+
+
 
         @keyframes fadeInUp {
+
             from { opacity: 0; transform: translateY(20px); }
+
             to { opacity: 1; transform: translateY(0); }
+
         }
+
+
 
         @media (max-width: 600px) {
+
             header h1 { font-size: 1.8rem; }
+
             main { padding: 1rem; }
+
         }
+
     </style>
+
 </head>
+
 <body>
 
+
+
 <header>
+
     <h1>Luna – Support Kontaktformular</h1>
+
 </header>
+
+
 
 <main>
 
+
+
     <div class="edge-box">
+
         <div class="edge-box-content">
+
             <label for="email">Deine E‑Mail-Adresse</label>
+
             <input type="email" id="email" placeholder="z. B. name@gmail.com">
 
+
+
             <label for="phone">Deine Telefonnummer (optional)</label>
+
             <input type="text" id="phone" placeholder="z. B. +49 123 456789">
 
+
+
             <label for="message">Schilder uns dein Problem</label>
+
             <textarea id="message" placeholder="Beschreibe hier dein Anliegen..."></textarea>
 
-            <!-- 📸 Screenshot Upload Sektion -->
-            <label>Screenshots hinzufügen (optional)</label>
-            <div class="upload-dropzone" onclick="document.getElementById('file-input').click()">
-                <p>Klicken oder Screenshots hierher ziehen</p>
-                <span>Dateien auswählen</span>
-                <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
-            </div>
-            <div class="preview-container" id="preview-container"></div>
+
 
             <button class="send-btn" onclick="openMail()">Senden</button>
+
         </div>
+
     </div>
+
+
 
 </main>
 
+
+
 <footer>
+
     <p>Luna Support – Kontaktseite</p>
+
     <p>Stand: 31. Juli 2026</p>
+
 </footer>
 
+
+
 <script>
-    let uploadedFiles = [];
 
-    function handleFiles(files) {
-        const previewContainer = document.getElementById("preview-container");
-        
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            uploadedFiles.push(file);
+function openMail() {
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const thumb = document.createElement("div");
-                thumb.className = "preview-thumb";
-                thumb.innerHTML = `<img src="${e.target.result}" alt="Screenshot Vorschau">`;
-                previewContainer.appendChild(thumb);
-            }
-            reader.readAsDataURL(file);
-        }
-    }
+    const email = document.getElementById("email").value;
 
-    function openMail() {
-        const email = document.getElementById("email").value;
-        const phone = document.getElementById("phone").value;
-        const message = document.getElementById("message").value;
+    const phone = document.getElementById("phone").value;
 
-        // Dateinamen für die E-Mail zusammenstellen
-        let fileNamesText = "Keine Screenshots angehängt";
-        if (uploadedFiles.length > 0) {
-            fileNamesText = uploadedFiles.map(f => f.name).join(", ");
-        }
+    const message = document.getElementById("message").value;
 
-        const mailtoLink =
-            "mailto:luna.support.online.team@gmail.com"
-            + "?subject=lunasupport"
-            + "&body="
-            + encodeURIComponent(
-                "Email: " + email + "\n"
-                + "Telefon: " + phone + "\n"
-                + "Angehängte Screenshots (" + uploadedFiles.length + "): " + fileNamesText + "\n\n"
-                + "Nachricht:\n" + message
-            );
 
-        window.location.href = mailtoLink;
-    }
+
+    const mailtoLink =
+
+        "mailto:luna.support.online.team@gmail.com"
+
+        + "?subject=lunasupport"
+
+        + "&body="
+
+        + encodeURIComponent(
+
+            "Email: " + email + "\n"
+
+            + "Telefon: " + phone + "\n"
+
+            + "Nachricht:\n" + message
+
+        );
+
+
+
+    window.location.href = mailtoLink;
+
+}
+
 </script>
 
+
+
 </body>
+
 </html>
