@@ -191,7 +191,7 @@
         .gradient-title {
             background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
-            background-clip: text; /* Standard-Eigenschaft für Kompatibilität */
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -357,7 +357,7 @@
         .timestamp {
             font-size: 0.82rem;
             color: var(--text-sub);
-            font-family: 'Fira Code', monospace;
+            font-family: 'Fira Code, monospace';
         }
 
         @media (max-width: 600px) {
@@ -407,15 +407,14 @@
                 <h2>Was ist Luna?</h2>
             </div>
             <p>
-                Luna ist ein spezialisierter WhatsApp-Bot, der entwickelt wurde, um Gruppenumgebungen sicherer, moderierter und frei von störenden Einflüssen zu halten. Der Bot erkennt automatisierte Angriffe und schützt Communities präventiv.
+                Luna ist ein spezialisierter WhatsApp-Bot, der entwickelt wurde, um Gruppenumgebungen sicherer, moderierter und frei von störenden Einflüssen zu halten. Der Bot erkennt Profile auf Basis interner Listen und schützt Communities präventiv.
             </p>
             <p>Luna schützt WhatsApp-Gruppen aktiv vor:</p>
             <ul>
                 <li>Mobbing, Beleidigungen und toxischen Chat-Inhalten</li>
-                <li>Spam, Message-Flooding und Link-Bot-Angriffen</li>
-                <li>Schädlichen Absturz-Skripten und WhatsApp-Exploits</li>
+                <li>Spam, Belästigung und unzulässigen Inhalten</li>
                 <li>Feindlichen Gruppen-Übernahmen (Admin-Kapselung)</li>
-                <li>Automatisierter Erstellung von Fake-Accounts</li>
+                <li>Automatisierter Erstellung unerwünschter Sticker-Medien</li>
             </ul>
             <p>Der Bot ist in seiner Befehlsstruktur bewusst minimalistisch gehalten, um Missbrauch und Sicherheitslücken effektiv vorzubeugen.</p>
         </section>
@@ -427,31 +426,31 @@
                 <h2>Registrierung & Gespeicherte Daten</h2>
             </div>
             <p>
-                Für den ordnungsgemäßen Betrieb des Bots ist eine minimale Registrierung zwingend erforderlich (Grundsatz der Datensparsamkeit gem. Art. 5 DSGVO).
+                Für den ordnungsgemäßen Betrieb des Bots ist eine minimale Registrierung erforderlich, um bestimmte, zugriffsgeschützte Befehle bereitzustellen (Grundsatz der Datensparsamkeit gem. Art. 5 DSGVO).
             </p>
 
             <div style="margin-top: 16px;">
-                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.1 Telefonnummer</h3>
-                <p>Bei der Interaktion wird die WhatsApp-Telefonnummer pseudonymisiert erfasst, um Rechte abzugleichen und Moderationsentscheidungen zuzuordnen.</p>
+                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.1 Telefonnummer & Rollen</h3>
+                <p>Bei der Interaktion wird die WhatsApp-Telefonnummer pseudonymisiert erfasst, um Berechtigungen abzugleichen und Moderationsentscheidungen zuzuordnen. Der Bot unterscheidet dabei zwischen dem Ersteller der Gruppe (Superadmin) und normalen Moderatoren (Admins).</p>
             </div>
 
             <div style="margin-top: 16px;">
-                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.2 Technischer Auth-Token</h3>
-                <p>Zusätzlich wird ein verschlüsselter Hash (Token) generiert. Dieser verhindert Identitätsdiebstahl innerhalb der Bot-Infrastruktur.</p>
+                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.2 Benutzerdaten & Datenbank</h3>
+                <p>Zusätzlich werden grundlegende Einstellungen in einer internen System-Datenbank (database.js) hinterlegt, um die Funktionalität für registrierte Nutzer zu gewährleisten.</p>
             </div>
 
             <!-- Interactive Unregister Tool -->
             <div class="interactive-tool-card">
                 <div class="tool-title">⚡ Schnell-Löschung via Chat</div>
                 <p style="font-size:0.88rem; margin-bottom:0;">
-                    Mit der Eingabe des Befehls <code>unregister</code> im Chat mit dem Bot wird deine Telefonnummer sofort aus der aktiven Datenbank gelöscht.
+                    Mit der Eingabe des Befehls <code>~unregister</code> im Chat mit dem Bot wird deine Telefonnummer umgehend aus der aktiven Datenbank gelöscht.
                 </p>
-                <button class="tool-btn" onclick="copyCmd()">📋 Befehl "unregister" kopieren</button>
+                <button class="tool-btn" onclick="copyCmd()">📋 Befehl "~unregister" kopieren</button>
             </div>
 
             <div style="margin-top: 16px;">
-                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.4 Endgültige Manuelle Löschung</h3>
-                <p>Gemäß Art. 17 DSGVO ("Recht auf Vergessenwerden") kannst du jederzeit eine vollständige Löschung aller verknüpften Tokens beim Server-Owner beantragen.</p>
+                <h3 style="color:#fff; font-size:1.05rem; margin-bottom:6px;">2.4 Manuelle Löschung</h3>
+                <p>Gemäß Art. 17 DSGVO („Recht auf Vergessenwerden“) kannst du jederzeit eine vollständige Löschung aller verknüpften Datensätze beim Server-Administrator beantragen.</p>
             </div>
         </section>
 
@@ -463,9 +462,9 @@
             </div>
             <ul>
                 <li><strong>Kein Spam:</strong> Exzessives Triggern von Bot-Befehlen führt zum automatischen System-Bann.</li>
-                <li><strong>Keine DMs / Privatnachrichten:</strong> Luna reagiert primär in zugewiesenen Gruppen. Private Nachrichten stören die Routinen.</li>
+                <li><strong>Keine Privatnachrichten (DMs):</strong> Luna reagiert primär in zugewiesenen Gruppen. Direkte Nachrichten stören die Routinen.</li>
                 <li><strong>Keine Anrufe:</strong> Sprach- oder Videoanrufe an die Bot-Nummer führen zur sofortigen Blockierung der Absender-Nummer.</li>
-                <li><strong>Kein Missbrauch:</strong> Versuche, den Bot mittels Code-Injections zu manipulieren, werden strafrechtlich erfasst.</li>
+                <li><strong>Kein Missbrauch:</strong> Versuche, den Bot mittels Code-Injections oder Manipulationen zu gefährden, werden protokolliert und führen zum Ausschluss.</li>
             </ul>
         </section>
 
@@ -476,9 +475,9 @@
                 <h2>Warum existiert Luna?</h2>
             </div>
             <p>
-                Luna wurde aus der Notwendigkeit heraus erschaffen, einen Schutzwall für Online-Communities zu errichten. Ein besonderer Fokus liegt auf dem <strong>Jugendschutz</strong>.
+                Luna wurde aus der Notwendigkeit heraus erschaffen, einen verlässlichen Schutzwall für Online-Communities zu errichten. Ein besonderer Fokus liegt hierbei auf dem <strong>Jugendschutz</strong>.
             </p>
-            <p>Luna schützt Minderjährige in Gruppen aktiv vor Hassnachrichten, Grooming-Versuchen, Spam-Exploits und unaufgeforderten Inhalten.</p>
+            <p>Luna unterstützt Gruppen dabei, Minderjährige aktiv vor Hassnachrichten, Grooming-Versuchen und unaufgeforderten, unangemessenen Inhalten zu schützen.</p>
         </section>
 
         <!-- 5. SICHERHEITSMASSNAHMEN -->
@@ -488,9 +487,9 @@
                 <h2>Sicherheit & Technische Maßnahmen</h2>
             </div>
             <ul>
-                <li>Ende-zu-Ende verschlüsselte Node.js Server-Verbindungen</li>
+                <li>Sichere, verschlüsselte Node.js-Serververbindungen</li>
                 <li>Moderne Token-Authentifizierung ohne Klartext-Speicherung</li>
-                <li>Echtzeit-Filter zur Inhalts- & Exploit-Erkennung</li>
+                <li>Echtzeit-Filter zur Inhalts- und Bedrohungserkennung</li>
                 <li>Strikter Verzicht auf Datenweitergabe an Dritte oder Werbenetzwerke</li>
             </ul>
         </section>
@@ -499,10 +498,10 @@
         <section class="section-card">
             <div class="card-header-title">
                 <div class="card-num">06</div>
-                <h2>About & Betreiber</h2>
+                <h2>Über das Projekt & Betreiber</h2>
             </div>
             <p>
-                Diese Instanz wird betrieben von <strong>Lukas</strong> (Owner & Developer) in Kooperation mit <strong>Monkey_Queen</strong>. Alle Anfragen zum Datenschutz können direkt über das Entwickler-Team eingereicht werden.
+                Diese Instanz wird betrieben von <strong>Lukas</strong> (Owner & Developer) in Kooperation mit <strong>Monkey_Queen</strong>. Alle Anfragen zum Datenschutz können direkt an das Entwickler-Team gerichtet werden.
             </p>
         </section>
 
@@ -516,8 +515,8 @@
 
     <script>
         function copyCmd() {
-            navigator.clipboard.writeText('unregister');
-            alert('Befehl "unregister" in die Zwischenablage kopiert! Füge ihn einfach in deinen WhatsApp-Chat mit Luna ein.');
+            navigator.clipboard.writeText('~unregister');
+            alert('Befehl "~unregister" in die Zwischenablage kopiert! Füge ihn einfach in deinen WhatsApp-Chat mit Luna ein.');
         }
     </script>
 </body>
