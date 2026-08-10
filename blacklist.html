@@ -150,9 +150,62 @@
             box-shadow: 0 0 10px var(--pink-neon);
         }
 
+        /* 📸 Screenshot Upload Styling */
+        .upload-dropzone {
+            border: 2px dashed rgba(255, 157, 214, 0.4);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--pink-neon);
+            box-shadow: 0 0 12px rgba(255, 0, 255, 0.3);
+        }
+
+        .upload-dropzone p {
+            margin: 0 0 5px 0;
+            color: #ffe6f5;
+            font-size: 0.95rem;
+        }
+
+        .upload-dropzone span {
+            color: var(--pink-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .preview-thumb {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--pink-light);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .btn-action {
             display: inline-block;
             width: 100%;
+            margin-top: 1rem;
             padding: 0.9rem;
             background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
             color: #ffffff;
@@ -289,6 +342,17 @@
                         <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
                     </div>
 
+                    <!-- 📸 Screenshot Upload Sektion -->
+                    <div class="form-group">
+                        <label>Beweis-Screenshots hinzufügen (optional):</label>
+                        <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
+                            <p>Klicken oder Screenshots hierher ziehen</p>
+                            <span>Bilder auswählen</span>
+                            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
+                        </div>
+                        <div class="preview-container" id="previewContainer"></div>
+                    </div>
+
                     <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
                 </form>
             </div>
@@ -331,6 +395,7 @@
 
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
+    let selectedFiles = [];
 
     window.onload = async function() {
         const token = localStorage.getItem("luna_user_token");
@@ -349,7 +414,6 @@
                 if (res.ok && data.success) {
                     const realUsername = data.data.name || data.data.username;
                     
-                    // 🚨 MISSBRAUCHSSCHUTZ: Prüfen, ob die IP / der User blockiert ist
                     if (data.data.isBlocked || data.data.abuseDetected) {
                         triggerStopScreen(realUsername, data.data.fakeName || "Anderer Name");
                         return;
@@ -372,6 +436,25 @@
             }
         }
     };
+
+    // 📸 Datei-Auswahl & Live-Vorschau verarbeiten
+    function handleFiles(files) {
+        const previewContainer = document.getElementById("previewContainer");
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            selectedFiles.push(file);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const thumb = document.createElement("div");
+                thumb.className = "preview-thumb";
+                thumb.innerHTML = `<img src="${e.target.result}" alt="Vorschau">`;
+                previewContainer.appendChild(thumb);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
     // 🚨 Roter Stopp-Bildschirm bei Missbrauch
     function triggerStopScreen(echterName, falscherName) {
@@ -411,25 +494,34 @@
             return;
         }
 
+        // Formulardaten inkl. Screenshots als FormData aufbauen (für den Server-Upload)
+        const formData = new FormData();
+        formData.append("fan", fan);
+        formData.append("number", number);
+        formData.append("reason", reason);
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            formData.append("screenshots", selectedFiles[i]);
+        }
+
         try {
             const res = await fetch(`${API_BASE}/api/blacklist`, {
                 method: "POST",
                 headers: { 
-                    "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ fan, number, reason })
+                body: formData
             });
 
             const data = await res.json();
 
             if (res.ok) {
                 alert("✅ Nummer erfolgreich gemeldet!");
-                document.getElementById("badNumber").value = "";
-                document.getElementById("reason").value = "";
+                document.getElementById("reportForm").reset();
+                selectedFiles = [];
+                document.getElementById("previewContainer").innerHTML = "";
                 loadMyBlacklist(token);
             } else {
-                // Falls das Backend beim Absenden den Missbrauch erkennt:
                 if(data.abuseDetected) {
                     triggerStopScreen(data.realName || fan, data.fakeName || "Unbekannt");
                     return;
