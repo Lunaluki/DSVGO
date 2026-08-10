@@ -119,6 +119,61 @@
             resize: none;
         }
 
+        /* 📸 Screenshot Upload Styling */
+        .upload-dropzone {
+            border: 2px dashed #334155;
+            background: #090d16;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s;
+            margin-top: 0.5s;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--blue-glow);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        .upload-dropzone p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .upload-dropzone span {
+            color: var(--blue-glow);
+            font-weight: 600;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .preview-thumb {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--blue-neon);
+            background: #090d16;
+        }
+
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .send-btn {
             display: block;
             width: 100%;
@@ -180,6 +235,15 @@
             <label for="message">Schilder uns dein Problem</label>
             <textarea id="message" placeholder="Beschreibe hier dein Anliegen..."></textarea>
 
+            <!-- 📸 Screenshot Upload Sektion -->
+            <label>Screenshots hinzufügen (optional)</label>
+            <div class="upload-dropzone" onclick="document.getElementById('file-input').click()">
+                <p>Klicken oder Screenshots hierher ziehen</p>
+                <span>Dateien auswählen</span>
+                <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+            </div>
+            <div class="preview-container" id="preview-container"></div>
+
             <button class="send-btn" onclick="openMail()">Senden</button>
         </div>
     </div>
@@ -192,23 +256,50 @@
 </footer>
 
 <script>
-function openMail() {
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const message = document.getElementById("message").value;
+    let uploadedFiles = [];
 
-    const mailtoLink =
-        "mailto:luna.support.online.team@gmail.com"
-        + "?subject=lunasupport"
-        + "&body="
-        + encodeURIComponent(
-            "Email: " + email + "\n"
-            + "Telefon: " + phone + "\n"
-            + "Nachricht:\n" + message
-        );
+    function handleFiles(files) {
+        const previewContainer = document.getElementById("preview-container");
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            uploadedFiles.push(file);
 
-    window.location.href = mailtoLink;
-}
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const thumb = document.createElement("div");
+                thumb.className = "preview-thumb";
+                thumb.innerHTML = `<img src="${e.target.result}" alt="Screenshot Vorschau">`;
+                previewContainer.appendChild(thumb);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function openMail() {
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const message = document.getElementById("message").value;
+
+        // Dateinamen für die E-Mail zusammenstellen
+        let fileNamesText = "Keine Screenshots angehängt";
+        if (uploadedFiles.length > 0) {
+            fileNamesText = uploadedFiles.map(f => f.name).join(", ");
+        }
+
+        const mailtoLink =
+            "mailto:luna.support.online.team@gmail.com"
+            + "?subject=lunasupport"
+            + "&body="
+            + encodeURIComponent(
+                "Email: " + email + "\n"
+                + "Telefon: " + phone + "\n"
+                + "Angehängte Screenshots (" + uploadedFiles.length + "): " + fileNamesText + "\n\n"
+                + "Nachricht:\n" + message
+            );
+
+        window.location.href = mailtoLink;
+    }
 </script>
 
 </body>
