@@ -156,17 +156,27 @@
             color: var(--accent-pink);
         }
 
-        /* Hero Section */
+        /* Hero Section mit Mimi-Bild */
         .hero {
             text-align: center;
             margin-bottom: 40px;
         }
 
-        .hero-icon {
-            font-size: 72px;
-            margin-bottom: 12px;
-            display: inline-block;
-            filter: drop-shadow(0 0 25px rgba(244, 114, 182, 0.6));
+        .mimi-img-container {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--accent-pink);
+            box-shadow: 0 0 25px rgba(244, 114, 182, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mimi-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         h1 {
@@ -306,7 +316,11 @@
         </header>
 
         <section class="hero">
-            <div class="hero-icon">❤️</div>
+            <!-- Mimi Bild -->
+            <div class="mimi-img-container">
+                <img src="https://mmg.whatsapp.net/m1/v/t24/An-qk2xQ6rFh29utMJsvdVkhzmJFO8UsOW_HwPHvG5ZdSDYnqqWofvCJdOaQdYgqngBo3tNVVNE0P8gznjtz4lV--g2kAzRAMeao-49CZgxu50eh3sOS3TA7VgyMkPA0HpYoLHnKukONTtsJDDdq?_nc_gid=0qKFWOVSGXawDAtaRG14eg&_nc_oc=AdqbSMkTGDCeIXcAplI0-RkrfYPPG9KhRD99bFHy6ouurKAgIUlanA1TR6BwMAw1AaY&ccb=10-5&oh=01_Q5Aa5QEvDTXpLM-K714fRX9SdgJH7KpbZIibsiVmDhwvxKHiqQ&oe=6AA94FA5&_nc_sid=471a72" alt="Mimi die Katze">
+            </div>
+            
             <h1><span class="gradient-title">Spendenaktion für Mimi</span></h1>
             <p class="hero-sub">Gemeinsam stark für den guten Zweck – organisiert von der AGA-Gruppe by Monkey_Queen & begleitet durch den Luna Bot.</p>
         </section>
@@ -320,12 +334,11 @@
             <p>Jeder Beitrag, egal wie klein, hilft dabei, das gemeinsame Ziel ein Stück näher zu bringen und echten Zusammenhalt in unserer Community zu zeigen.</p>
         </section>
 
-        <!-- HIER IST DER BUTTON ZUM KANAL-LINK -->
+        <!-- Spenden-Button zum WhatsApp-Kanal -->
         <div class="donate-box">
-            <h3 style="color: #fff; font-size: 1.4rem; font-family: 'Space Grotesk', sans-serif; margin-bottom: 10px;">Jetzt direkt zum Kanal & unterstützen</h3>
-            <p>Klicke auf den Button, um direkt zum offiziellen Kanal-Link oder der Spendenseite zu gelangen. Vielen Dank für deine großartige Unterstützung!</p>
-            <!-- Ersetze das '#' in href="..." mit deinem tatsächlichen Link (z.B. https://whatsapp.com/channel/...) -->
-            <a href="HIER_LINK_EINTRAGEN" target="_blank" class="donate-btn">📢 Zum Kanal / Spenden-Link</a>
+            <h3 style="color: #fff; font-size: 1.4rem; font-family: 'Space Grotesk', sans-serif; margin-bottom: 10px;">Jetzt direkt zum WhatsApp-Kanal & unterstützen</h3>
+            <p>Klicke auf den Button, um direkt zum offiziellen Kanal zu gelangen. Vielen Dank für deine großartige Unterstützung!</p>
+            <a href="https://whatsapp.com/channel/0029VbCmJld7j6g5VafFcV2v" target="_blank" class="donate-btn">📢 Zum WhatsApp-Kanal</a>
         </div>
 
         <footer class="footer-nav">
