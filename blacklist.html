@@ -28,7 +28,7 @@
             padding: 3rem 2rem;
             text-align: center;
             border-bottom: 2px solid var(--pink-light);
-            box-shadow: 0 0 30px rgba(255, 47, 156, 0.4);
+            box-shadow: 0 0 20px rgba(255, 47, 156, 0.3);
         }
 
         header h1 {
@@ -36,7 +36,6 @@
             font-size: 2.4rem;
             color: white;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         header p {
@@ -55,14 +54,12 @@
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: 0.3s;
-            backdrop-filter: blur(5px);
+            transition: 0.2s;
         }
 
         .nav-btn:hover {
             background: #ffffff;
             color: var(--pink-dark);
-            box-shadow: 0 0 15px #ffffff;
         }
 
         main {
@@ -78,48 +75,15 @@
             border-left: 4px solid var(--pink-light);
             padding-left: 0.7rem;
             font-weight: 600;
-            text-shadow: 0 0 10px var(--pink-neon);
         }
 
         .edge-box {
-            position: relative;
-            border-radius: 16px;
-            padding: 2px;
-            background: transparent;
-            overflow: hidden;
-            margin-top: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .edge-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                transparent 0deg,
-                transparent 140deg,
-                var(--pink-neon) 180deg,
-                #ffffff 200deg,
-                var(--pink-glow) 220deg,
-                transparent 260deg
-            );
-            animation: rotateEdge 3.5s linear infinite;
-        }
-
-        @keyframes rotateEdge {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .edge-box-content {
-            position: relative;
-            z-index: 1;
             background: #1e0924;
+            border: 2px solid rgba(255, 157, 214, 0.3);
             border-radius: 14px;
             padding: 1.8rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
 
         .form-group {
@@ -147,7 +111,7 @@
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--pink-neon);
-            box-shadow: 0 0 10px var(--pink-neon);
+            box-shadow: 0 0 8px var(--pink-neon);
         }
 
         .upload-dropzone {
@@ -157,12 +121,11 @@
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
-            transition: 0.25s;
+            transition: 0.2s;
         }
 
         .upload-dropzone:hover {
             border-color: var(--pink-neon);
-            box-shadow: 0 0 12px rgba(255, 0, 255, 0.3);
         }
 
         .upload-dropzone p {
@@ -213,7 +176,6 @@
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
             transition: 0.2s;
             text-align: center;
             text-decoration: none;
@@ -221,8 +183,7 @@
         }
 
         .btn-action:hover {
-            box-shadow: 0 0 25px var(--pink-neon);
-            transform: translateY(-2px);
+            opacity: 0.9;
         }
 
         table {
@@ -264,20 +225,13 @@
             font-weight: bold;
         }
 
-        .badge-danger-blink {
+        .badge-danger {
             background: #ef4444;
             color: white;
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 0.85rem;
             font-weight: bold;
-            animation: blinkStatus 1s infinite;
-        }
-
-        @keyframes blinkStatus {
-            0% { opacity: 1; box-shadow: 0 0 10px #ef4444; }
-            50% { opacity: 0.3; box-shadow: none; }
-            100% { opacity: 1; box-shadow: 0 0 10px #ef4444; }
         }
 
         .user-box {
@@ -314,13 +268,11 @@
     <!-- KONTO-BEREICH / LOGIN-HINWEIS -->
     <section id="loginSection" style="display: none;">
         <h2>0. Anmeldung erforderlich</h2>
-        <div class="edge-box">
-            <div class="edge-box-content" style="text-align: center; padding: 2.5rem 1.8rem;">
-                <p style="font-size: 1.1rem; color: #ffe6f5; margin-bottom: 1.5rem;">
-                    🔒 Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können und deine gemeldeten Einträge zu verwalten.
-                </p>
-                <a class="btn-action" href="login.html" style="max-width: 300px; margin: 0 auto;">Zum Login / Registrieren</a>
-            </div>
+        <div class="edge-box" style="text-align: center; padding: 2.5rem 1.8rem;">
+            <p style="font-size: 1.1rem; color: #ffe6f5; margin-bottom: 1.5rem;">
+                🔒 Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können und deine gemeldeten Einträge zu verwalten.
+            </p>
+            <a class="btn-action" href="login.html" style="max-width: 300px; margin: 0 auto;">Zum Login / Registrieren</a>
         </div>
     </section>
 
@@ -333,33 +285,31 @@
 
         <h2>1. Nummer an das Luna Team melden</h2>
         <div class="edge-box">
-            <div class="edge-box-content">
-                <form id="reportForm" onsubmit="submitReport(event)">
-                    <div class="form-group">
-                        <label for="badNumber">Telefonnummer (Nur Ziffern, z.B. 4917666724481):</label>
-                        <input type="tel" id="badNumber" placeholder="4917666724481" 
-                               oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="reason">Grund der Meldung:</label>
-                        <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
-                    </div>
+            <form id="reportForm" onsubmit="submitReport(event)">
+                <div class="form-group">
+                    <label for="badNumber">Telefonnummer (Nur Ziffern, z.B. 4917666724481):</label>
+                    <input type="tel" id="badNumber" placeholder="4917666724481" 
+                           oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reason">Grund der Meldung:</label>
+                    <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
+                </div>
 
-                    <!-- Screenshot Upload Sektion -->
-                    <div class="form-group">
-                        <label>Beweis-Screenshots hinzufügen (optional):</label>
-                        <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
-                            <p>Klicken oder Screenshots hierher ziehen</p>
-                            <span>Bilder auswählen</span>
-                            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
-                        </div>
-                        <div class="preview-container" id="previewContainer"></div>
+                <!-- Screenshot Upload Sektion -->
+                <div class="form-group">
+                    <label>Beweis-Screenshots hinzufügen (optional):</label>
+                    <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
+                        <p>Klicken oder Screenshots hierher ziehen</p>
+                        <span>Bilder auswählen</span>
+                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
                     </div>
+                    <div class="preview-container" id="previewContainer"></div>
+                </div>
 
-                    <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
-                </form>
-            </div>
+                <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
+            </form>
         </div>
     </section>
 
@@ -367,26 +317,24 @@
     <section id="myReportsSection" style="display: none;">
         <h2>2. Meine gemeldeten Nummern</h2>
         <div class="edge-box">
-            <div class="edge-box-content">
-                <p>Aus Datenschutzgründen siehst hier <strong>nur du</strong> exklusiv die Nummern, die du persönlich gemeldet hast.</p>
-                
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nummer</th>
-                                <th>Grund</th>
-                                <th>Meldungen (Gesamt)</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="blacklistTable">
-                            <tr>
-                                <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade deine Meldungen...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <p>Aus Datenschutzgründen siehst hier <strong>nur du</strong> exklusiv die Nummern, die du persönlich gemeldet hast.</p>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nummer</th>
+                            <th>Grund</th>
+                            <th>Meldungen (Gesamt)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blacklistTable">
+                        <tr>
+                            <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade deine Meldungen...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
@@ -398,7 +346,7 @@
 </main>
 
 <script>
-    const API_BASE = "https://meinserver-u317.onrender.com";
+    const API_BASE = "https://luna-admin-rdqg.onrender.com";
     let selectedFiles = [];
 
     window.onload = async function() {
@@ -461,8 +409,8 @@
 
     function triggerStopScreen(echterName, falscherName) {
         document.getElementById("mainContainer").innerHTML = `
-            <div style="background-color: #7f1d1d; border: 3px solid #ef4444; border-radius: 16px; margin-top: 50px; padding: 40px; text-align: center; box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);">
-                <h1 style="font-size: 3rem; margin-bottom: 20px; animation: blink 1s infinite; color: #fff;">🚨 STOPP! 🚨</h1>
+            <div style="background-color: #7f1d1d; border: 3px solid #ef4444; border-radius: 16px; margin-top: 50px; padding: 40px; text-align: center;">
+                <h1 style="font-size: 3rem; margin-bottom: 20px; color: #fff;">🚨 STOPP! 🚨</h1>
                 <p style="font-size: 1.5rem; line-height: 1.6; color: #ffe6f5;">
                     Dein Account ist als <strong>${echterName}</strong> registriert, aber das System hat einen Missbrauchsversuch erkannt!
                 </p>
@@ -473,9 +421,6 @@
                     Abmelden & Account wechseln
                 </button>
             </div>
-            <style>
-                @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-            </style>
         `;
     }
 
@@ -554,7 +499,7 @@
                 let statusBadge = '';
 
                 if (count >= 3) {
-                    statusBadge = `<span class="badge-danger-blink">🚨 GEFAHR (${count}x)</span>`;
+                    statusBadge = `<span class="badge-danger">🚨 GEFAHR (${count}x)</span>`;
                 } else if (count === 2) {
                     statusBadge = `<span class="badge-caution">⚠️ Vorsicht (2x)</span>`;
                 } else {
