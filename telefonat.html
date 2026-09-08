@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#09111f">
-    <title>Luna Browser-Call / Entwickler</title>
+    <title>Luna Support – Browser-Call</title>
     <style>
         :root {
             --bg: #07101d;
@@ -46,7 +46,7 @@
         .btn:hover { transform: translateY(-2px); }
         .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--mint)); color: #07101d; }
         .btn-danger { background: linear-gradient(135deg, var(--red), var(--gold)); color: #07101d; display: none; }
-        .status-box { margin-top: 20px; padding: 12px; background: rgba(8, 20, 35, .5); border-radius: 12px; font-size: .85rem; color: var(--muted); }
+        .status-box { margin-top: 20px; padding: 14px; background: rgba(8, 20, 35, .6); border-radius: 12px; font-size: .9rem; color: var(--muted); border: 1px solid var(--line); }
         .footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 40px; }
     </style>
 </head>
@@ -56,11 +56,11 @@
             <div>
                 <div class="eyebrow">Luna Live / WebRTC</div>
                 <h1>Browser-Call</h1>
-                <p class="subtitle">Direktes Sprachgespräch mit dem Entwickler.</p>
+                <p class="subtitle">Direktes Sprachgespräch mit dem Support.</p>
             </div>
             <div>
                 <span class="pill"><span class="dot"></span>Online</span>
-                <a class="back-link" href="DSVGO3.html">&larr; Zurück zu DSVGO3</a>
+                <a class="back-link" href="DSVGO3.html">&larr; Zurück</a>
             </div>
         </header>
 
@@ -69,7 +69,7 @@
                 <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
             </div>
             <h2 id="call-title">Bereit für den Anruf</h2>
-            <p id="call-desc">Klicke auf "Anruf starten", um das Mikrofon zu aktivieren und in die Warteschlange zu gehen.</p>
+            <p id="call-desc">Klicke auf "Anruf starten", um die Verbindung aufzubauen.</p>
             
             <div>
                 <button id="start-call-btn" class="btn btn-primary" onclick="startCall()">Anruf Starten</button>
@@ -79,16 +79,15 @@
             <div id="status-msg" class="status-box">Status: Bereit</div>
             <audio id="remote-audio" autoplay></audio>
         </section>
-        <div class="footer">Luna Bot &bull; Direktes HTML</div>
+        <div class="footer">Luna Support &bull; Live System</div>
     </main>
 
-    <!-- Socket.io Skript vom Server einbinden -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         let localStream = null;
         let peerConnection = null;
-        const userId = "User_" + Math.floor(Math.random() * 10000);
+        const userId = "Anrufer_" + Math.floor(Math.random() * 10000);
 
         const rtcConfig = {
             iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
@@ -105,10 +104,10 @@
                 callOrb.classList.add('active');
                 document.getElementById('start-call-btn').style.display = 'none';
                 document.getElementById('end-call-btn').style.display = 'inline-flex';
-                document.getElementById('call-title').textContent = "Verbindung wird aufgebaut...";
-                statusMsg.textContent = "Verbinde mit dem Server...";
+                document.getElementById('call-title').textContent = "Warteschlange / Verbindet...";
+                statusMsg.textContent = "Verbinde mit dem Callcenter...";
 
-                // Anruf-Anfrage an den Server senden (löst die Warteschlange aus)
+                // Signalisiert dem Server, dass ein Anruf gestartet wurde (aktiviert die Warteschlange)
                 socket.emit('request-call', { adminId: "Owner", targetUserId: userId });
 
             } catch (error) {
@@ -117,20 +116,19 @@
             }
         }
 
-        // Warteschlangen-Status vom Server empfangen
+        // Warteschlangen-Status falls Leitung belegt ist
         socket.on('queue-status', (data) => {
             const statusMsg = document.getElementById('status-msg');
-            document.getElementById('call-title').textContent = "In der Warteschlange";
-            statusMsg.textContent = data.message; // Z.B. "Leitung belegt. 1 ist in der Leitung, bitte warten sie."
+            document.getElementById('call-title').textContent = "Leitung belegt (Warteschlange)";
+            statusMsg.textContent = data.message; 
         });
 
-        // Wenn die Leitung frei wird und der Anruf verbunden ist
+        // Wenn die Leitung frei wird und das Gespräch startet
         socket.on('call-connected', async (data) => {
             const statusMsg = document.getElementById('status-msg');
             document.getElementById('call-title').textContent = "Gespräch aktiv";
             statusMsg.textContent = "Leitung frei! Verbindung steht.";
 
-            // WebRTC Peer Connection starten
             peerConnection = new RTCPeerConnection(rtcConfig);
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
@@ -144,13 +142,11 @@
                 }
             };
 
-            // Angebot (Offer) an den Admin erstellen
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
             socket.emit('webrtc-offer', { offer: offer, target: data.adminSocketId });
         });
 
-        // WebRTC Signaling Events
         socket.on('webrtc-offer', async (data) => {
             if (!peerConnection) {
                 peerConnection = new RTCPeerConnection(rtcConfig);
