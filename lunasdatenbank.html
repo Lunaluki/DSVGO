@@ -147,9 +147,8 @@
     </main>
 
     <script>
-        const configuredApi = window.LUNA_API_URL;
-        const apiBase = configuredApi || `${location.protocol === 'file:' ? 'http:' : location.protocol}//${location.hostname || '127.0.0.1'}:3100`;
-        const numberFormat = new Intl.NumberFormat('de-DE');
+        const apiBase = "https://data-tracked-carlos-cedar.trycloudafred.com";
+        const numberFormat = new Intl.NumberFormat('de-DE'); 
         const $ = id => document.getElementById(id);
 
         function setBar(id, value) {
