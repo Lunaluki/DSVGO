@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -315,12 +314,8 @@ async function checkTicket() {
         </div>
     `;
 
-    // Dynamische Backend-URL: Nutzt die Render-URL oder weicht auf localhost aus, falls du lokal testest
-    const BACKEND_URL = window.location.hostname === 'localhost' 
-        ? 'http://localhost:3000' 
-        : 'https://meinserver-u317.onrender.com';
-
-    const url = `${BACKEND_URL}/tickets/${encodeURIComponent(id)}`;
+    // Relativer Pfad – leitet Anfragen automatisch über den aktuellen Cloudflare-Link oder localhost weiter
+    const url = `/tickets/${encodeURIComponent(id)}`;
 
     try {
         const res = await fetch(url);
