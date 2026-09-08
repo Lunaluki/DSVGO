@@ -10,7 +10,6 @@
             --pink-main: #ff4fae;
             --pink-dark: #ff2f9c;
             --pink-light: #ff9dd6;
-            --pink-glow: #ff007f;
             --pink-neon: #ff00ff;
         }
 
@@ -114,56 +113,6 @@
             box-shadow: 0 0 8px var(--pink-neon);
         }
 
-        .upload-dropzone {
-            border: 2px dashed rgba(255, 157, 214, 0.4);
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .upload-dropzone:hover {
-            border-color: var(--pink-neon);
-        }
-
-        .upload-dropzone p {
-            margin: 0 0 5px 0;
-            color: #ffe6f5;
-            font-size: 0.95rem;
-        }
-
-        .upload-dropzone span {
-            color: var(--pink-light);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: underline;
-        }
-
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        .preview-thumb {
-            position: relative;
-            width: 70px;
-            height: 70px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--pink-light);
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .preview-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         .btn-action {
             display: inline-block;
             width: 100%;
@@ -207,33 +156,6 @@
             color: var(--pink-light);
         }
 
-        .badge-reported {
-            background: #ff2f9c;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .badge-caution {
-            background: #eab308;
-            color: #000;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .badge-danger {
-            background: #ef4444;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
         .user-box {
             background: rgba(255, 47, 156, 0.1);
             border: 1px solid var(--pink-light);
@@ -265,21 +187,10 @@
 
 <main id="mainContainer">
 
-    <!-- KONTO-BEREICH / LOGIN-HINWEIS -->
-    <section id="loginSection" style="display: none;">
-        <h2>0. Anmeldung erforderlich</h2>
-        <div class="edge-box" style="text-align: center; padding: 2.5rem 1.8rem;">
-            <p style="font-size: 1.1rem; color: #ffe6f5; margin-bottom: 1.5rem;">
-                🔒 Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können und deine gemeldeten Einträge zu verwalten.
-            </p>
-            <a class="btn-action" href="login.html" style="max-width: 300px; margin: 0 auto;">Zum Login / Registrieren</a>
-        </div>
-    </section>
-
-    <!-- NUMMER MELDEN FORMULAR -->
-    <section id="reportSection" style="display: none;">
+    <!-- NUMMER MELDEN FORMULAR (Standardmäßig sichtbar zum Testen) -->
+    <section id="reportSection">
         <div class="user-box">
-            <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);"></strong></span>
+            <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);">Gast / Admin</strong></span>
             <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Abmelden</button>
         </div>
 
@@ -287,7 +198,7 @@
         <div class="edge-box">
             <form id="reportForm" onsubmit="submitReport(event)">
                 <div class="form-group">
-                    <label for="badNumber">Telefonnummer (Nur Ziffern, z.B. 4917666724481):</label>
+                    <label for="badNumber">Telefonnummer (z. B. 4917666724481):</label>
                     <input type="tel" id="badNumber" placeholder="4917666724481" 
                            oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
                 </div>
@@ -297,27 +208,16 @@
                     <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
                 </div>
 
-                <!-- Screenshot Upload Sektion -->
-                <div class="form-group">
-                    <label>Beweis-Screenshots hinzufügen (optional):</label>
-                    <div class="upload-dropzone" onclick="document.getElementById('fileInput').click()">
-                        <p>Klicken oder Screenshots hierher ziehen</p>
-                        <span>Bilder auswählen</span>
-                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFiles(this.files)">
-                    </div>
-                    <div class="preview-container" id="previewContainer"></div>
-                </div>
-
                 <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
             </form>
         </div>
     </section>
 
-    <!-- MEINE GEMELDETEN NUMMERN -->
-    <section id="myReportsSection" style="display: none;">
-        <h2>2. Meine gemeldeten Nummern</h2>
+    <!-- GEMELDETE NUMMERN TABELLE -->
+    <section id="myReportsSection">
+        <h2>2. Gemeldete Nummern in der Datenbank</h2>
         <div class="edge-box">
-            <p>Aus Datenschutzgründen siehst hier <strong>nur du</strong> exklusiv die Nummern, die du persönlich gemeldet hast.</p>
+            <p>Hier siehst du alle im System eingetragenen gemeldeten Nummern.</p>
             
             <div style="overflow-x: auto;">
                 <table>
@@ -325,13 +225,13 @@
                         <tr>
                             <th>Nummer</th>
                             <th>Grund</th>
-                            <th>Meldungen (Gesamt)</th>
+                            <th>Gemeldet von</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="blacklistTable">
                         <tr>
-                            <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade deine Meldungen...</td>
+                            <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade Einträge...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -347,82 +247,29 @@
 
 <script>
     const API_BASE = "https://luna-admin-rdqg.onrender.com";
-    let selectedFiles = [];
 
     window.onload = async function() {
         const token = localStorage.getItem("luna_user_token");
         
-        if (!token) {
-            document.getElementById("loginSection").style.display = "block";
-            document.getElementById("reportSection").style.display = "none";
-            document.getElementById("myReportsSection").style.display = "none";
-        } else {
+        // Versuche Benutzerdaten zu laden, falls Token da ist
+        if (token) {
             try {
                 const res = await fetch(`${API_BASE}/api/auth/me`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 const data = await res.json();
-
                 if (res.ok && data.success) {
                     const realUsername = data.data.name || data.data.username;
-                    
-                    if (data.data.isBlocked || data.data.abuseDetected) {
-                        triggerStopScreen(realUsername, data.data.fakeName || "Anderer Name");
-                        return;
-                    }
-
-                    document.getElementById("loginSection").style.display = "none";
-                    document.getElementById("reportSection").style.display = "block";
-                    document.getElementById("myReportsSection").style.display = "block";
                     document.getElementById("displayUser").innerText = realUsername;
-                    
-                    loadMyBlacklist(token);
-                } else {
-                    localStorage.removeItem("luna_user_token");
-                    document.getElementById("loginSection").style.display = "block";
-                    document.getElementById("reportSection").style.display = "none";
-                    document.getElementById("myReportsSection").style.display = "none";
                 }
             } catch (err) {
-                console.error("Auth Check Fehler:", err);
+                console.log("Konnte User nicht laden, fahre fort...");
             }
         }
-    };
-
-    function handleFiles(files) {
-        const previewContainer = document.getElementById("previewContainer");
         
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            selectedFiles.push(file);
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const thumb = document.createElement("div");
-                thumb.className = "preview-thumb";
-                thumb.innerHTML = `<img src="${e.target.result}" alt="Vorschau">`;
-                previewContainer.appendChild(thumb);
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function triggerStopScreen(echterName, falscherName) {
-        document.getElementById("mainContainer").innerHTML = `
-            <div style="background-color: #7f1d1d; border: 3px solid #ef4444; border-radius: 16px; margin-top: 50px; padding: 40px; text-align: center;">
-                <h1 style="font-size: 3rem; margin-bottom: 20px; color: #fff;">🚨 STOPP! 🚨</h1>
-                <p style="font-size: 1.5rem; line-height: 1.6; color: #ffe6f5;">
-                    Dein Account ist als <strong>${echterName}</strong> registriert, aber das System hat einen Missbrauchsversuch erkannt!
-                </p>
-                <p style="font-size: 1.2rem; margin-top: 15px; color: #fca5a5; font-weight: bold;">
-                    Stop! Leni-Missbrauch erkannt. Bitte melde dich mit deinem richtigen Account an, um fortzufahren.
-                </p>
-                <button onclick="logoutUser()" style="margin-top: 30px; padding: 12px 25px; background: white; color: #7f1d1d; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem;">
-                    Abmelden & Account wechseln
-                </button>
-            </div>
-        `;
-    }
+        // Lade die Blacklist-Tabelle unabhängig vom Login, damit man direkt was sieht
+        loadBlacklistTable();
+    };
 
     function logoutUser() {
         localStorage.removeItem("luna_user_token");
@@ -436,42 +283,22 @@
         const reason = document.getElementById("reason").value.trim();
         const fan = document.getElementById("displayUser").innerText.trim();
 
-        if (!token) {
-            alert("⚠️ Du musst eingeloggt sein, um eine Nummer zu melden!");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("fan", fan);
-        formData.append("number", number);
-        formData.append("reason", reason);
-
-        for (let i = 0; i < selectedFiles.length; i++) {
-            formData.append("screenshots", selectedFiles[i]);
-        }
-
         try {
             const res = await fetch(`${API_BASE}/api/blacklist`, {
                 method: "POST",
                 headers: { 
-                    "Authorization": `Bearer ${token}`
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token || ''}`
                 },
-                body: formData
+                body: JSON.stringify({ number, reason, fan })
             });
-
-            const data = await res.json();
 
             if (res.ok) {
                 alert("✅ Nummer erfolgreich gemeldet!");
                 document.getElementById("reportForm").reset();
-                selectedFiles = [];
-                document.getElementById("previewContainer").innerHTML = "";
-                loadMyBlacklist(token);
+                loadBlacklistTable();
             } else {
-                if(data.abuseDetected) {
-                    triggerStopScreen(data.realName || fan, data.fakeName || "Unbekannt");
-                    return;
-                }
+                const data = await res.json();
                 alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer."));
             }
         } catch (err) {
@@ -480,44 +307,29 @@
         }
     }
 
-    async function loadMyBlacklist(token) {
+    async function loadBlacklistTable() {
         try {
-            const res = await fetch(`${API_BASE}/api/blacklist/my`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
+            const res = await fetch(`${API_BASE}/api/blacklist`);
             if (!res.ok) throw new Error("Fehler beim Laden");
             const data = await res.json();
 
             const tbody = document.getElementById("blacklistTable");
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Du hast bisher keine Nummern gemeldet.</td></tr>`;
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher keine Nummern gemeldet.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = data.map(item => {
-                let count = item.count || 1;
-                let statusBadge = '';
-
-                if (count >= 3) {
-                    statusBadge = `<span class="badge-danger">🚨 GEFAHR (${count}x)</span>`;
-                } else if (count === 2) {
-                    statusBadge = `<span class="badge-caution">⚠️ Vorsicht (2x)</span>`;
-                } else {
-                    statusBadge = `<span class="badge-reported">Gemeldet (1x)</span>`;
-                }
-
-                return `
-                    <tr>
-                        <td><code>${escapeHtml(item.number)}</code></td>
-                        <td>${escapeHtml(item.reason || 'Kein Grund angegeben')}</td>
-                        <td style="text-align:center; font-weight:bold;">${count}</td>
-                        <td>${statusBadge}</td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td><code>${escapeHtml(item.number)}</code></td>
+                    <td>${escapeHtml(item.reason || 'Kein Grund')}</td>
+                    <td>${escapeHtml(item.reportedBy || item.fan || 'Unbekannt')}</td>
+                    <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Aktiv</span></td>
+                </tr>
+            `).join('');
         } catch (err) {
             console.error(err);
-            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden deiner Liste.</td></tr>`;
+            document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Tabelle.</td></tr>`;
         }
     }
 
