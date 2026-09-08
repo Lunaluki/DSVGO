@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -58,7 +59,6 @@
             animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* 🌟 EDGE LIGHTING BOX MIT SOFT GLOW 🌟 */
         .edge-box {
             position: relative;
             border-radius: 20px;
@@ -155,7 +155,6 @@
             filter: brightness(1.1);
         }
 
-        /* Result Animation Card */
         .result {
             margin-top: 2rem;
             padding: 1.8rem;
@@ -174,7 +173,6 @@
             font-size: 0.98rem;
         }
 
-        /* Spinner / Loading state */
         .loading-spinner {
             width: 32px;
             height: 32px;
@@ -189,7 +187,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Status Glow Badges & Pulse Animations */
         .status-open {
             color: #10b981;
             font-weight: 700;
@@ -318,14 +315,19 @@ async function checkTicket() {
         </div>
     `;
 
-    const url = `https://meinserver-u317.onrender.com/tickets/${encodeURIComponent(id)}`;
+    // Dynamische Backend-URL: Nutzt die Render-URL oder weicht auf localhost aus, falls du lokal testest
+    const BACKEND_URL = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000' 
+        : 'https://meinserver-u317.onrender.com';
+
+    const url = `${BACKEND_URL}/tickets/${encodeURIComponent(id)}`;
 
     try {
         const res = await fetch(url);
         
         if (!res.ok) {
             resultBox.innerHTML = `
-                <div class="result">
+                <div class="result" style="opacity:1; transform:translateY(0);">
                     <p style="color:#ef4444;"><strong>Kein Ticket gefunden</strong></p>
                     <p>Unter dieser Nummer konnte kein aktives Ticket im System ermittelt werden.</p>
                 </div>
@@ -337,7 +339,7 @@ async function checkTicket() {
 
         if (!data || !data.ticketId) {
             resultBox.innerHTML = `
-                <div class="result">
+                <div class="result" style="opacity:1; transform:translateY(0);">
                     <p style="color:#ef4444;"><strong>Kein Ticket gefunden</strong></p>
                     <p>Überprüfe bitte die Schreibweise deiner Ticketnummer.</p>
                 </div>
@@ -365,7 +367,7 @@ async function checkTicket() {
         }
 
         resultBox.innerHTML = `
-            <div class="result">
+            <div class="result" style="opacity:1; transform:translateY(0);">
                 <p><strong>Ticketnummer:</strong> <span style="color:var(--blue-glow); font-family:monospace; font-size:1.05rem;">${data.ticketId}</span></p>
                 <p><strong>Aktueller Status:</strong> <span class="${statusClass}">${statusText}</span></p>
                 <p><strong>Erstellt am:</strong> ${new Date(data.date || Date.now()).toLocaleString('de-DE')}</p>
@@ -378,7 +380,7 @@ async function checkTicket() {
         `;
     } catch (err) {
         resultBox.innerHTML = `
-            <div class="result">
+            <div class="result" style="opacity:1; transform:translateY(0);">
                 <p style="color:#ef4444;"><strong>Verbindungsfehler</strong></p>
                 <p>Der Server antwortet momentan nicht. Versuche es in wenigen Augenblicken erneut.</p>
             </div>
