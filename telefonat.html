@@ -84,18 +84,19 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
-        let globalAudioStream = null;
-        let peerConnection = null;
-        const userId = "Anrufer_" + Math.floor(Math.random() * 10000);
+        // Wir nutzen durchgehend 'var', um jegliche Hoisting/Scope-Fehler komplett auszuschließen
+        var socket = io();
+        var localStream = null;
+        var peerConnection = null;
+        var userId = "Anrufer_" + Math.floor(Math.random() * 10000);
 
-        const rtcConfig = {
+        var rtcConfig = {
             iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
         };
 
         async function startCall() {
-            const statusMsg = document.getElementById('status-msg');
-            const callOrb = document.getElementById('call-orb');
+            var statusMsg = document.getElementById('status-msg');
+            var callOrb = document.getElementById('call-orb');
             
             if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
                 statusMsg.innerHTML = "❌ <strong>Fehler:</strong> Mikrofon erfordert HTTPS!";
@@ -103,18 +104,16 @@
             }
 
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                statusMsg.textContent = "❌ Fehler: Dein Browser unterstützt kein getUserMedia.";
+                statusMsg.textContent = "❌ Fehler: Browser unterstützt kein getUserMedia.";
                 return;
             }
 
             try {
                 statusMsg.textContent = "Fordere Mikrofon-Zugriff an...";
                 
-                const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                localStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: { echoCancellation: true, noiseSuppression: true } 
                 });
-                
-                globalAudioStream = mediaStream;
 
                 callOrb.classList.add('active');
                 document.getElementById('start-call-btn').style.display = 'none';
@@ -130,34 +129,34 @@
             }
         }
 
-        socket.on('queue-status', (data) => {
-            const statusMsg = document.getElementById('status-msg');
+        socket.on('queue-status', function(data) {
+            var statusMsg = document.getElementById('status-msg');
             document.getElementById('call-title').textContent = "Leitung belegt (Warteschlange)";
             statusMsg.textContent = data.message; 
         });
 
-        socket.on('call-connected', async (data) => {
-            const statusMsg = document.getElementById('status-msg');
+        socket.on('call-connected', async function(data) {
+            var statusMsg = document.getElementById('status-msg');
             document.getElementById('call-title').textContent = "Gespräch aktiv";
             statusMsg.textContent = "Verbindung steht.";
 
             try {
                 peerConnection = new RTCPeerConnection(rtcConfig);
-                if (globalAudioStream) {
-                    globalAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, globalAudioStream));
+                if (localStream) {
+                    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 }
 
-                peerConnection.ontrack = event => {
+                peerConnection.ontrack = function(event) {
                     document.getElementById('remote-audio').srcObject = event.streams[0];
                 };
 
-                peerConnection.onicecandidate = event => {
+                peerConnection.onicecandidate = function(event) {
                     if (event.candidate) {
                         socket.emit('ice-candidate', { candidate: event.candidate, to: data.adminSocketId });
                     }
                 };
 
-                const offer = await peerConnection.createOffer();
+                var offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
                 socket.emit('webrtc-offer', { offer: offer, target: data.adminSocketId });
             } catch (err) {
@@ -166,41 +165,41 @@
             }
         });
 
-        socket.on('webrtc-offer', async (data) => {
+        socket.on('webrtc-offer', async function(data) {
             if (!peerConnection) {
                 peerConnection = new RTCPeerConnection(rtcConfig);
-                if (globalAudioStream) {
-                    globalAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, globalAudioStream));
+                if (localStream) {
+                    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 }
-                peerConnection.ontrack = event => {
+                peerConnection.ontrack = function(event) {
                     document.getElementById('remote-audio').srcObject = event.streams[0];
                 };
-                peerConnection.onicecandidate = event => {
+                peerConnection.onicecandidate = function(event) {
                     if (event.candidate) socket.emit('ice-candidate', { candidate: event.candidate, to: data.from });
                 };
             }
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await peerConnection.createAnswer();
+            var answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
             socket.emit('webrtc-answer', { answer: answer, target: data.from });
         });
 
-        socket.on('webrtc-answer', async (data) => {
+        socket.on('webrtc-answer', async function(data) {
             if (peerConnection) {
                 await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
             }
         });
 
-        socket.on('ice-candidate', async (data) => {
+        socket.on('ice-candidate', async function(data) {
             if (peerConnection && data.candidate) {
                 await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
             }
         });
 
         function endCall() {
-            if (globalAudioStream) {
-                globalAudioStream.getTracks().forEach(track => track.stop());
-                globalAudioStream = null;
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
             }
             if (peerConnection) {
                 peerConnection.close();
