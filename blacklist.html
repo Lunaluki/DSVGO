@@ -187,7 +187,7 @@
 
 <main id="mainContainer">
 
-    <!-- NUMMER MELDEN FORMULAR (Standardmäßig sichtbar zum Testen) -->
+    <!-- NUMMER MELDEN FORMULAR -->
     <section id="reportSection">
         <div class="user-box">
             <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);">Gast / Admin</strong></span>
@@ -246,15 +246,13 @@
 </main>
 
 <script>
-    const API_BASE = "https://luna-admin-rdqg.onrender.com";
-
     window.onload = async function() {
         const token = localStorage.getItem("luna_user_token");
         
         // Versuche Benutzerdaten zu laden, falls Token da ist
         if (token) {
             try {
-                const res = await fetch(`${API_BASE}/api/auth/me`, {
+                const res = await fetch(`/api/auth/me`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -267,7 +265,7 @@
             }
         }
         
-        // Lade die Blacklist-Tabelle unabhängig vom Login, damit man direkt was sieht
+        // Lade die Blacklist-Tabelle unabhängig vom Login
         loadBlacklistTable();
     };
 
@@ -284,7 +282,7 @@
         const fan = document.getElementById("displayUser").innerText.trim();
 
         try {
-            const res = await fetch(`${API_BASE}/api/blacklist`, {
+            const res = await fetch(`/api/blacklist`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -309,7 +307,7 @@
 
     async function loadBlacklistTable() {
         try {
-            const res = await fetch(`${API_BASE}/api/blacklist`);
+            const res = await fetch(`/api/blacklist`);
             if (!res.ok) throw new Error("Fehler beim Laden");
             const data = await res.json();
 
