@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09111f">
+    <title>Luna Browser-Call / Entwickler</title>
+    <style>
+        :root {
+            --bg: #07101d;
+            --panel: rgba(13, 27, 46, .82);
+            --line: rgba(151, 190, 230, .18);
+            --text: #f1f7ff;
+            --muted: #91a8c2;
+            --cyan: #5de2ff;
+            --mint: #62f0b1;
+            --gold: #ffd166;
+            --red: #ff7187;
+            --shadow: 0 24px 70px rgba(0, 0, 0, .3);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; min-height: 100vh; color: var(--text); background: var(--bg);
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        body::before, body::after {
+            content: ""; position: fixed; z-index: -1; width: 42vw; height: 42vw; border-radius: 50%; filter: blur(70px); opacity: .18; pointer-events: none;
+        }
+        body::before { top: -18vw; left: -12vw; background: var(--cyan); }
+        body::after { right: -16vw; bottom: -18vw; background: #ff789d; }
+
+        .shell { width: min(850px, calc(100% - 36px)); margin: 0 auto; padding: 28px 0 54px; flex: 1; }
+        header { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 28px; }
+        .eyebrow { color: var(--cyan); font-size: .76rem; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; }
+        h1 { margin: 8px 0 6px; font-family: Georgia, serif; font-size: clamp(2rem, 5vw, 3.5rem); line-height: .96; }
+        .subtitle { margin: 0; color: var(--muted); }
+        .pill, .back-link { border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; color: var(--muted); text-decoration: none; background: rgba(8, 20, 35, .65); font-size: .86rem; }
+        .back-link { color: var(--text); transition: transform .2s ease, border-color .2s ease; }
+        .back-link:hover { transform: translateY(-2px); border-color: var(--cyan); }
+        .dot { display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--mint); }
+        .card { border: 1px solid var(--line); background: linear-gradient(145deg, var(--panel), rgba(7, 17, 31, .76)); box-shadow: var(--shadow); border-radius: 22px; padding: 32px; text-align: center; }
+        .call-icon { display: inline-grid; place-items: center; width: 80px; height: 80px; border-radius: 50%; color: var(--cyan); border: 1px solid currentColor; margin-bottom: 20px; }
+        .call-icon.active { color: var(--mint); box-shadow: 0 0 40px rgba(98, 240, 177, .4); }
+        .call-icon svg { width: 36px; height: 36px; fill: currentColor; }
+        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 999px; font-weight: 700; font-size: .95rem; cursor: pointer; border: none; transition: transform .2s ease; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--mint)); color: #07101d; }
+        .btn-danger { background: linear-gradient(135deg, var(--red), var(--gold)); color: #07101d; display: none; }
+        .status-box { margin-top: 20px; padding: 12px; background: rgba(8, 20, 35, .5); border-radius: 12px; font-size: .85rem; color: var(--muted); }
+        .footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <header>
+            <div>
+                <div class="eyebrow">Luna Live / WebRTC</div>
+                <h1>Browser-Call</h1>
+                <p class="subtitle">Direktes Sprachgespräch mit dem Entwickler.</p>
+            </div>
+            <div>
+                <span class="pill"><span class="dot"></span>Online</span>
+                <a class="back-link" href="DSVGO3.html">&larr; Zurück zu DSVGO3</a>
+            </div>
+        </header>
+
+        <section class="card">
+            <div id="call-orb" class="call-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+            </div>
+            <h2 id="call-title">Bereit für den Anruf</h2>
+            <p id="call-desc">Klicke auf "Anruf starten", um das Mikrofon zu aktivieren.</p>
+            
+            <div>
+                <button id="start-call-btn" class="btn btn-primary" onclick="startCall()">Anruf Starten</button>
+                <button id="end-call-btn" class="btn btn-danger" onclick="endCall()">Auflegen</button>
+            </div>
+
+            <div id="status-msg" class="status-box">Status: Bereit</div>
+            <audio id="remote-audio" autoplay></audio>
+        </section>
+        <div class="footer">Luna Bot &bull; Direktes HTML</div>
+    </main>
+
+    <script>
+        let localStream = null;
+        let peerConnection = null;
+
+        async function startCall() {
+            const statusMsg = document.getElementById('status-msg');
+            const callOrb = document.getElementById('call-orb');
+            
+            try {
+                statusMsg.textContent = "Fordere Mikrofon an...";
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                callOrb.classList.add('active');
+                document.getElementById('start-call-btn').style.display = 'none';
+                document.getElementById('end-call-btn').style.display = 'inline-flex';
+                document.getElementById('call-title').textContent = "Verbindung aktiv";
+                statusMsg.textContent = "Mikrofon aktiv. Bereit für Audio-Stream.";
+
+                peerConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+                peerConnection.ontrack = event => {
+                    document.getElementById('remote-audio').srcObject = event.streams[0];
+                };
+
+            } catch (error) {
+                console.error(error);
+                statusMsg.textContent = "Fehler: Kein Mikrofon-Zugriff erlaubt.";
+            }
+        }
+
+        function endCall() {
+            if (localStream) localStream.getTracks().forEach(track => track.stop());
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            document.getElementById('call-orb').classList.remove('active');
+            document.getElementById('start-call-btn').style.display = 'inline-flex';
+            document.getElementById('end-call-btn').style.display = 'none';
+            document.getElementById('call-title').textContent = "Bereit für den Anruf";
+            document.getElementById('status-msg').textContent = "Anruf beendet.";
+        }
+    </script>
+</body>
+</html>
