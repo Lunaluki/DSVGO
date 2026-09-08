@@ -69,7 +69,7 @@
                 <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
             </div>
             <h2 id="call-title">Bereit für den Anruf</h2>
-            <p id="call-desc">Klicke auf "Anruf starten", um das Mikrofon zu aktivieren.</p>
+            <p id="call-desc">Klicke auf "Anruf starten", um das Mikrofon zu aktivieren und in die Warteschlange zu gehen.</p>
             
             <div>
                 <button id="start-call-btn" class="btn btn-primary" onclick="startCall()">Anruf Starten</button>
@@ -82,9 +82,17 @@
         <div class="footer">Luna Bot &bull; Direktes HTML</div>
     </main>
 
+    <!-- Socket.io Skript vom Server einbinden -->
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();
         let localStream = null;
         let peerConnection = null;
+        const userId = "User_" + Math.floor(Math.random() * 10000);
+
+        const rtcConfig = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        };
 
         async function startCall() {
             const statusMsg = document.getElementById('status-msg');
@@ -97,15 +105,11 @@
                 callOrb.classList.add('active');
                 document.getElementById('start-call-btn').style.display = 'none';
                 document.getElementById('end-call-btn').style.display = 'inline-flex';
-                document.getElementById('call-title').textContent = "Verbindung aktiv";
-                statusMsg.textContent = "Mikrofon aktiv. Bereit für Audio-Stream.";
+                document.getElementById('call-title').textContent = "Verbindung wird aufgebaut...";
+                statusMsg.textContent = "Verbinde mit dem Server...";
 
-                peerConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                peerConnection.ontrack = event => {
-                    document.getElementById('remote-audio').srcObject = event.streams[0];
-                };
+                // Anruf-Anfrage an den Server senden (löst die Warteschlange aus)
+                socket.emit('request-call', { adminId: "Owner", targetUserId: userId });
 
             } catch (error) {
                 console.error(error);
@@ -113,12 +117,76 @@
             }
         }
 
+        // Warteschlangen-Status vom Server empfangen
+        socket.on('queue-status', (data) => {
+            const statusMsg = document.getElementById('status-msg');
+            document.getElementById('call-title').textContent = "In der Warteschlange";
+            statusMsg.textContent = data.message; // Z.B. "Leitung belegt. 1 ist in der Leitung, bitte warten sie."
+        });
+
+        // Wenn die Leitung frei wird und der Anruf verbunden ist
+        socket.on('call-connected', async (data) => {
+            const statusMsg = document.getElementById('status-msg');
+            document.getElementById('call-title').textContent = "Gespräch aktiv";
+            statusMsg.textContent = "Leitung frei! Verbindung steht.";
+
+            // WebRTC Peer Connection starten
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            peerConnection.ontrack = event => {
+                document.getElementById('remote-audio').srcObject = event.streams[0];
+            };
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.emit('ice-candidate', { candidate: event.candidate, to: data.adminSocketId });
+                }
+            };
+
+            // Angebot (Offer) an den Admin erstellen
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            socket.emit('webrtc-offer', { offer: offer, target: data.adminSocketId });
+        });
+
+        // WebRTC Signaling Events
+        socket.on('webrtc-offer', async (data) => {
+            if (!peerConnection) {
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                peerConnection.ontrack = event => {
+                    document.getElementById('remote-audio').srcObject = event.streams[0];
+                };
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) socket.emit('ice-candidate', { candidate: event.candidate, to: data.from });
+                };
+            }
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('webrtc-answer', { answer: answer, target: data.from });
+        });
+
+        socket.on('webrtc-answer', async (data) => {
+            if (peerConnection) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+            }
+        });
+
+        socket.on('ice-candidate', async (data) => {
+            if (peerConnection && data.candidate) {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            }
+        });
+
         function endCall() {
             if (localStream) localStream.getTracks().forEach(track => track.stop());
             if (peerConnection) {
                 peerConnection.close();
                 peerConnection = null;
             }
+            socket.emit('end-call');
 
             document.getElementById('call-orb').classList.remove('active');
             document.getElementById('start-call-btn').style.display = 'inline-flex';
