@@ -189,7 +189,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Status Glow Badges */
+        /* Status Glow Badges & Pulse Animations */
         .status-open {
             color: #10b981;
             font-weight: 700;
@@ -204,8 +204,14 @@
             font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            text-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+            gap: 8px;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.7);
+            animation: pulseGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.85; filter: brightness(1); }
+            100% { transform: scale(1.05); opacity: 1; filter: brightness(1.3); }
         }
 
         .status-closed {
@@ -305,7 +311,6 @@ async function checkTicket() {
         return;
     }
 
-    // Zeige schicken Loader während des Fetch-Requests
     resultBox.innerHTML = `
         <div class="result" style="opacity:1; transform:translateY(0); text-align:center;">
             <div class="loading-spinner"></div>
@@ -348,7 +353,7 @@ async function checkTicket() {
             statusClass = "status-open";
         } 
         else if (data.status === "processing") {
-            statusText = "⚡ In Bearbeitung";
+            statusText = "⚡ In Bearbeitung (Wird bearbeitet)";
             statusClass = "status-processing";
         } 
         else if (data.status === "closed") {
@@ -381,7 +386,6 @@ async function checkTicket() {
     }
 }
 
-// Enter-Taste Support
 document.getElementById("ticketId").addEventListener("keypress", function(event) {
     if (event.key === "Enter") {
         checkTicket();
