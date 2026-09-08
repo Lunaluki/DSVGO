@@ -97,54 +97,84 @@
             const statusMsg = document.getElementById('status-msg');
             const callOrb = document.getElementById('call-orb');
             
+            // WICHTIGER SICHERHEITSHINWEIS FÜR RENDER:
+            // Moderne Browser erlauben Mikrofon-Zugriff auf externen Servern AUSSCHLIESSLICH über HTTPS!
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                statusMsg.innerHTML = "❌ <strong>Fehler:</strong> Mikrofon erfordert HTTPS! Bitte rufe die Seite über https:// auf.";
+                return;
+            }
+
+            // Prüfen obmediaDevices überhaupt im Browser existiert
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                statusMsg.textContent = "❌ Fehler: Dein Browser unterstützt keine Mikrofon-Aufnahme.";
+                return;
+            }
+
             try {
-                statusMsg.textContent = "Fordere Mikrofon an...";
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                statusMsg.textContent = "Fordere Mikrofon-Zugriff an... Bitte im Browser 'Erlauben' klicken.";
+                
+                // Explizite Anfrage für Audio
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        echoCancellation: true, 
+                        noiseSuppression: true, 
+                        autoGainControl: true 
+                    } 
+                });
 
                 callOrb.classList.add('active');
                 document.getElementById('start-call-btn').style.display = 'none';
                 document.getElementById('end-call-btn').style.display = 'inline-flex';
                 document.getElementById('call-title').textContent = "Warteschlange / Verbindet...";
-                statusMsg.textContent = "Verbinde mit dem Callcenter...";
+                statusMsg.textContent = "Mikrofon aktiv. Verbinde mit dem Callcenter...";
 
-                // Signalisiert dem Server, dass ein Anruf gestartet wurde (aktiviert die Warteschlange)
+                // Signal an Server senden
                 socket.emit('request-call', { adminId: "Owner", targetUserId: userId });
 
             } catch (error) {
-                console.error(error);
-                statusMsg.textContent = "Fehler: Kein Mikrofon-Zugriff erlaubt.";
+                console.error("Mikrofon-Fehler:", error);
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    statusMsg.textContent = "❌ Zugriff verweigert! Bitte erlaube das Mikrofon im Schloss-Symbol links neben der URL.";
+                } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                    statusMsg.textContent = "❌ Kein Mikrofon an diesem Gerät gefunden.";
+                } else {
+                    statusMsg.textContent = "❌ Mikrofon-Fehler: " + (error.message || error.name);
+                }
             }
         }
 
-        // Warteschlangen-Status falls Leitung belegt ist
         socket.on('queue-status', (data) => {
             const statusMsg = document.getElementById('status-msg');
             document.getElementById('call-title').textContent = "Leitung belegt (Warteschlange)";
             statusMsg.textContent = data.message; 
         });
 
-        // Wenn die Leitung frei wird und das Gespräch startet
         socket.on('call-connected', async (data) => {
             const statusMsg = document.getElementById('status-msg');
             document.getElementById('call-title').textContent = "Gespräch aktiv";
             statusMsg.textContent = "Leitung frei! Verbindung steht.";
 
-            peerConnection = new RTCPeerConnection(rtcConfig);
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            try {
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-            peerConnection.ontrack = event => {
-                document.getElementById('remote-audio').srcObject = event.streams[0];
-            };
+                peerConnection.ontrack = event => {
+                    document.getElementById('remote-audio').srcObject = event.streams[0];
+                };
 
-            peerConnection.onicecandidate = event => {
-                if (event.candidate) {
-                    socket.emit('ice-candidate', { candidate: event.candidate, to: data.adminSocketId });
-                }
-            };
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) {
+                        socket.emit('ice-candidate', { candidate: event.candidate, to: data.adminSocketId });
+                    }
+                };
 
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            socket.emit('webrtc-offer', { offer: offer, target: data.adminSocketId });
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                socket.emit('webrtc-offer', { offer: offer, target: data.adminSocketId });
+            } catch (err) {
+                console.error("WebRTC Fehler:", err);
+                statusMsg.textContent = "Fehler beim Aufbau der Sprachverbindung.";
+            }
         });
 
         socket.on('webrtc-offer', async (data) => {
@@ -177,7 +207,10 @@
         });
 
         function endCall() {
-            if (localStream) localStream.getTracks().forEach(track => track.stop());
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
             if (peerConnection) {
                 peerConnection.close();
                 peerConnection = null;
