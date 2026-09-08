@@ -216,6 +216,9 @@
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
             transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
         }
 
         .btn-action:hover {
@@ -309,13 +312,15 @@
 
 <main id="mainContainer">
 
-    <!-- KONTO-BEREICH / LOGIN-HINWEIS -->
+    <!-- KONTO-BEREICH / VERBESSERTER LOGIN-HINWEIS -->
     <section id="loginSection" style="display: none;">
         <h2>0. Anmeldung erforderlich</h2>
         <div class="edge-box">
-            <div class="edge-box-content">
-                <p>Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können.</p>
-                <a class="btn-action" href="login.html" style="text-align: center; text-decoration: none; display: block; margin-top: 1rem;">Zum Login</a>
+            <div class="edge-box-content" style="text-align: center; padding: 2.5rem 1.8rem;">
+                <p style="font-size: 1.1rem; color: #ffe6f5; margin-bottom: 1.5rem;">
+                    🔒 Du musst in deinem Luna-Account eingeloggt sein, um Nummern melden zu können und deine gemeldeten Einträge zu verwalten.
+                </p>
+                <a class="btn-action" href="login.html" style="max-width: 300px; margin: 0 auto;">Zum Login / Registrieren</a>
             </div>
         </div>
     </section>
@@ -494,7 +499,6 @@
             return;
         }
 
-        // Formulardaten inkl. Screenshots als FormData aufbauen (für den Server-Upload)
         const formData = new FormData();
         formData.append("fan", fan);
         formData.append("number", number);
