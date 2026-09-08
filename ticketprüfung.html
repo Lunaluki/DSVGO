@@ -10,57 +10,62 @@
             --blue-glow: #00d2ff;
             --blue-neon: #3b82f6;
             --blue-dark: #1d4ed8;
-            --bg-dark: #0a0f1d;
-            --card-bg: #0f172a;
+            --bg-dark: #070b14;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
         }
 
         body {
-            background: var(--bg-dark);
-            color: #e2e8f0;
-            font-family: "Inter", Arial, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0, 210, 255, 0.08) 0%, transparent 45%);
+            color: #f8fafc;
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         header {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            padding: 3rem 2rem;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 2.5rem 2rem;
             text-align: center;
-            border-bottom: 2px solid var(--blue-neon);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.4rem;
-            color: #ffffff;
+            font-size: 2.2rem;
             font-weight: 800;
-            text-shadow: 0 0 12px var(--blue-glow);
+            background: linear-gradient(135deg, #ffffff 30%, var(--blue-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
         }
 
         main {
-            max-width: 850px;
+            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 2rem;
-            animation: fadeInUp 0.8s ease;
+            padding: 2rem 1rem;
+            flex: 1;
+            animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        h2 {
-            margin-top: 0;
-            color: #ffffff;
-            text-shadow: 0 0 8px var(--blue-glow);
-        }
-
-        /* 🌟 EDGE LIGHTING BOX (Wandernder blauer Lichtstrahl) 🌟 */
+        /* 🌟 EDGE LIGHTING BOX MIT SOFT GLOW 🌟 */
         .edge-box {
             position: relative;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 2px;
             background: transparent;
             overflow: hidden;
-            margin-top: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.15);
         }
 
         .edge-box::before {
@@ -78,7 +83,7 @@
                 var(--blue-neon) 220deg,
                 transparent 260deg
             );
-            animation: rotateEdge 3.5s linear infinite;
+            animation: rotateEdge 4s linear infinite;
         }
 
         @keyframes rotateEdge {
@@ -90,134 +95,172 @@
             position: relative;
             z-index: 1;
             background: var(--card-bg);
-            border-radius: 14px;
-            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: #94a3b8;
+            font-size: 0.95rem;
         }
 
         input {
             width: 100%;
-            padding: 1.2rem;
-            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            margin-top: 1.2rem;
             border-radius: 12px;
-            border: 1px solid #334155;
-            background: #090d16;
+            border: 1px solid var(--border-color);
+            background: rgba(9, 13, 22, 0.7);
             color: #f8fafc;
-            font-size: 1.1rem;
-            transition: 0.25s;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
             box-sizing: border-box;
         }
 
         input:focus {
             border-color: var(--blue-glow);
             outline: none;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            background: rgba(9, 13, 22, 0.9);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.25);
         }
 
         button {
             width: 100%;
-            padding: 1.2rem;
-            margin-top: 1.4rem;
+            padding: 1rem;
+            margin-top: 1.2rem;
             background: linear-gradient(135deg, var(--blue-neon), var(--blue-dark));
             color: white;
             font-weight: 700;
             border-radius: 12px;
             border: none;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 25px var(--blue-glow);
+            box-shadow: 0 6px 25px rgba(0, 210, 255, 0.5);
+            filter: brightness(1.1);
         }
 
+        /* Result Animation Card */
         .result {
             margin-top: 2rem;
-            padding: 1.5rem;
-            background: #090d16;
-            border-radius: 12px;
-            border: 1px solid #1e293b;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+            padding: 1.8rem;
+            background: rgba(9, 13, 22, 0.8);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(15px);
         }
 
-        /* 🚨 KRANKE LEUCHT- & BLINK-EFFEKTE FÜR DIE STATUSSE 🚨 */
+        .result p {
+            margin: 0.7rem 0;
+            color: #cbd5e1;
+            font-size: 0.98rem;
+        }
+
+        /* Spinner / Loading state */
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            margin: 20px auto;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--blue-glow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Glow Badges */
         .status-open {
             color: #10b981;
-            font-weight: 800;
-            display: inline-block;
-            animation: pulseGreen 1.5s infinite alternate;
-        }
-
-        @keyframes pulseGreen {
-            0% { text-shadow: 0 0 5px #10b981; opacity: 0.8; }
-            100% { text-shadow: 0 0 18px #10b981, 0 0 25px #34d399; opacity: 1; transform: scale(1.02); }
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
         }
 
         .status-processing {
             color: #fbbf24;
-            font-weight: 800;
-            display: inline-block;
-            animation: pulseYellow 1s infinite alternate;
-        }
-
-        @keyframes pulseYellow {
-            0% { text-shadow: 0 0 4px #fbbf24; opacity: 0.6; }
-            100% { text-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b; opacity: 1; }
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
         }
 
         .status-closed {
             color: #ef4444;
-            font-weight: 800;
-            display: inline-block;
-            animation: pulseRed 2s infinite alternate;
-        }
-
-        @keyframes pulseRed {
-            0% { text-shadow: 0 0 5px #ef4444; }
-            100% { text-shadow: 0 0 20px #ef4444, 0 0 30px #dc2626; }
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
         }
 
         .hint {
-            margin-top: 1rem;
-            font-size: 0.95rem;
-            color: #94a3b8;
+            margin-top: 1.2rem;
+            font-size: 0.88rem;
+            color: #64748b;
             border-left: 3px solid var(--blue-glow);
-            padding-left: 8px;
+            padding-left: 10px;
         }
 
         .back-btn {
             display: block;
             margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #334155;
-            color: #e2e8f0;
+            padding: 0.9rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: #94a3b8;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
-            font-weight: 700;
-            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
 
         .back-btn:hover {
-            background: #ffffff;
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         footer {
-            margin-top: 3rem;
             padding: 2rem;
             text-align: center;
-            border-top: 1px solid #1e293b;
-            color: #94a3b8;
-            font-size: 0.95rem;
+            border-top: 1px solid var(--border-color);
+            color: #64748b;
+            font-size: 0.85rem;
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -229,26 +272,23 @@
 </header>
 
 <main>
-
     <div class="edge-box">
         <div class="edge-box-content">
             <h2>Ticketstatus abfragen</h2>
-            <p>Gib deine Ticketnummer ein, die du per E‑Mail erhalten hast:</p>
+            <p>Gib deine Ticketnummer ein, um den aktuellen Bearbeitungsstand einzusehen:</p>
 
             <input type="text" id="ticketId" placeholder="z. B. LUNA-1722558123456">
-            <button onclick="checkTicket()">⚡ Ticket prüfen</button>
+            <button onclick="checkTicket()">⚡ Status abrufen</button>
 
             <div id="result"></div>
 
-            <a class="back-btn" href="DSVGO2.html">Zurück zur Informationsseite</a>
+            <a class="back-btn" href="DSVGO2.html">← Zurück zur Informationsseite</a>
         </div>
     </div>
-
 </main>
 
 <footer>
-    <p>Luna Support – Ticketprüfer</p>
-    <p>Stand: 31. Juli 2026</p>
+    <p>Luna Support System &bull; Stand: September 2026</p>
 </footer>
 
 <script>
@@ -257,21 +297,44 @@ async function checkTicket() {
     const resultBox = document.getElementById("result");
 
     if (!id) {
-        resultBox.innerHTML = "<p style='color:#ef4444; margin-top:1rem;'>Bitte eine Ticketnummer eingeben.</p>";
+        resultBox.innerHTML = `
+            <div class="result" style="opacity:1; transform:translateY(0);">
+                <p style="color:#ef4444;"><strong>Achtung:</strong> Bitte gib eine gültige Ticketnummer ein.</p>
+            </div>
+        `;
         return;
     }
 
-    const url = `https://meinserver-u317.onrender.com/tickets/${id}`;
+    // Zeige schicken Loader während des Fetch-Requests
+    resultBox.innerHTML = `
+        <div class="result" style="opacity:1; transform:translateY(0); text-align:center;">
+            <div class="loading-spinner"></div>
+            <p style="color:#94a3b8; margin-top:8px;">Frage Server ab...</p>
+        </div>
+    `;
+
+    const url = `https://meinserver-u317.onrender.com/tickets/${encodeURIComponent(id)}`;
 
     try {
         const res = await fetch(url);
+        
+        if (!res.ok) {
+            resultBox.innerHTML = `
+                <div class="result">
+                    <p style="color:#ef4444;"><strong>Kein Ticket gefunden</strong></p>
+                    <p>Unter dieser Nummer konnte kein aktives Ticket im System ermittelt werden.</p>
+                </div>
+            `;
+            return;
+        }
+
         const data = await res.json();
 
         if (!data || !data.ticketId) {
             resultBox.innerHTML = `
                 <div class="result">
-                    <p style="color:#ef4444;"><strong>Kein Ticket gefunden.</strong></p>
-                    <p>Bitte überprüfe deine Ticketnummer.</p>
+                    <p style="color:#ef4444;"><strong>Kein Ticket gefunden</strong></p>
+                    <p>Überprüfe bitte die Schreibweise deiner Ticketnummer.</p>
                 </div>
             `;
             return;
@@ -281,46 +344,49 @@ async function checkTicket() {
         let statusClass = "";
 
         if (data.status === "open") {
-            statusText = "🟢 Offen – Ticket wurde eingereicht.";
+            statusText = "🟢 Offen (Eingereicht)";
             statusClass = "status-open";
         } 
         else if (data.status === "processing") {
-            statusText = "⚡ In Bearbeitung – Ticket wird aktuell verarbeitet...";
+            statusText = "⚡ In Bearbeitung";
             statusClass = "status-processing";
         } 
         else if (data.status === "closed") {
-            statusText = "🔴 Abgeschlossen – Ticket ist gelöst/geschlossen.";
+            statusText = "🔴 Abgeschlossen";
             statusClass = "status-closed";
+        } else {
+            statusText = `📌 ${data.status || 'Unbekannt'}`;
+            statusClass = "status-processing";
         }
 
         resultBox.innerHTML = `
             <div class="result">
-                <p><strong>Ticketnummer:</strong> <span style="color:var(--blue-glow);">${data.ticketId}</span></p>
-
-                <p><strong>Status:</strong> 
-                    <span class="${statusClass}">
-                        ${statusText}
-                    </span>
-                </p>
-
-                <p><strong>Erstellt am:</strong> ${new Date(data.date).toLocaleString()}</p>
-                <p><strong>Betreff:</strong> ${data.subject}</p>
-                <p><strong>Von:</strong> ${data.from}</p>
-
+                <p><strong>Ticketnummer:</strong> <span style="color:var(--blue-glow); font-family:monospace; font-size:1.05rem;">${data.ticketId}</span></p>
+                <p><strong>Aktueller Status:</strong> <span class="${statusClass}">${statusText}</span></p>
+                <p><strong>Erstellt am:</strong> ${new Date(data.date || Date.now()).toLocaleString('de-DE')}</p>
+                <p><strong>Betreff:</strong> ${data.subject || 'Luna Support Anfrage'}</p>
+                <p><strong>Eingereicht von:</strong> ${data.from || 'Unbekannt'}</p>
                 <p class="hint">
-                    Bearbeitungszeit: In der Regel 24 Stunden, bei hohem Aufkommen einige Tage.
+                    Durchschnittliche Bearbeitungszeit liegt bei ca. 24 Stunden.
                 </p>
             </div>
         `;
     } catch (err) {
         resultBox.innerHTML = `
             <div class="result">
-                <p style="color:#ef4444;"><strong>Fehler beim Abrufen des Tickets.</strong></p>
-                <p>Der Server antwortet nicht oder ist momentan offline.</p>
+                <p style="color:#ef4444;"><strong>Verbindungsfehler</strong></p>
+                <p>Der Server antwortet momentan nicht. Versuche es in wenigen Augenblicken erneut.</p>
             </div>
         `;
     }
 }
+
+// Enter-Taste Support
+document.getElementById("ticketId").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        checkTicket();
+    }
+});
 </script>
 
 </body>
