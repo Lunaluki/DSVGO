@@ -201,12 +201,14 @@
 
 <header>
     <h1>Luna Blacklist & Meldeportal</h1>
-    <p>Logge dich ein, um Nummern zu verwalten.</p>
-    <a class="nav-btn" href="blacklist.html">Zur Startseite</a>
+    <p>Logge dich ein, um deine gemeldeten Nummern zu verwalten.</p>
+    <a class="nav-btn" href="index.html">Zur Startseite</a>
+    <a class="nav-btn" href="register.html">Registrieren</a>
+    <a class="nav-btn" href="blacklist.html">Zur Blacklist</a>
 </header>
 
 <main>
-    <h2>In den Account einloggen</h2>
+    <h2>In dein Konto einloggen</h2>
     <div class="edge-box">
         <div class="edge-box-content">
             <form id="loginForm" onsubmit="loginUser(event)">
@@ -237,27 +239,45 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
+    // Eindeutige Geräte-ID abrufen oder erzeugen
+    function getDeviceIdentifier() {
+        let deviceId = localStorage.getItem("luna_device_id");
+        if (!deviceId) {
+            deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+            localStorage.setItem("luna_device_id", deviceId);
+        }
+        return deviceId;
+    }
+
     async function loginUser(event) {
         event.preventDefault();
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value.trim();
+        const deviceId = getDeviceIdentifier();
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password, deviceId })
             });
 
             const data = await res.json();
 
-            if (res.ok && data.token) {
-                // Token im localStorage speichern (wichtig für die Erkennung auf der Hauptseite)
-                localStorage.setItem("luna_user_token", data.token);
+            if (res.ok) {
+                // Token (JWT oder Session-Token) im LocalStorage sichern
+                const token = data.token || data.accessToken || data.data;
+                if (token) {
+                    localStorage.setItem("luna_user_token", token);
+                } else {
+                    // Fallback, falls der Server den Usernamen als Token nutzt
+                    localStorage.setItem("luna_user_token", username);
+                }
+
                 alert("✅ Erfolgreich eingeloggt!");
-                window.location.href = "blacklist.html"; // Zurück zur Hauptseite / Meldeportal
+                window.location.href = "blacklist.html";
             } else {
-                alert("⚠️ " + (data.error || "Falscher Benutzername oder falsches Passwort."));
+                alert("⚠️ " + (data.error || "Login fehlgeschlagen. Überprüfe deine Zugangsdaten."));
             }
         } catch (err) {
             console.error(err);
