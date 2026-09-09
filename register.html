@@ -203,6 +203,7 @@
     <h1>Luna Blacklist & Meldeportal</h1>
     <p>Erstelle einen Account, um die Community zu schützen.</p>
     <a class="nav-btn" href="index.html">Zur Startseite</a>
+    <a class="nav-btn" href="blacklist.html">Zur Blacklist</a>
 </header>
 
 <main>
@@ -237,7 +238,7 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
-    // 📱 Eindeutige Geräte-ID im Browser des Laptops erzeugen/abrufen
+    // Eindeutige Geräte-ID erzeugen/abrufen
     function getDeviceIdentifier() {
         let deviceId = localStorage.getItem("luna_device_id");
         if (!deviceId) {
@@ -251,13 +252,13 @@
         event.preventDefault();
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value.trim();
-        const deviceId = getDeviceIdentifier(); // <--- Geräte-ID holen
+        const deviceId = getDeviceIdentifier();
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password, deviceId }) // <--- Mit an Server senden
+                body: JSON.stringify({ username, password, deviceId })
             });
 
             const data = await res.json();
