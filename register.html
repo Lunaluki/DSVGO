@@ -131,6 +131,16 @@
             text-decoration: underline;
         }
 
+        .warning-box {
+            background: rgba(255, 79, 174, 0.15);
+            border: 1px solid var(--pink-main);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: #ffe6f5;
+        }
+
         footer {
             margin-top: 4rem;
             padding: 2rem;
@@ -145,12 +155,18 @@
 
 <header>
     <h1>Luna Blacklist</h1>
-    <p>Registriere dich, um Nummern im System zu melden.</p>
+    <p>Sicherheitssystem & Account-Registrierung</p>
 </header>
 
 <main>
     <div class="box">
         <h2>Account erstellen</h2>
+        
+        <!-- Wird eingeblendet, wenn bereits eine ID auf diesem Gerät existiert -->
+        <div id="blockedNotice" style="display: none;" class="warning-box">
+            ⚠️ <strong>Sicherheitshinweis:</strong> Auf diesem Endgerät ist bereits ein Account aktiv (Verknüpfte ID). Um Missbrauch zu verhindern, ist keine zweite Registrierung auf demselben Gerät möglich. Bitte logge dich stattdessen ein.
+        </div>
+
         <form id="registerForm" onsubmit="registerUser(event)">
             <div class="form-group">
                 <label for="regUsername">Benutzername:</label>
@@ -162,11 +178,11 @@
                 <input type="password" id="regPassword" placeholder="Dein Passwort" required>
             </div>
 
-            <button type="submit" class="btn-action">Registrieren</button>
+            <button type="submit" id="submitBtn" class="btn-action">Registrieren</button>
         </form>
 
         <div class="switch-link">
-            Bereits registriert? <a href="login.html">Hier einloggen</a>
+            Bereits einen Account? <a href="login.html">Hier einloggen</a>
         </div>
     </div>
 </main>
@@ -178,8 +194,25 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
+    // Beim Laden prüfen, ob dieses Gerät bereits eine gespeicherte User-ID hat
+    window.addEventListener("DOMContentLoaded", () => {
+        const existingUserId = localStorage.getItem("luna_user_id");
+        if (existingUserId) {
+            // Gerät ist bereits registriert! Formular deaktivieren, um Mehrfach-Registrierung zu blockieren
+            document.getElementById("blockedNotice").style.display = "block";
+            document.getElementById("registerForm").style.display = "none";
+        }
+    });
+
     async function registerUser(event) {
         event.preventDefault();
+
+        // Doppelte Absicherung im Client
+        if (localStorage.getItem("luna_user_id")) {
+            alert("❌ Zugriff verweigert: Auf diesem Gerät existiert bereits eine verknüpfte Account-ID!");
+            return;
+        }
+
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value.trim();
 
@@ -193,9 +226,12 @@
             const data = await res.json();
 
             if (res.ok) {
+                // Einmalige MongoDB ObjectId sicher auf dem Endgerät hinterlegen
+                localStorage.setItem("luna_user_id", data.userId);
                 localStorage.setItem("luna_user_token", data.token);
                 localStorage.setItem("luna_username", data.username);
-                alert("🎉 Erfolgreich registriert!");
+                
+                alert("🎉 Erfolgreich registriert! Deine Geräte-ID wurde sicher verknüpft.");
                 window.location.href = "blacklist.html";
             } else {
                 alert("⚠️ " + (data.error || "Registrierung fehlgeschlagen."));
