@@ -176,10 +176,7 @@
 </footer>
 
 <script>
-    // Automatische URL-Erkennung (greift lokal sowie auf Render)
-    const API_BASE = window.location.origin.includes("onrender.com") 
-        ? window.location.origin 
-        : "https://dsvgo.onrender.com"; // Passe das bei Bedarf an deine Render-URL an
+    const API_BASE = "https://meinserver-u317.onrender.com";
 
     async function registerUser(event) {
         event.preventDefault();
