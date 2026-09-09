@@ -10,7 +10,6 @@
             --pink-main: #ff4fae;
             --pink-dark: #ff2f9c;
             --pink-light: #ff9dd6;
-            --pink-glow: #ff007f;
             --pink-neon: #ff00ff;
         }
 
@@ -34,92 +33,36 @@
         header h1 {
             margin: 0;
             font-size: 2.4rem;
-            color: white;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         header p {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             font-size: 1.1rem;
             color: #ffe6f5;
         }
 
-        .nav-btn {
-            display: inline-block;
-            margin: 0.5rem;
-            padding: 0.7rem 1.4rem;
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .nav-btn:hover {
-            background: #ffffff;
-            color: var(--pink-dark);
-            box-shadow: 0 0 15px #ffffff;
-        }
-
         main {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 450px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .box {
+            background: #1e0924;
+            border: 2px solid rgba(255, 157, 214, 0.3);
+            border-radius: 14px;
             padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
         h2 {
-            margin-top: 2.5rem;
-            font-size: 1.7rem;
+            margin-top: 0;
+            font-size: 1.6rem;
             color: white;
             border-left: 4px solid var(--pink-light);
             padding-left: 0.7rem;
-            font-weight: 600;
-            text-shadow: 0 0 10px var(--pink-neon);
-        }
-
-        .edge-box {
-            position: relative;
-            border-radius: 16px;
-            padding: 2px;
-            background: transparent;
-            overflow: hidden;
-            margin-top: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .edge-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                transparent 0deg,
-                transparent 140deg,
-                var(--pink-neon) 180deg,
-                #ffffff 200deg,
-                var(--pink-glow) 220deg,
-                transparent 260deg
-            );
-            animation: rotateEdge 3.5s linear infinite;
-        }
-
-        @keyframes rotateEdge {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .edge-box-content {
-            position: relative;
-            z-index: 1;
-            background: #1e0924;
-            border-radius: 14px;
-            padding: 1.8rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
@@ -163,6 +106,7 @@
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
             transition: 0.2s;
+            margin-top: 0.5rem;
         }
 
         .btn-action:hover {
@@ -200,32 +144,29 @@
 <body>
 
 <header>
-    <h1>Luna Blacklist & Meldeportal</h1>
-    <p>Logge dich ein, um Nummern zu verwalten.</p>
-    <a class="nav-btn" href="register.html">Registrieren</a>
+    <h1>Luna Blacklist</h1>
+    <p>Logge dich ein, um zum Meldeportal zu gelangen.</p>
 </header>
 
 <main>
-    <h2>In den Account einloggen</h2>
-    <div class="edge-box">
-        <div class="edge-box-content">
-            <form id="loginForm" onsubmit="loginUser(event)">
-                <div class="form-group">
-                    <label for="loginUsername">Benutzername:</label>
-                    <input type="text" id="loginUsername" placeholder="Dein Benutzername" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="loginPassword">Passwort:</label>
-                    <input type="password" id="loginPassword" placeholder="Dein Passwort" required>
-                </div>
-
-                <button type="submit" class="btn-action">Einloggen</button>
-            </form>
-
-            <div class="switch-link">
-                Noch keinen Account? <a href="register.html">Hier registrieren</a>
+    <div class="box">
+        <h2>Anmelden</h2>
+        <form id="loginForm" onsubmit="loginUser(event)">
+            <div class="form-group">
+                <label for="loginUsername">Benutzername:</label>
+                <input type="text" id="loginUsername" placeholder="Dein Benutzername" required>
             </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Passwort:</label>
+                <input type="password" id="loginPassword" placeholder="Dein Passwort" required>
+            </div>
+
+            <button type="submit" class="btn-action">Einloggen</button>
+        </form>
+
+        <div class="switch-link">
+            Noch kein Konto? <a href="register.html">Hier registrieren</a>
         </div>
     </div>
 </main>
@@ -252,23 +193,16 @@
             const data = await res.json();
 
             if (res.ok) {
-                // Token und Benutzername sicher im localStorage hinterlegen
-                const token = data.token || data.accessToken || data.data || (typeof data === 'string' ? data : null);
-                if (token) {
-                    localStorage.setItem("luna_user_token", token);
-                } else {
-                    localStorage.setItem("luna_user_token", username);
-                }
-                localStorage.setItem("luna_username", username);
-
-                alert("✅ Erfolgreich eingeloggt!");
-                window.location.href = "blacklist.html"; // Weiterleitung zur geschützten Blacklist
+                localStorage.setItem("luna_user_token", data.token);
+                localStorage.setItem("luna_username", data.username);
+                alert("🔓 Erfolgreich eingeloggt!");
+                window.location.href = "blacklist.html";
             } else {
-                alert("⚠️ " + (data.error || "Falscher Benutzername oder falsches Passwort."));
+                alert("⚠️ " + (data.error || "Login fehlgeschlagen."));
             }
         } catch (err) {
             console.error(err);
-            alert("❌ Verbindung zum Server fehlgeschlagen.");
+            alert("❌ Verbindungsfehler zum Server.");
         }
     }
 </script>
