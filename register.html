@@ -10,7 +10,6 @@
             --pink-main: #ff4fae;
             --pink-dark: #ff2f9c;
             --pink-light: #ff9dd6;
-            --pink-glow: #ff007f;
             --pink-neon: #ff00ff;
         }
 
@@ -34,32 +33,36 @@
         header h1 {
             margin: 0;
             font-size: 2.4rem;
-            color: white;
             font-weight: 700;
         }
 
+        header p {
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: #ffe6f5;
+        }
+
         main {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 2rem;
+            max-width: 450px;
+            margin: 3rem auto;
+            padding: 0 1rem;
         }
 
-        h2 {
-            margin-top: 2.5rem;
-            font-size: 1.7rem;
-            color: white;
-            border-left: 4px solid var(--pink-light);
-            padding-left: 0.7rem;
-            font-weight: 600;
-        }
-
-        .edge-box {
+        .box {
             background: #1e0924;
             border: 2px solid rgba(255, 157, 214, 0.3);
             border-radius: 14px;
-            padding: 1.8rem;
-            margin-top: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            color: white;
+            border-left: 4px solid var(--pink-light);
+            padding-left: 0.7rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
@@ -103,10 +106,12 @@
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
             transition: 0.2s;
+            margin-top: 0.5rem;
         }
 
         .btn-action:hover {
             box-shadow: 0 0 25px var(--pink-neon);
+            transform: translateY(-2px);
         }
 
         .switch-link {
@@ -122,6 +127,10 @@
             font-weight: bold;
         }
 
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+
         footer {
             margin-top: 4rem;
             padding: 2rem;
@@ -135,30 +144,29 @@
 <body>
 
 <header>
-    <h1>Luna Blacklist & Meldeportal</h1>
-    <p>Erstelle einen Account, um Nummern zu melden.</p>
-    <a class="nav-btn" href="login.html" style="color:white; text-decoration:underline; margin-top:10px; display:inline-block;">Zum Login</a>
+    <h1>Luna Blacklist</h1>
+    <p>Registriere dich, um Nummern im System zu melden.</p>
 </header>
 
 <main>
-    <h2>Neuen Account registrieren</h2>
-    <div class="edge-box">
+    <div class="box">
+        <h2>Account erstellen</h2>
         <form id="registerForm" onsubmit="registerUser(event)">
             <div class="form-group">
                 <label for="regUsername">Benutzername:</label>
-                <input type="text" id="regUsername" placeholder="Wähle einen Benutzernamen" required>
+                <input type="text" id="regUsername" placeholder="Dein Benutzername" required>
             </div>
             
             <div class="form-group">
                 <label for="regPassword">Passwort:</label>
-                <input type="password" id="regPassword" placeholder="Wähle ein sicheres Passwort" required>
+                <input type="password" id="regPassword" placeholder="Dein Passwort" required>
             </div>
 
             <button type="submit" class="btn-action">Registrieren</button>
         </form>
 
         <div class="switch-link">
-            Bereits einen Account? <a href="login.html">Hier einloggen</a>
+            Bereits registriert? <a href="login.html">Hier einloggen</a>
         </div>
     </div>
 </main>
@@ -168,8 +176,10 @@
 </footer>
 
 <script>
-    // Passe das hier an deine tatsächliche Server-URL an (oder lass es exakt so, wenn dsvgo.onrender.com dein Server ist)
-    const API_BASE = "https://dsvgo.onrender.com"; 
+    // Automatische URL-Erkennung (greift lokal sowie auf Render)
+    const API_BASE = window.location.origin.includes("onrender.com") 
+        ? window.location.origin 
+        : "https://dsvgo.onrender.com"; // Passe das bei Bedarf an deine Render-URL an
 
     async function registerUser(event) {
         event.preventDefault();
@@ -183,27 +193,20 @@
                 body: JSON.stringify({ username, password })
             });
 
-            // Prüfen ob der Server erreichbar war und kein HTML (404/500) zurückwirft
-            const contentType = res.headers.get("content-type");
-            if (res.ok && contentType && contentType.includes("application/json")) {
-                const data = await res.json();
-                localStorage.setItem("luna_user_token", data.token || username);
-                localStorage.setItem("luna_username", username);
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem("luna_user_token", data.token);
+                localStorage.setItem("luna_username", data.username);
                 alert("🎉 Erfolgreich registriert!");
                 window.location.href = "blacklist.html";
-                return;
+            } else {
+                alert("⚠️ " + (data.error || "Registrierung fehlgeschlagen."));
             }
         } catch (err) {
-            console.warn("Server nicht erreichbar oder 404, wechsle in den Notfall-Modus:", err);
+            console.error(err);
+            alert("❌ Verbindungsfehler zum Server.");
         }
-
-        // --- NOTFALL-FALLBACK ---
-        // Wenn der Server streikt (404 Fehler), speichern wir den User lokal ab, 
-        // damit du sofort weiterarbeiten und testen kannst!
-        localStorage.setItem("luna_user_token", "fallback_token_" + username);
-        localStorage.setItem("luna_username", username);
-        alert("⚠️ Server meldet 404 / nicht erreichbar. Notfall-Modus aktiv: Du wurdest lokal eingeloggt, damit das Meldeportal funktioniert!");
-        window.location.href = "blacklist.html";
     }
 </script>
 
