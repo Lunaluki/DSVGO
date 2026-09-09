@@ -196,9 +196,6 @@
 <header>
     <h1>Luna Blacklist & Meldeportal</h1>
     <p>Schütze die Community vor Spam, Scannern und Hatern.</p>
-    <a class="nav-btn" href="index.html">Zur Hauptseite</a>
-    <a class="nav-btn" href="register.html">Registrieren</a>
-    <a class="nav-btn" href="login.html">Login</a>
 </header>
 
 <main id="mainContainer">
@@ -206,7 +203,7 @@
     <!-- NUMMER MELDEN FORMULAR -->
     <section id="reportSection">
         <div class="user-box">
-            <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);">Gast / Admin</strong></span>
+            <span>Eingeloggt als: <strong id="displayUser" style="cookie:val; color:var(--pink-light);">Lade...</strong></span>
             <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Abmelden</button>
         </div>
 
@@ -294,45 +291,44 @@
     const API_BASE = "https://meinserver-u317.onrender.com";
 
     window.onload = async function() {
-        let token = localStorage.getItem("luna_user_token");
+        const token = localStorage.getItem("luna_user_token");
         
-        // Automatischer Fallback / Generierung einer Device-ID (falls kein Token da ist)
+        // 1. ZUGRIFFSSCHUTZ: Wenn kein Token vorhanden ist, sofort abfangen und zur Login-Seite schicken!
         if (!token) {
-            let deviceId = localStorage.getItem("luna_device_id");
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-                localStorage.setItem("luna_device_id", deviceId);
-            }
-            token = deviceId;
-            localStorage.setItem("luna_user_token", token);
+            alert("⚠️ Du musst dich zuerst einloggen, um auf das Blacklist-Portal zuzugreifen.");
+            window.location.href = "login.html";
+            return;
         }
 
-        // Benutzerdaten laden
-        try {
-            const res = await fetch(`${API_BASE}/api/auth/me`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            }).catch(() => null);
-            
-            if (res && res.ok) {
-                const data = await res.json();
-                if (data.success && data.data) {
-                    const realUsername = data.data.name || data.data.username;
-                    document.getElementById("displayUser").innerText = realUsername;
-                }
-            } else {
-                document.getElementById("displayUser").innerText = "Community Mitglied";
-            }
-        } catch (err) {
-            document.getElementById("displayUser").innerText = "Community Mitglied";
-        }
+        // 2. Benutzername aus dem localStorage oder per API ermitteln
+        let username = localStorage.getItem("luna_username");
         
+        if (!username) {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/me`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    username = data.data?.name || data.data?.username || data.username || "Community Mitglied";
+                    localStorage.setItem("luna_username", username);
+                } else {
+                    username = "Mitglied";
+                }
+            } catch (err) {
+                username = "Mitglied";
+            }
+        }
+
+        document.getElementById("displayUser").innerText = username;
         loadBlacklistTables();
     };
 
     function logoutUser() {
         localStorage.removeItem("luna_user_token");
-        localStorage.removeItem("luna_device_id");
-        window.location.reload();
+        localStorage.removeItem("luna_username");
+        alert("👋 Du wurdest erfolgreich abgemeldet.");
+        window.location.href = "login.html";
     }
 
     async function submitReport(event) {
@@ -343,7 +339,7 @@
         const fan = document.getElementById("displayUser").innerText.trim();
         const fileInput = document.getElementById("proofImage");
 
-        // Vorab-Prüfung im Frontend: Schützt vor Doppel-Meldungen derselben Nummer durch denselben User
+        // Frontend-Doppelmelde-Schutz
         try {
             const myRes = await fetch(`${API_BASE}/api/blacklist/my`, {
                 headers: { "Authorization": `Bearer ${token}` }
@@ -353,13 +349,12 @@
                 const myList = await myRes.json();
                 const alreadyReported = myList.some(item => item.number === number);
                 if (alreadyReported) {
-                    alert("⚠️ Du hast diese Nummer bereits gemeldet! Um Missbrauch zu verhindern, ist jede Nummer nur einmal pro Nutzer meldbar.");
+                    alert("⚠️ Du hast diese Nummer bereits gemeldet! Jede Nummer ist nur einmal meldbar.");
                     return;
                 }
             }
         } catch(e) {}
 
-        // Bild in Base64 konvertieren, falls vorhanden
         let imageUrl = "";
         if (fileInput.files && fileInput.files[0]) {
             const file = fileInput.files[0];
@@ -382,7 +377,7 @@
                 loadBlacklistTables();
             } else {
                 const data = await res.json();
-                alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer. Möglicherweise wurde sie bereits gemeldet."));
+                alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer."));
             }
         } catch (err) {
             console.error(err);
@@ -402,7 +397,7 @@
     async function loadBlacklistTables() {
         const token = localStorage.getItem("luna_user_token");
 
-        // 1. Öffentliche Liste laden
+        // Öffentliche Liste laden
         try {
             const res = await fetch(`${API_BASE}/api/blacklist`);
             if (res.ok) {
@@ -425,7 +420,7 @@
             document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Tabelle.</td></tr>`;
         }
 
-        // 2. Eigene Meldungen des Users laden
+        // Eigene Meldungen laden
         try {
             const resMy = await fetch(`${API_BASE}/api/blacklist/my`, {
                 headers: { "Authorization": `Bearer ${token}` }
@@ -447,7 +442,7 @@
                                 <td><code>${escapeHtml(item.number)}</code></td>
                                 <td>${escapeHtml(item.reason || 'Kein Grund')}</td>
                                 <td>${proofHtml}</td>
-                                <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Geprüft / Aktiv</span></td>
+                                <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Aktiv</span></td>
                             </tr>
                         `;
                     }).join('');
