@@ -201,24 +201,23 @@
 
 <header>
     <h1>Luna Blacklist & Meldeportal</h1>
-    <p>Erstelle einen Account, um die Community zu schützen.</p>
-    <a class="nav-btn" href="index.html">Zur Startseite</a>
-    <a class="nav-btn" href="blacklist.html">Zur Blacklist</a>
+    <p>Erstelle einen Account, um Nummern zu melden.</p>
+    <a class="nav-btn" href="login.html">Zum Login</a>
 </header>
 
 <main>
-    <h2>Account registrieren</h2>
+    <h2>Neuen Account registrieren</h2>
     <div class="edge-box">
         <div class="edge-box-content">
             <form id="registerForm" onsubmit="registerUser(event)">
                 <div class="form-group">
                     <label for="regUsername">Benutzername:</label>
-                    <input type="text" id="regUsername" placeholder="Dein Benutzername" required>
+                    <input type="text" id="regUsername" placeholder="Wähle einen Benutzernamen" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="regPassword">Passwort:</label>
-                    <input type="password" id="regPassword" placeholder="Sicheres Passwort" required>
+                    <input type="password" id="regPassword" placeholder="Wähle ein sicheres Passwort" required>
                 </div>
 
                 <button type="submit" class="btn-action">Registrieren</button>
@@ -238,36 +237,36 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
-    // Eindeutige Geräte-ID erzeugen/abrufen
-    function getDeviceIdentifier() {
-        let deviceId = localStorage.getItem("luna_device_id");
-        if (!deviceId) {
-            deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-            localStorage.setItem("luna_device_id", deviceId);
-        }
-        return deviceId;
-    }
-
     async function registerUser(event) {
         event.preventDefault();
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value.trim();
-        const deviceId = getDeviceIdentifier();
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password, deviceId })
+                body: JSON.stringify({ username, password })
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                alert("✅ Registrierung erfolgreich! Du kannst dich jetzt einloggen.");
-                window.location.href = "login.html";
+                // Manche APIs geben direkt nach dem Register einen Token zurück, 
+                // ansonsten loggen wir den Nutzer über die Daten oder den Usernamen ein.
+                const token = data.token || data.accessToken || data.data || (typeof data === 'string' ? data : null);
+                
+                if (token) {
+                    localStorage.setItem("luna_user_token", token);
+                } else {
+                    localStorage.setItem("luna_user_token", username);
+                }
+                localStorage.setItem("luna_username", username);
+
+                alert("🎉 Erfolgreich registriert! Du wirst zum Meldeportal weitergeleitet.");
+                window.location.href = "blacklist.html"; // Ab ins Meldeportal
             } else {
-                alert("⚠️ " + (data.error || "Fehler bei der Registrierung."));
+                alert("⚠️ " + (data.error || "Registrierung fehlgeschlagen. Versuche einen anderen Benutzernamen."));
             }
         } catch (err) {
             console.error(err);
