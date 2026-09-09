@@ -107,6 +107,11 @@
             box-sizing: border-box;
         }
 
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--pink-neon);
@@ -149,6 +154,7 @@
             text-align: left;
             border-bottom: 1px solid rgba(255, 157, 214, 0.2);
             font-size: 0.95rem;
+            vertical-align: middle;
         }
 
         th {
@@ -165,6 +171,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .proof-img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 4px;
+            border: 1px solid var(--pink-light);
+            object-fit: cover;
         }
 
         footer {
@@ -198,14 +212,19 @@
         <div class="edge-box">
             <form id="reportForm" onsubmit="submitReport(event)">
                 <div class="form-group">
-                    <label for="badNumber">Telefonnummer (z. B. 4917666724481):</label>
+                    <label for="badNumber">Telefonnummer des Opfers / Spammers (z. B. 4917666724481):</label>
                     <input type="tel" id="badNumber" placeholder="4917666724481" 
                            oninput="this.value = this.value.replace(/[^0-9+]/g, '')" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="reason">Grund der Meldung:</label>
-                    <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..."></textarea>
+                    <textarea id="reason" rows="3" placeholder="Z. B. Spam im Chat / Scamming..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="proofImage">Beweis-Foto hochladen (Screenshot):</label>
+                    <input type="file" id="proofImage" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn-action">Nummer an Luna Team melden</button>
@@ -213,12 +232,36 @@
         </div>
     </section>
 
-    <!-- GEMELDETE NUMMERN TABELLE -->
+    <!-- MEINE GEMELDETEN NUMMERN -->
     <section id="myReportsSection">
-        <h2>2. Gemeldete Nummern in der Datenbank</h2>
+        <h2>2. Meine eigenen gemeldeten Nummern</h2>
         <div class="edge-box">
-            <p>Hier siehst du alle im System eingetragenen gemeldeten Nummern.</p>
-            
+            <p>Hier siehst du exklusiv alle Nummern, die du persönlich gemeldet hast.</p>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nummer</th>
+                            <th>Grund</th>
+                            <th>Beweis</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myBlacklistTable">
+                        <tr>
+                            <td colspan="4" style="text-align:center; color:var(--pink-light);">Lade deine Meldungen...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALLE ÖFFENTLICHEN BLACKLIST EINTRÄGE -->
+    <section id="allReportsSection">
+        <h2>3. Öffentliche Blacklist-Datenbank</h2>
+        <div class="edge-box">
+            <p>Übersicht aller im System eingetragenen gemeldeten Nummern.</p>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
@@ -246,31 +289,47 @@
 </main>
 
 <script>
+    const API_BASE = "https://meinserver-u317.onrender.com";
+
     window.onload = async function() {
-        const token = localStorage.getItem("luna_user_token");
+        let token = localStorage.getItem("luna_user_token");
         
-        // Versuche Benutzerdaten zu laden, falls Token da ist
-        if (token) {
-            try {
-                const res = await fetch(`/api/auth/me`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+        // Automatischer Fallback / Generierung einer Device-ID (falls kein Token da ist)
+        if (!token) {
+            let deviceId = localStorage.getItem("luna_device_id");
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+                localStorage.setItem("luna_device_id", deviceId);
+            }
+            token = deviceId;
+            localStorage.setItem("luna_user_token", token);
+        }
+
+        // Benutzerdaten laden
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/me`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            }).catch(() => null);
+            
+            if (res && res.ok) {
                 const data = await res.json();
-                if (res.ok && data.success) {
+                if (data.success && data.data) {
                     const realUsername = data.data.name || data.data.username;
                     document.getElementById("displayUser").innerText = realUsername;
                 }
-            } catch (err) {
-                console.log("Konnte User nicht laden, fahre fort...");
+            } else {
+                document.getElementById("displayUser").innerText = "Community Mitglied";
             }
+        } catch (err) {
+            document.getElementById("displayUser").innerText = "Community Mitglied";
         }
         
-        // Lade die Blacklist-Tabelle unabhängig vom Login
-        loadBlacklistTable();
+        loadBlacklistTables();
     };
 
     function logoutUser() {
         localStorage.removeItem("luna_user_token");
+        localStorage.removeItem("luna_device_id");
         window.location.reload();
     }
 
@@ -280,24 +339,48 @@
         const number = document.getElementById("badNumber").value.trim();
         const reason = document.getElementById("reason").value.trim();
         const fan = document.getElementById("displayUser").innerText.trim();
+        const fileInput = document.getElementById("proofImage");
+
+        // Vorab-Prüfung im Frontend: Schützt vor Doppel-Meldungen derselben Nummer durch denselben User
+        try {
+            const myRes = await fetch(`${API_BASE}/api/blacklist/my`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            }).catch(() => null);
+            
+            if (myRes && myRes.ok) {
+                const myList = await myRes.json();
+                const alreadyReported = myList.some(item => item.number === number);
+                if (alreadyReported) {
+                    alert("⚠️ Du hast diese Nummer bereits gemeldet! Um Missbrauch zu verhindern, ist jede Nummer nur einmal pro Nutzer meldbar.");
+                    return;
+                }
+            }
+        } catch(e) {}
+
+        // Bild in Base64 konvertieren, falls vorhanden
+        let imageUrl = "";
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            imageUrl = await toBase64(file);
+        }
 
         try {
-            const res = await fetch(`/api/blacklist`, {
+            const res = await fetch(`${API_BASE}/api/blacklist`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token || ''}`
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ number, reason, fan })
+                body: JSON.stringify({ number, reason, fan, image: imageUrl })
             });
 
             if (res.ok) {
-                alert("✅ Nummer erfolgreich gemeldet!");
+                alert("✅ Nummer erfolgreich gemeldet und gespeichert!");
                 document.getElementById("reportForm").reset();
-                loadBlacklistTable();
+                loadBlacklistTables();
             } else {
                 const data = await res.json();
-                alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer."));
+                alert("⚠️ " + (data.error || "Fehler beim Melden der Nummer. Möglicherweise wurde sie bereits gemeldet."));
             }
         } catch (err) {
             console.error(err);
@@ -305,29 +388,71 @@
         }
     }
 
-    async function loadBlacklistTable() {
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    async function loadBlacklistTables() {
+        const token = localStorage.getItem("luna_user_token");
+
+        // 1. Öffentliche Liste laden
         try {
-            const res = await fetch(`/api/blacklist`);
-            if (!res.ok) throw new Error("Fehler beim Laden");
-            const data = await res.json();
-
-            const tbody = document.getElementById("blacklistTable");
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher keine Nummern gemeldet.</td></tr>`;
-                return;
+            const res = await fetch(`${API_BASE}/api/blacklist`);
+            if (res.ok) {
+                const data = await res.json();
+                const tbody = document.getElementById("blacklistTable");
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Bisher keine Nummern gemeldet.</td></tr>`;
+                } else {
+                    tbody.innerHTML = data.map(item => `
+                        <tr>
+                            <td><code>${escapeHtml(item.number)}</code></td>
+                            <td>${escapeHtml(item.reason || 'Kein Grund')}</td>
+                            <td>${escapeHtml(item.reportedBy || item.fan || 'Unbekannt')}</td>
+                            <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Aktiv</span></td>
+                        </tr>
+                    `).join('');
+                }
             }
-
-            tbody.innerHTML = data.map(item => `
-                <tr>
-                    <td><code>${escapeHtml(item.number)}</code></td>
-                    <td>${escapeHtml(item.reason || 'Kein Grund')}</td>
-                    <td>${escapeHtml(item.reportedBy || item.fan || 'Unbekannt')}</td>
-                    <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Aktiv</span></td>
-                </tr>
-            `).join('');
         } catch (err) {
-            console.error(err);
             document.getElementById("blacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden der Tabelle.</td></tr>`;
+        }
+
+        // 2. Eigene Meldungen des Users laden
+        try {
+            const resMy = await fetch(`${API_BASE}/api/blacklist/my`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (resMy.ok) {
+                const myData = await resMy.json();
+                const myTbody = document.getElementById("myBlacklistTable");
+                if (!myData || myData.length === 0) {
+                    myTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Du hast noch keine Nummern gemeldet.</td></tr>`;
+                } else {
+                    myTbody.innerHTML = myData.map(item => {
+                        let proofHtml = '<span style="color:var(--pink-light);">Kein Foto</span>';
+                        if (item.image || item.imageUrl) {
+                            const imgUrl = item.image || item.imageUrl;
+                            proofHtml = `<a href="${escapeHtml(imgUrl)}" target="_blank"><img src="${escapeHtml(imgUrl)}" class="proof-img" alt="Beweis"></a>`;
+                        }
+                        return `
+                            <tr>
+                                <td><code>${escapeHtml(item.number)}</code></td>
+                                <td>${escapeHtml(item.reason || 'Kein Grund')}</td>
+                                <td>${proofHtml}</td>
+                                <td><span style="background:#ff2f9c; padding:3px 8px; border-radius:4px; font-weight:bold;">Geprüft / Aktiv</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+        } catch (err) {
+            document.getElementById("myBlacklistTable").innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--pink-light);">Fehler beim Laden deiner Meldungen.</td></tr>`;
         }
     }
 
