@@ -162,7 +162,7 @@
     <div class="box">
         <h2>Account erstellen</h2>
         
-        <!-- Wird eingeblendet, wenn bereits eine ID auf diesem Gerät existiert -->
+        <!-- Wird eingeblendet, wenn aktiv und in DB vorhanden -->
         <div id="blockedNotice" style="display: none;" class="warning-box">
             ⚠️ <strong>Sicherheitshinweis:</strong> Auf diesem Endgerät ist bereits ein Account aktiv (Verknüpfte ID). Um Missbrauch zu verhindern, ist keine zweite Registrierung auf demselben Gerät möglich. Bitte logge dich stattdessen ein.
         </div>
@@ -194,22 +194,37 @@
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
-    // Beim Laden prüfen, ob dieses Gerät bereits eine gespeicherte User-ID hat
-    window.addEventListener("DOMContentLoaded", () => {
+    // Beim Laden prüfen, ob die gespeicherte ID auf dem Server noch existiert
+    window.addEventListener("DOMContentLoaded", async () => {
         const existingUserId = localStorage.getItem("luna_user_id");
+        
         if (existingUserId) {
-            // Gerät ist bereits registriert! Formular deaktivieren, um Mehrfach-Registrierung zu blockieren
-            document.getElementById("blockedNotice").style.display = "block";
-            document.getElementById("registerForm").style.display = "none";
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/check/${existingUserId}`);
+                const data = await res.json();
+
+                if (data.exists) {
+                    // User existiert noch in MongoDB -> Gerät bleibt gesperrt
+                    document.getElementById("blockedNotice").style.display = "block";
+                    document.getElementById("registerForm").style.display = "none";
+                } else {
+                    // User wurde in MongoDB gelöscht -> Lokale ID löschen, Registrierung freigeben
+                    localStorage.removeItem("luna_user_id");
+                    localStorage.removeItem("luna_user_token");
+                    localStorage.removeItem("luna_username");
+                }
+            } catch (err) {
+                console.error("❌ Konnte ID-Status nicht prüfen:", err);
+            }
         }
     });
 
     async function registerUser(event) {
         event.preventDefault();
 
-        // Doppelte Absicherung im Client
+        // Doppelte Absicherung
         if (localStorage.getItem("luna_user_id")) {
-            alert("❌ Zugriff verweigert: Auf diesem Gerät existiert bereits eine verknüpfte Account-ID!");
+            alert("❌ Zugriff verweigert: Auf diesem Gerät ist bereits eine ID aktiv!");
             return;
         }
 
@@ -226,12 +241,12 @@
             const data = await res.json();
 
             if (res.ok) {
-                // Einmalige MongoDB ObjectId sicher auf dem Endgerät hinterlegen
+                // ID lokal abspeichern
                 localStorage.setItem("luna_user_id", data.userId);
                 localStorage.setItem("luna_user_token", data.token);
                 localStorage.setItem("luna_username", data.username);
                 
-                alert("🎉 Erfolgreich registriert! Deine Geräte-ID wurde sicher verknüpft.");
+                alert("🎉 Erfolgreich registriert!");
                 window.location.href = "blacklist.html";
             } else {
                 alert("⚠️ " + (data.error || "Registrierung fehlgeschlagen."));
