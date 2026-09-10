@@ -314,8 +314,9 @@ async function checkTicket() {
         </div>
     `;
 
-    // Relativer Pfad – leitet Anfragen automatisch über den aktuellen Cloudflare-Link oder localhost weiter
-    const url = `/tickets/${encodeURIComponent(id)}`;
+    // Korrekte Server-URL zu deinem Render-Backend
+    const backendUrl = "https://meinserver-u317.onrender.com";
+    const url = `${backendUrl}/tickets/${encodeURIComponent(id)}`;
 
     try {
         const res = await fetch(url);
