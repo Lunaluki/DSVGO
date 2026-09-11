@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>AGA – Passwort vergessen</title>
+    <title>AGA – Neues Passwort vergeben</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         :root {
@@ -11,59 +11,150 @@
             --pink-light: #ff9dd6;
             --pink-neon: #ff00ff;
         }
-        body { background: #110515; color: white; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header { background: linear-gradient(135deg, #ff2f9c, #aa0055); padding: 3rem 2rem; text-align: center; }
-        main { max-width: 450px; margin: 3rem auto; padding: 0 1rem; }
-        .box { background: #1e0924; border: 2px solid rgba(255, 157, 214, 0.3); border-radius: 14px; padding: 2rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.4rem; color: var(--pink-light); font-weight: bold; }
-        .form-group input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255, 157, 214, 0.4); background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; }
-        .btn-action { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, var(--pink-main), var(--pink-dark)); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .switch-link { text-align: center; margin-top: 1.5rem; }
-        .switch-link a { color: var(--pink-light); text-decoration: none; font-weight: bold; }
+        body { 
+            background: #110515; 
+            color: white; 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        header { 
+            background: linear-gradient(135deg, #ff2f9c, #aa0055); 
+            padding: 3rem 2rem; 
+            text-align: center; 
+        }
+        main { 
+            max-width: 450px; 
+            margin: 3rem auto; 
+            padding: 0 1rem; 
+        }
+        .box { 
+            background: #1e0924; 
+            border: 2px solid rgba(255, 157, 214, 0.3); 
+            border-radius: 14px; 
+            padding: 2rem; 
+        }
+        .form-group { 
+            margin-bottom: 1.2rem; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 0.4rem; 
+            color: var(--pink-light); 
+            font-weight: bold; 
+        }
+        .form-group input { 
+            width: 100%; 
+            padding: 0.8rem; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255, 157, 214, 0.4); 
+            background: rgba(255,255,255,0.05); 
+            color: white; 
+            box-sizing: border-box; 
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--pink-neon);
+            box-shadow: 0 0 10px var(--pink-neon);
+        }
+        .btn-action { 
+            width: 100%; 
+            padding: 0.9rem; 
+            background: linear-gradient(135deg, var(--pink-main), var(--pink-dark)); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+        }
+        .btn-action:hover {
+            box-shadow: 0 0 25px var(--pink-neon);
+        }
+        .switch-link { 
+            text-align: center; 
+            margin-top: 1.5rem; 
+        }
+        .switch-link a { 
+            color: var(--pink-light); 
+            text-decoration: none; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
+
 <header>
-    <h1>Passwort vergessen</h1>
-    <p>Wir senden dir einen sicheren Link zum Ändern zu.</p>
+    <h1>Neues Passwort</h1>
+    <p>Gib dein neues Passwort ein.</p>
 </header>
+
 <main>
     <div class="box">
-        <form id="forgotForm" onsubmit="requestReset(event)">
+        <form id="resetForm" onsubmit="submitNewPassword(event)">
             <div class="form-group">
-                <label for="email">Dein Benutzername oder E-Mail:</label>
-                <input type="text" id="email" placeholder="Benutzername oder E-Mail" required>
+                <label for="newPassword">Neues Passwort:</label>
+                <input type="password" id="newPassword" placeholder="Mindestens 6 Zeichen" required minlength="6">
             </div>
-            <button type="submit" class="btn-action">Reset-Link anfordern</button>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Passwort wiederholen:</label>
+                <input type="password" id="confirmPassword" placeholder="Passwort wiederholen" required minlength="6">
+            </div>
+
+            <button type="submit" class="btn-action">Passwort speichern</button>
         </form>
+
         <div class="switch-link">
             <a href="index.html">← Zurück zum Login</a>
         </div>
     </div>
 </main>
+
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
-    async function requestReset(event) {
+
+    async function submitNewPassword(event) {
         event.preventDefault();
-        const email = document.getElementById("email").value.trim();
+
+        const password = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+            alert("❌ Die Passwörter stimmen nicht überein!");
+            return;
+        }
+
+        // Token aus der URL auslesen (z.B. ?token=abcdef12345)
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+
+        if (!token) {
+            alert("❌ Ungültiger oder fehlender Reset-Token!");
+            return;
+        }
+
         try {
-            const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+            const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ token, password })
             });
+
             const data = await res.json();
+
             if (res.ok) {
-                alert("✅ Falls das Konto existiert, wurde ein Reset-Link verschickt!");
+                alert("🎉 Passwort erfolgreich geändert! Du kannst dich jetzt einloggen.");
                 window.location.href = "index.html";
             } else {
-                alert("⚠️ " + (data.error || "Fehler beim Anfordern."));
+                alert("⚠️ " + (data.error || "Fehler beim Zurücksetzen des Passworts."));
             }
         } catch (err) {
-            alert("❌ Verbindungsfehler.");
+            console.error(err);
+            alert("❌ Verbindungsfehler zum Server.");
         }
     }
 </script>
+
 </body>
 </html>
