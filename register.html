@@ -172,6 +172,12 @@
                 <label for="regUsername">Benutzername:</label>
                 <input type="text" id="regUsername" placeholder="Dein Benutzername" required>
             </div>
+
+            <!-- NEUES E-MAIL FELD -->
+            <div class="form-group">
+                <label for="regEmail">E-Mail-Adresse:</label>
+                <input type="email" id="regEmail" placeholder="deine@email.de" required>
+            </div>
             
             <div class="form-group">
                 <label for="regPassword">Passwort:</label>
@@ -182,7 +188,7 @@
         </form>
 
         <div class="switch-link">
-            Bereits einen Account? <a href="login.html">Hier einloggen</a>
+            Bereits einen Account? <a href="index.html">Hier einloggen</a>
         </div>
     </div>
 </main>
@@ -204,11 +210,9 @@
                 const data = await res.json();
 
                 if (data.exists) {
-                    // User existiert noch in MongoDB -> Gerät bleibt gesperrt
                     document.getElementById("blockedNotice").style.display = "block";
                     document.getElementById("registerForm").style.display = "none";
                 } else {
-                    // User wurde in MongoDB gelöscht -> Lokale ID löschen, Registrierung freigeben
                     localStorage.removeItem("luna_user_id");
                     localStorage.removeItem("luna_user_token");
                     localStorage.removeItem("luna_username");
@@ -222,26 +226,25 @@
     async function registerUser(event) {
         event.preventDefault();
 
-        // Doppelte Absicherung
         if (localStorage.getItem("luna_user_id")) {
             alert("❌ Zugriff verweigert: Auf diesem Gerät ist bereits eine ID aktiv!");
             return;
         }
 
         const username = document.getElementById("regUsername").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
         const password = document.getElementById("regPassword").value.trim();
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, email, password })
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                // ID lokal abspeichern
                 localStorage.setItem("luna_user_id", data.userId);
                 localStorage.setItem("luna_user_token", data.token);
                 localStorage.setItem("luna_username", data.username);
