@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>AGA – Neues Passwort vergeben</title>
+    <title>AGA – Passwort vergessen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         :root {
@@ -22,6 +22,18 @@
             background: linear-gradient(135deg, #ff2f9c, #aa0055); 
             padding: 3rem 2rem; 
             text-align: center; 
+            border-bottom: 2px solid var(--pink-light);
+            box-shadow: 0 0 30px rgba(255, 47, 156, 0.4);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            font-weight: 700;
+        }
+        header p {
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: #ffe6f5;
         }
         main { 
             max-width: 450px; 
@@ -33,6 +45,15 @@
             border: 2px solid rgba(255, 157, 214, 0.3); 
             border-radius: 14px; 
             padding: 2rem; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            color: white;
+            border-left: 4px solid var(--pink-light);
+            padding-left: 0.7rem;
+            margin-bottom: 1.5rem;
         }
         .form-group { 
             margin-bottom: 1.2rem; 
@@ -50,6 +71,7 @@
             border: 1px solid rgba(255, 157, 214, 0.4); 
             background: rgba(255,255,255,0.05); 
             color: white; 
+            font-size: 1rem;
             box-sizing: border-box; 
         }
         .form-group input:focus {
@@ -64,12 +86,16 @@
             color: white; 
             border: none; 
             border-radius: 8px; 
+            font-size: 1.1rem;
             font-weight: bold; 
             cursor: pointer; 
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            transition: 0.2s;
+            margin-top: 0.5rem;
         }
         .btn-action:hover {
             box-shadow: 0 0 25px var(--pink-neon);
+            transform: translateY(-2px);
         }
         .switch-link { 
             text-align: center; 
@@ -80,29 +106,36 @@
             text-decoration: none; 
             font-weight: bold; 
         }
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--pink-dark);
+            color: #ffe6f5;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Neues Passwort</h1>
-    <p>Gib dein neues Passwort ein.</p>
+    <h1>Luna Support</h1>
+    <p>Passwort wiederherstellen</p>
 </header>
 
 <main>
     <div class="box">
-        <form id="resetForm" onsubmit="submitNewPassword(event)">
+        <h2>Passwort zurücksetzen</h2>
+        <form id="forgotForm" onsubmit="requestPasswordReset(event)">
             <div class="form-group">
-                <label for="newPassword">Neues Passwort:</label>
-                <input type="password" id="newPassword" placeholder="Mindestens 6 Zeichen" required minlength="6">
-            </div>
-            
-            <div class="form-group">
-                <label for="confirmPassword">Passwort wiederholen:</label>
-                <input type="password" id="confirmPassword" placeholder="Passwort wiederholen" required minlength="6">
+                <label for="email">Benutzername oder E-Mail:</label>
+                <input type="text" id="email" placeholder="Dein Benutzername oder E-Mail" required>
             </div>
 
-            <button type="submit" class="btn-action">Passwort speichern</button>
+            <button type="submit" class="btn-action">Reset-Link senden</button>
         </form>
 
         <div class="switch-link">
@@ -111,43 +144,33 @@
     </div>
 </main>
 
+<footer>
+    <p>☆『Luna Team』☆ – Schutzsystem für die AGA Community</p>
+</footer>
+
 <script>
     const API_BASE = "https://meinserver-u317.onrender.com";
 
-    async function submitNewPassword(event) {
+    async function requestPasswordReset(event) {
         event.preventDefault();
-
-        const password = document.getElementById("newPassword").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
-
-        if (password !== confirmPassword) {
-            alert("❌ Die Passwörter stimmen nicht überein!");
-            return;
-        }
-
-        // Token aus der URL auslesen (z.B. ?token=abcdef12345)
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get("token");
-
-        if (!token) {
-            alert("❌ Ungültiger oder fehlender Reset-Token!");
-            return;
-        }
+        
+        const emailInput = document.getElementById("email").value.trim();
+        if (!emailInput) return;
 
         try {
-            const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
+            const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token, password })
+                body: JSON.stringify({ email: emailInput })
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                alert("🎉 Passwort erfolgreich geändert! Du kannst dich jetzt einloggen.");
+                alert("📩 Falls das Konto existiert, wurde dir ein Krypto-Reset-Link per E-Mail geschickt!");
                 window.location.href = "index.html";
             } else {
-                alert("⚠️ " + (data.error || "Fehler beim Zurücksetzen des Passworts."));
+                alert("⚠️ " + (data.error || "Fehler beim Anfordern des Links."));
             }
         } catch (err) {
             console.error(err);
