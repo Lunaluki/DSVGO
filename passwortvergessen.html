@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="notranslate" translate="no">
 <head>
     <meta charset="UTF-8">
     <title>AGA – Passwort zurücksetzen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- 🚫 Verbietet Google Chrome & Übersetzer-Tools jede Einmischung -->
+    <meta name="google" content="notranslate">
+    <meta name="googlebot" content="notranslate">
+    
+    <!-- 🛡️ CSP-Schutz, damit keine fremden Skripte/Stylesheets (wie von gstatic) reinfuschen -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://meinserver-u317.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+
     <style>
         :root {
             --pink-main: #ff4fae;
@@ -166,7 +174,6 @@
     const token = urlParams.get("token");
 
     if (token) {
-        // Wenn ein Token da ist, Formulare umschalten
         document.getElementById("formTitle").innerText = "Neues Passwort vergeben";
         document.getElementById("requestForm").style.display = "none";
         document.getElementById("resetForm").style.display = "block";
