@@ -165,9 +165,9 @@
             <button type="submit" class="btn-action">Einloggen</button>
         </form>
 
-        <!-- Link zur Passwort-vergessen-Seite -->
+        <!-- Klick triggert direkt den E-Mail-Versand -->
         <div style="text-align: right; margin-top: 0.8rem;">
-            <a href="passwortvergessen.html" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
+            <a href="#" onclick="requestPasswordReset(event)" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
         </div>
 
         <div class="switch-link">
@@ -204,6 +204,33 @@
                 window.location.href = "blacklist.html";
             } else {
                 alert("⚠️ " + (data.error || "Login fehlgeschlagen."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("❌ Verbindungsfehler zum Server.");
+        }
+    }
+
+    // 📧 Funktion für den Passwort-vergessen-Ablauf per E-Mail
+    async function requestPasswordReset(event) {
+        event.preventDefault();
+        
+        const email = prompt("Gib deine registrierte E-Mail-Adresse ein, um einen Reset-Link zu erhalten:");
+        if (!email || !email.trim()) return;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email.trim() })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("📩 Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen gesendet!");
+            } else {
+                alert("⚠️ " + (data.error || "Fehler beim Anfordern des Links."));
             }
         } catch (err) {
             console.error(err);
