@@ -9,8 +9,8 @@
     <meta name="google" content="notranslate">
     <meta name="googlebot" content="notranslate">
     
-    <!-- 🛡️ CSP-Schutz, damit keine fremden Skripte/Stylesheets (wie von gstatic) reinfuschen -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://meinserver-u317.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <!-- 🛡️ CSP-Schutz -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://dsvgo.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
 
     <style>
         :root {
@@ -147,7 +147,7 @@
             <button type="submit" class="btn-action">Reset-Link senden</button>
         </form>
 
-        <!-- Ansicht 2: Neues Passwort vergeben (wird nur angezeigt, wenn Token in URL) -->
+        <!-- Ansicht 2: Neues Passwort vergeben (wird nur angezeigt, wenn Token im Pfad) -->
         <form id="resetForm" onsubmit="submitNewPassword(event)" style="display: none;">
             <div class="form-group">
                 <label for="newPassword">Neues Passwort:</label>
@@ -157,7 +157,7 @@
         </form>
 
         <div class="switch-link">
-            <a href="index.html">← Zurück zum Login</a>
+            <a href="/admin">← Zurück zum Admin / Login</a>
         </div>
     </div>
 </main>
@@ -167,11 +167,17 @@
 </footer>
 
 <script>
-    const API_BASE = "https://meinserver-u317.onrender.com";
+    const API_BASE = "https://dsvgo.onrender.com";
 
-    // Beim Laden prüfen, ob ein Token in der URL vorhanden ist (?token=XYZ)
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
+    // 🔍 Token aus dem URL-Pfad auslesen: /passwortvergessen.html/DEIN_TOKEN
+    const pathParts = window.location.pathname.split("/");
+    // Suchen nach dem Part nach "passwortvergessen.html"
+    const tokenIndex = pathParts.indexOf("passwortvergessen.html");
+    let token = null;
+    
+    if (tokenIndex !== -1 && pathParts[tokenIndex + 1]) {
+        token = pathParts[tokenIndex + 1];
+    }
 
     if (token) {
         document.getElementById("formTitle").innerText = "Neues Passwort vergeben";
@@ -197,7 +203,7 @@
 
             if (res.ok) {
                 alert("📩 Falls das Konto existiert, wurde dir ein Reset-Link per E-Mail geschickt!");
-                window.location.href = "index.html";
+                window.location.href = "/";
             } else {
                 alert("⚠️ " + (data.error || "Fehler beim Anfordern des Links."));
             }
@@ -212,7 +218,7 @@
         event.preventDefault();
 
         const passwordInput = document.getElementById("newPassword").value;
-        if (!passwordInput) return;
+        if (!passwordInput || !token) return;
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
@@ -225,7 +231,7 @@
 
             if (res.ok && data.success) {
                 alert("🔒 Dein Passwort wurde erfolgreich geändert! Du kannst dich jetzt einloggen.");
-                window.location.href = "index.html";
+                window.location.href = "/admin";
             } else {
                 alert("⚠️ " + (data.error || "Der Link ist ungültig oder abgelaufen."));
             }
