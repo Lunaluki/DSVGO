@@ -43,24 +43,6 @@
             color: #ffe6f5;
         }
 
-        .nav-btn {
-            display: inline-block;
-            margin: 0.5rem;
-            padding: 0.7rem 1.4rem;
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: #ffffff;
-            color: var(--pink-dark);
-        }
-
         main {
             max-width: 900px;
             margin: 0 auto;
@@ -203,7 +185,7 @@
     <!-- NUMMER MELDEN FORMULAR -->
     <section id="reportSection">
         <div class="user-box">
-            <span>Eingeloggt als: <strong id="displayUser" style="cookie:val; color:var(--pink-light);">Lade...</strong></span>
+            <span>Eingeloggt als: <strong id="displayUser" style="color:var(--pink-light);">Lade...</strong></span>
             <button onclick="logoutUser()" style="background:transparent; border:1px solid #fff; padding:4px 10px; border-radius:6px; cursor:pointer; color:white;">Abmelden</button>
         </div>
 
@@ -293,14 +275,13 @@
     window.onload = async function() {
         const token = localStorage.getItem("luna_user_token");
         
-        // 1. ZUGRIFFSSCHUTZ: Wenn kein Token vorhanden ist, sofort abfangen und zur Login-Seite schicken!
+        // ZUGRIFFSSCHUTZ: Ohne Token direkt zur Login-Seite umleiten (ohne alert)
         if (!token) {
-            alert("⚠️ Du musst dich zuerst einloggen, um auf das Blacklist-Portal zuzugreifen.");
             window.location.href = "login.html";
             return;
         }
 
-        // 2. Benutzername aus dem localStorage oder per API ermitteln
+        // Benutzername aus dem localStorage oder per API ermitteln
         let username = localStorage.getItem("luna_username");
         
         if (!username) {
