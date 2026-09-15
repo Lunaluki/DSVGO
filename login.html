@@ -165,9 +165,9 @@
             <button type="submit" class="btn-action">Einloggen</button>
         </form>
 
-        <!-- Klick leitet direkt zur pin.html weiter -->
+        <!-- Erzwingt die Weiterleitung zur PIN/Reset-Seite per JS -->
         <div style="text-align: right; margin-top: 0.8rem;">
-            <a href="pin.html" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
+            <a href="hpin.html" onclick="goToPin(event)" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none; cursor: pointer;">Passwort vergessen?</a>
         </div>
 
         <div class="switch-link">
@@ -209,6 +209,12 @@
             console.error(err);
             alert("❌ Verbindungsfehler zum Server.");
         }
+    }
+
+    // Erzwingt die Weiterleitung (falls die Datei 'pin.html' oder 'hpin.html' heißt)
+    function goToPin(event) {
+        event.preventDefault();
+        window.location.href = "hpin.html"; // Falls sie pin.html heißt, hier einfach anpassen!
     }
 </script>
 
