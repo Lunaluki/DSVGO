@@ -2,7 +2,7 @@
 <html lang="de" class="notranslate" translate="no">
 <head>
     <meta charset="UTF-8">
-    <title>AGA – Passwort zurücksetzen</title>
+    <title>AGA – Neues Passwort vergeben</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- 🚫 Verbietet Google Chrome & Übersetzer-Tools jede Einmischung -->
@@ -131,24 +131,15 @@
 
 <header>
     <h1>Luna Support</h1>
-    <p>Passwort wiederherstellen</p>
+    <p>Neues Passwort vergeben</p>
 </header>
 
 <main>
-    <div class="box">
-        <h2 id="formTitle">Passwort anfordern</h2>
+    <!-- Standardmäßig versteckt, bis die PIN-Sicherheitsprüfung greift -->
+    <div class="box" id="contentBox" style="display: none;">
+        <h2>Neues Passwort festlegen</h2>
         
-        <!-- Ansicht 1: E-Mail eingeben, um Link zu erhalten -->
-        <form id="requestForm" onsubmit="requestPasswordReset(event)">
-            <div class="form-group">
-                <label for="email">Benutzername oder E-Mail:</label>
-                <input type="text" id="email" placeholder="Dein Benutzername oder E-Mail" required>
-            </div>
-            <button type="submit" class="btn-action">Reset-Link senden</button>
-        </form>
-
-        <!-- Ansicht 2: Neues Passwort vergeben (wird nur angezeigt, wenn Token im Pfad) -->
-        <form id="resetForm" onsubmit="submitNewPassword(event)" style="display: none;">
+        <form id="resetForm" onsubmit="submitNewPassword(event)">
             <div class="form-group">
                 <label for="newPassword">Neues Passwort:</label>
                 <input type="password" id="newPassword" placeholder="Gib dein neues Passwort ein" required>
@@ -157,7 +148,7 @@
         </form>
 
         <div class="switch-link">
-            <a href="/admin">← Zurück zum Admin / Login</a>
+            <a href="/admin">← Abbrechen / Zum Login</a>
         </div>
     </div>
 </main>
@@ -169,71 +160,44 @@
 <script>
     const API_BASE = "https://dsvgo.onrender.com";
 
-    // 🔍 Token aus dem URL-Pfad auslesen: /passwortvergessen.html/DEIN_TOKEN
-    const pathParts = window.location.pathname.split("/");
-    // Suchen nach dem Part nach "passwortvergessen.html"
-    const tokenIndex = pathParts.indexOf("passwortvergessen.html");
-    let token = null;
-    
-    if (tokenIndex !== -1 && pathParts[tokenIndex + 1]) {
-        token = pathParts[tokenIndex + 1];
+    // 🔒 SICHERHEITS-CHECK: Ohne erfolgreichen PIN-Flow im SessionStorage kommt hier niemand rein!
+    const isPinVerified = sessionStorage.getItem("pin_verified") === "true";
+    const verifiedEmail = sessionStorage.getItem("reset_email");
+
+    if (!isPinVerified || !verifiedEmail) {
+        alert("🛑 Zugriff verweigert! Bitte fordere zuerst einen PIN per E-Mail an.");
+        window.location.replace("/admin");
+    } else {
+        // Erst wenn der PIN verifiziert wurde, wird das Formular sichtbar
+        document.getElementById("contentBox").style.display = "block";
     }
 
-    if (token) {
-        document.getElementById("formTitle").innerText = "Neues Passwort vergeben";
-        document.getElementById("requestForm").style.display = "none";
-        document.getElementById("resetForm").style.display = "block";
-    }
-
-    // 1️⃣ Schritt 1: Link anfordern
-    async function requestPasswordReset(event) {
-        event.preventDefault();
-        
-        const emailInput = document.getElementById("email").value.trim();
-        if (!emailInput) return;
-
-        try {
-            const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: emailInput })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                alert("📩 Falls das Konto existiert, wurde dir ein Reset-Link per E-Mail geschickt!");
-                window.location.href = "/";
-            } else {
-                alert("⚠️ " + (data.error || "Fehler beim Anfordern des Links."));
-            }
-        } catch (err) {
-            console.error(err);
-            alert("❌ Verbindungsfehler zum Server.");
-        }
-    }
-
-    // 2️⃣ Schritt 2: Tatsächlich das neue Passwort abschicken (mit Token)
+    // Passwort direkt abschicken (die E-Mail/der User ist im sessionStorage gespeichert)
     async function submitNewPassword(event) {
         event.preventDefault();
 
         const passwordInput = document.getElementById("newPassword").value;
-        if (!passwordInput || !token) return;
+        if (!passwordInput) return;
 
         try {
-            const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
+            // Wir nutzen die gleiche Reset-Logik, übergeben aber die verifizierte E-Mail/User statt eines Tokens
+            const res = await fetch(`${API_BASE}/api/auth/reset-password-by-pin`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token: token, password: passwordInput })
+                body: JSON.stringify({ email: verifiedEmail, password: passwordInput })
             });
 
             const data = await res.json();
 
             if (res.ok && data.success) {
+                // Session-Daten direkt aufräumen
+                sessionStorage.removeItem("pin_verified");
+                sessionStorage.removeItem("reset_email");
+
                 alert("🔒 Dein Passwort wurde erfolgreich geändert! Du kannst dich jetzt einloggen.");
                 window.location.href = "/admin";
             } else {
-                alert("⚠️ " + (data.error || "Der Link ist ungültig oder abgelaufen."));
+                alert("⚠️ " + (data.error || "Fehler beim Speichern des Passworts."));
             }
         } catch (err) {
             console.error(err);
