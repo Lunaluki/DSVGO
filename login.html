@@ -165,9 +165,9 @@
             <button type="submit" class="btn-action">Einloggen</button>
         </form>
 
-        <!-- Klick triggert den PIN-Versand per E-Mail -->
+        <!-- Klick leitet direkt zur pin.html weiter -->
         <div style="text-align: right; margin-top: 0.8rem;">
-            <a href="#" onclick="requestPasswordReset(event)" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
+            <a href="pin.html" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
         </div>
 
         <div class="switch-link">
@@ -181,7 +181,7 @@
 </footer>
 
 <script>
-    const API_BASE = "https://meinserver-u317.onrender.com";
+    const API_BASE = "https://dsvgo.onrender.com";
 
     async function loginUser(event) {
         event.preventDefault();
@@ -204,34 +204,6 @@
                 window.location.href = "blacklist.html";
             } else {
                 alert("⚠️ " + (data.error || "Login fehlgeschlagen."));
-            }
-        } catch (err) {
-            console.error(err);
-            alert("❌ Verbindungsfehler zum Server.");
-        }
-    }
-
-    // 📧 Funktion zum Anfordern des PINs (Passwort vergessen)
-    async function requestPasswordReset(event) {
-        event.preventDefault();
-        
-        const email = prompt("Gib deine registrierte E-Mail-Adresse ein, um einen PIN zu erhalten:");
-        if (!email || !email.trim()) return;
-
-        try {
-            // HIER GEÄNDERT: /api/auth/send-pin passt exakt zu deinem Server!
-            const res = await fetch(`${API_BASE}/api/auth/send-pin`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email.trim() })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                alert("📩 Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet!");
-            } else {
-                alert("⚠️ " + (data.error || "Fehler beim Anfordern des PINs."));
             }
         } catch (err) {
             console.error(err);
