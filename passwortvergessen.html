@@ -9,8 +9,8 @@
     <meta name="google" content="notranslate">
     <meta name="googlebot" content="notranslate">
     
-    <!-- 🛡️ CSP-Schutz -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://dsvgo.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <!-- 🛡️ CSP-Schutz mit deiner ECHTEN Backend-URL -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://meinserver-u317.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
 
     <style>
         :root {
@@ -225,7 +225,7 @@
 
 <main>
     <div class="box fade-in">
-        <!-- Fortschrittsanzeige (Beide Dots voll, da letzter Schritt) -->
+        <!-- Fortschrittsanzeige -->
         <div class="step-indicator">
             <div class="dot active"></div>
             <div class="dot active"></div>
@@ -243,7 +243,7 @@
         </form>
 
         <div class="switch-link">
-            <a href="https://dsvgo.onrender.com">← Abbrechen & zum Login</a>
+            <a href="login.html">← Abbrechen & zum Login</a>
         </div>
     </div>
 </main>
@@ -253,17 +253,18 @@
 </footer>
 
 <script>
-    const API_BASE = "https://dsvgo.onrender.com";
+    // Korrekte Backend-URL festgesetzt
+    const API_BASE = "https://meinserver-u317.onrender.com";
 
     // 🔒 SICHERHEITSPRÜFUNG: Direkt beim Laden prüfen, ob der PIN verifiziert wurde!
     window.addEventListener("DOMContentLoaded", () => {
         const isVerified = sessionStorage.getItem("pin_verified");
         const resetEmail = sessionStorage.getItem("reset_email");
 
-        // Wenn die Sicherheits-Flags fehlen, sofort zur Hauptseite umleiten!
+        // Wenn die Sicherheits-Flags fehlen, sofort zum Login umleiten!
         if (isVerified !== "true" || !resetEmail) {
             alert("⚠️ Ungültiger Zugriff! Bitte fordere zuerst einen PIN an.");
-            window.location.href = "https://dsvgo.onrender.com";
+            window.location.href = "login.html";
         }
     });
 
@@ -294,12 +295,12 @@
             if (res.ok || data.success) {
                 alert("🎉 Passwort erfolgreich geändert! Du kannst dich jetzt anmelden.");
                 
-                // Session-Daten aufräumen, damit der Link nicht nochmal genutzt werden kann
+                // Session-Daten aufräumen
                 sessionStorage.removeItem("pin_verified");
                 sessionStorage.removeItem("reset_email");
 
-                // Zurück zur Hauptseite / zum Login weiterleiten
-                window.location.href = "https://dsvgo.onrender.com";
+                // Zum Login weiterleiten
+                window.location.href = "login.html";
             } else {
                 alert("⚠️ " + (data.error || text || "Fehler beim Speichern des Passworts."));
             }
