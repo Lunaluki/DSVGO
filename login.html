@@ -165,7 +165,7 @@
             <button type="submit" class="btn-action">Einloggen</button>
         </form>
 
-        <!-- Klick fragt nach E-Mail, schickt PIN und leitet direkt zu hpin.html weiter -->
+        <!-- Klick fragt nach E-Mail, schickt PIN und leitet direkt zu pin.html weiter -->
         <div style="text-align: right; margin-top: 0.8rem;">
             <a href="#" onclick="requestPasswordReset(event)" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none; cursor: pointer;">Passwort vergessen?</a>
         </div>
@@ -211,7 +211,7 @@
         }
     }
 
-    // 📧 Funktion zum Anfordern des PINs und anschließender Weiterleitung zur hpin.html
+    // 📧 Funktion zum Anfordern des PINs und anschließender Weiterleitung zur pin.html
     async function requestPasswordReset(event) {
         event.preventDefault();
         
@@ -231,8 +231,8 @@
                 // E-Mail-Adresse für die PIN-Eingabeseite zwischenspeichern
                 localStorage.setItem("luna_reset_email", email.trim());
                 alert("📩 Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet!");
-                // Weiterleitung zur PIN-Eingabe (hpin.html)
-                window.location.href = "hpin.html";
+                // Weiterleitung zur PIN-Eingabe (pin.html)
+                window.location.href = "pin.html";
             } else {
                 alert("⚠️ " + (data.error || "Fehler beim Anfordern des PINs."));
             }
