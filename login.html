@@ -180,8 +180,24 @@
 </footer>
 
 <script>
-    // Korrekte Backend-URL eingetragen
     const API_BASE = "https://meinserver-u317.onrender.com";
+
+    // Beim Laden der Login-Seite prüfen wir nur, ob ein Token da ist und ob er GÜLTIG ist.
+    // Wenn er ungültig ist, löschen wir ihn sofort, statt den Nutzer weiterzuleiten.
+    window.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("luna_user_token");
+        if (!token) return; // Kein Token -> Alles gut, Nutzer bleibt sauber auf dem Login
+
+        try {
+            // Optional: Token gegen den Server prüfen (falls du eine Endpoint-Route hast, z.B. /api/auth/verify)
+            // Wenn kein automatisches Login beim Aufrufen der Login-Seite gewünscht ist, 
+            // leere den Storage hier direkt, damit man *definitiv* manuell einloggen muss:
+            // localStorage.removeItem("luna_user_token");
+            // localStorage.removeItem("luna_username");
+        } catch (e) {
+            localStorage.clear();
+        }
+    });
 
     async function loginUser(event) {
         event.preventDefault();
