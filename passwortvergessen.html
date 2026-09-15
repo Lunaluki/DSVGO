@@ -282,9 +282,16 @@
                 body: JSON.stringify({ email: resetEmail, password: newPassword })
             });
 
-            const data = await res.json();
+            // SICHERHEIT: Erst als Text einlesen, um SyntaxErrors bei leeren Server-Antworten zu verhindern
+            const text = await res.text();
+            let data = {};
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch (e) {
+                // Fallback, falls kein valides JSON ankommt
+            }
 
-            if (res.ok) {
+            if (res.ok || data.success) {
                 alert("🎉 Passwort erfolgreich geändert! Du kannst dich jetzt anmelden.");
                 
                 // Session-Daten aufräumen, damit der Link nicht nochmal genutzt werden kann
@@ -294,7 +301,7 @@
                 // Zurück zur Hauptseite / zum Login weiterleiten
                 window.location.href = "https://dsvgo.onrender.com";
             } else {
-                alert("⚠️ " + (data.error || "Fehler beim Speichern des Passworts."));
+                alert("⚠️ " + (data.error || text || "Fehler beim Speichern des Passworts."));
             }
         } catch (err) {
             console.error(err);
