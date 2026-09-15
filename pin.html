@@ -9,8 +9,8 @@
     <meta name="google" content="notranslate">
     <meta name="googlebot" content="notranslate">
     
-    <!-- 🛡️ CSP-Schutz -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://dsvgo.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <!-- 🛡️ CSP-Schutz mit deiner korrekten Backend-URL -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://meinserver-u317.onrender.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
 
     <style>
         :root {
@@ -87,28 +87,6 @@
             overflow: hidden;
         }
 
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 157, 214, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: var(--pink-main);
-            width: 24px;
-            border-radius: 4px;
-            box-shadow: 0 0 8px var(--pink-neon);
-        }
-
         h2 {
             margin-top: 0;
             font-size: 1.4rem;
@@ -167,11 +145,6 @@
             font-family: monospace;
         }
 
-        #emailInput {
-            text-align: left;
-            letter-spacing: normal;
-        }
-
         .btn-action { 
             width: 100%; 
             padding: 0.95rem; 
@@ -191,10 +164,6 @@
             box-shadow: 0 0 25px var(--pink-neon);
             transform: translateY(-2px);
             filter: brightness(1.08);
-        }
-
-        .btn-action:active {
-            transform: translateY(0);
         }
 
         .switch-link { 
@@ -242,26 +211,11 @@
 
 <main>
     <div class="box">
-        <!-- Fortschrittsanzeige (Dots) -->
-        <div class="step-indicator">
-            <div class="dot active" id="dot1"></div>
-            <div class="dot" id="dot2"></div>
-        </div>
-
-        <h2 id="formTitle">PIN anfordern</h2>
-        <p class="subtitle" id="formSubtitle">Gib deine E-Mail oder deinen Benutzernamen ein, um einen Bestätigungscode zu erhalten.</p>
+        <h2>Code eingeben</h2>
+        <p class="subtitle">Wir haben dir einen 6-stelligen PIN an deine E-Mail-Adresse geschickt.</p>
         
-        <!-- Schritt 1: E-Mail / Benutzername eingeben -->
-        <form id="sendPinForm" class="fade-in" onsubmit="sendPin(event)">
-            <div class="form-group">
-                <label for="emailInput">Account Kennung</label>
-                <input type="text" id="emailInput" placeholder="Name oder E-Mail" required autocomplete="username">
-            </div>
-            <button type="submit" class="btn-action">PIN per E-Mail anfordern</button>
-        </form>
-
-        <!-- Schritt 2: Den erhaltenen PIN eingeben (Anfangs unsichtbar) -->
-        <form id="verifyPinForm" class="fade-in" onsubmit="verifyPin(event)" style="display: none;">
+        <!-- Direkte PIN-Eingabe, da die Mail im vorherigen Schritt bereits angefordert wurde -->
+        <form id="verifyPinForm" class="fade-in" onsubmit="verifyPin(event)">
             <div class="form-group">
                 <label for="pinInput">6-Stelliger Code</label>
                 <input type="text" id="pinInput" placeholder="------" maxlength="6" inputmode="numeric" required autocomplete="one-time-code">
@@ -270,7 +224,7 @@
         </form>
 
         <div class="switch-link">
-            <a href="https://dsvgo.onrender.com">← Zurück zum Login</a>
+            <a href="login.html">← Zurück zum Login</a>
         </div>
     </div>
 </main>
@@ -280,52 +234,22 @@
 </footer>
 
 <script>
-    const API_BASE = "https://dsvgo.onrender.com";
-    let storedIdentifier = "";
+    const API_BASE = "https://meinserver-u317.onrender.com";
 
-    // 1️⃣ Schritt 1: PIN anfordern
-    async function sendPin(event) {
-        event.preventDefault();
-        storedIdentifier = document.getElementById("emailInput").value.trim();
-        if (!storedIdentifier) return;
+    // Die E-Mail wurde beim Klick auf "Passwort vergessen?" im localStorage gespeichert
+    const storedIdentifier = localStorage.getItem("luna_reset_email") || "";
 
-        try {
-            const res = await fetch(`${API_BASE}/api/auth/send-pin`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: storedIdentifier })
-            });
-
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-                // UI fließend auf Schritt 2 umschalten
-                document.getElementById("dot1").classList.remove("active");
-                document.getElementById("dot2").classList.add("active");
-                
-                document.getElementById("formTitle").innerText = "Code eingeben";
-                document.getElementById("formSubtitle").innerText = "Wir haben dir einen 6-stelligen PIN per E-Mail geschickt.";
-                
-                document.getElementById("sendPinForm").style.display = "none";
-                const verifyForm = document.getElementById("verifyPinForm");
-                verifyForm.style.display = "block";
-                verifyForm.classList.add("fade-in");
-                
-                document.getElementById("pinInput").focus();
-            } else {
-                alert("⚠️ " + (data.error || "Fehler beim Senden des PINs."));
-            }
-        } catch (err) {
-            console.error(err);
-            alert("❌ Verbindungsfehler zum Server.");
-        }
-    }
-
-    // 2️⃣ Schritt 2: PIN überprüfen und weiterleiten
     async function verifyPin(event) {
         event.preventDefault();
         const pinValue = document.getElementById("pinInput").value.trim();
-        if (!pinValue || !storedIdentifier) return;
+        
+        if (!pinValue) return;
+
+        if (!storedIdentifier) {
+            alert("⚠️ Keine E-Mail-Adresse gefunden. Bitte fordere den PIN erneut an.");
+            window.location.href = "login.html";
+            return;
+        }
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/verify-pin`, {
@@ -334,17 +258,19 @@
                 body: JSON.stringify({ email: storedIdentifier, pin: pinValue })
             });
 
-            const data = await res.json();
+            const text = await res.text();
+            let data = {};
+            try { data = text ? JSON.parse(text) : {}; } catch (e) {}
 
-            if (res.ok && data.success) {
-                // Berechtigungs-Flag für die Passwort-vergessen-Seite setzen
+            if (res.ok || data.success) {
+                // Berechtigungs-Flag für die Passwort-Änderungsseite setzen
                 sessionStorage.setItem("pin_verified", "true");
                 sessionStorage.setItem("reset_email", storedIdentifier);
 
-                // Direkt zur geschützten passwortvergessen.html weiterleiten
-                window.location.href = "passwortvergessen.html";
+                alert("✅ PIN erfolgreich bestätigt!");
+                window.location.href = "passwortvergessen.html"; // Oder deine Zielseite zum Ändern des Passworts
             } else {
-                alert("⚠️ " + (data.error || "Ungültiger oder abgelaufener PIN!"));
+                alert("⚠️ " + (data.error || text || "Ungültiger oder abgelaufener PIN!"));
             }
         } catch (err) {
             console.error(err);
