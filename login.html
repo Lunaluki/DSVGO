@@ -165,7 +165,7 @@
             <button type="submit" class="btn-action">Einloggen</button>
         </form>
 
-        <!-- Klick triggert direkt den E-Mail-Versand -->
+        <!-- Klick triggert den PIN-Versand per E-Mail -->
         <div style="text-align: right; margin-top: 0.8rem;">
             <a href="#" onclick="requestPasswordReset(event)" style="color: var(--pink-light); font-size: 0.85rem; text-decoration: none;">Passwort vergessen?</a>
         </div>
@@ -211,11 +211,11 @@
         }
     }
 
-    // 📧 Funktion für den Passwort-vergessen-Ablauf per E-Mail
+    // 📧 Funktion zum Anfordern des PINs (Passwort vergessen)
     async function requestPasswordReset(event) {
         event.preventDefault();
         
-        const email = prompt("Gib deine registrierte E-Mail-Adresse ein, um einen Reset-Link zu erhalten:");
+        const email = prompt("Gib deine registrierte E-Mail-Adresse ein, um einen PIN zu erhalten:");
         if (!email || !email.trim()) return;
 
         try {
@@ -228,9 +228,11 @@
             const data = await res.json();
 
             if (res.ok) {
-                alert("📩 Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen gesendet!");
+                alert("📩 Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet!");
+                // Falls du eine eigene Seite hast, wo man den PIN eingibt, könntest du hier direkt weiterleiten:
+                // window.location.href = `verify-pin.html?email=${encodeURIComponent(email.trim())}`;
             } else {
-                alert("⚠️ " + (data.error || "Fehler beim Anfordern des Links."));
+                alert("⚠️ " + (data.error || "Fehler beim Anfordern des PINs."));
             }
         } catch (err) {
             console.error(err);
