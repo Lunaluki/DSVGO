@@ -223,7 +223,6 @@
             font-size: 0.85rem;
         }
 
-        /* Sanfte Einblend-Animation beim Schrittwechsel */
         .fade-in {
             animation: fadeIn 0.35s ease-in-out forwards;
         }
@@ -271,7 +270,7 @@
         </form>
 
         <div class="switch-link">
-            <a href="/admin">← Zurück zum Login</a>
+            <a href="https://dsvgo.onrender.com">← Zurück zum Login</a>
         </div>
     </div>
 </main>
@@ -322,7 +321,7 @@
         }
     }
 
-    // 2️⃣ Schritt 2: PIN überprüfen
+    // 2️⃣ Schritt 2: PIN überprüfen und weiterleiten
     async function verifyPin(event) {
         event.preventDefault();
         const pinValue = document.getElementById("pinInput").value.trim();
@@ -342,8 +341,8 @@
                 sessionStorage.setItem("pin_verified", "true");
                 sessionStorage.setItem("reset_email", storedIdentifier);
 
-                // Weiterleitung zur Passwort-Ändern-Seite
-                window.location.href = "/passwortvergessen.html";
+                // Direkt zur geschützten passwortvergessen.html weiterleiten
+                window.location.href = "passwortvergessen.html";
             } else {
                 alert("⚠️ " + (data.error || "Ungültiger oder abgelaufener PIN!"));
             }
