@@ -219,7 +219,8 @@
         if (!email || !email.trim()) return;
 
         try {
-            const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+            // HIER GEÄNDERT: /api/auth/send-pin passt exakt zu deinem Server!
+            const res = await fetch(`${API_BASE}/api/auth/send-pin`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: email.trim() })
@@ -229,8 +230,6 @@
 
             if (res.ok) {
                 alert("📩 Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet!");
-                // Falls du eine eigene Seite hast, wo man den PIN eingibt, könntest du hier direkt weiterleiten:
-                // window.location.href = `verify-pin.html?email=${encodeURIComponent(email.trim())}`;
             } else {
                 alert("⚠️ " + (data.error || "Fehler beim Anfordern des PINs."));
             }
