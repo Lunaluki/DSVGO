@@ -18,112 +18,201 @@
             --pink-dark: #ff2f9c;
             --pink-light: #ff9dd6;
             --pink-neon: #ff00ff;
+            --bg-dark: #0b020f;
+            --box-bg: #16071c;
+            --input-bg: rgba(255, 255, 255, 0.04);
         }
+
         body { 
-            background: #110515; 
+            background: var(--bg-dark); 
             color: white; 
-            font-family: Arial, sans-serif; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
             margin: 0; 
             padding: 0; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
         header { 
-            background: linear-gradient(135deg, #ff2f9c, #aa0055); 
-            padding: 3rem 2rem; 
+            background: linear-gradient(135deg, #ff2f9c 0%, #700035 100%); 
+            padding: 2.5rem 2rem; 
             text-align: center; 
-            border-bottom: 2px solid var(--pink-light);
-            box-shadow: 0 0 30px rgba(255, 47, 156, 0.4);
+            border-bottom: 2px solid rgba(255, 157, 214, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 47, 156, 0.25);
+            position: relative;
         }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--pink-neon), transparent);
+        }
+
         header h1 {
             margin: 0;
-            font-size: 2.4rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+
         header p {
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
+            margin-top: 0.4rem;
+            font-size: 1rem;
             color: #ffe6f5;
+            font-weight: 300;
         }
+
         main { 
-            max-width: 450px; 
-            margin: 3rem auto; 
-            padding: 0 1rem; 
+            max-width: 420px; 
+            width: 100%;
+            margin: auto; 
+            padding: 2rem 1rem; 
+            box-sizing: border-box;
         }
+
         .box { 
-            background: #1e0924; 
-            border: 2px solid rgba(255, 157, 214, 0.3); 
-            border-radius: 14px; 
-            padding: 2rem; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            background: var(--box-bg); 
+            border: 1px solid rgba(255, 157, 214, 0.2); 
+            border-radius: 20px; 
+            padding: 2.2rem; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-        h2 {
-            margin-top: 0;
-            font-size: 1.6rem;
-            color: white;
-            border-left: 4px solid var(--pink-light);
-            padding-left: 0.7rem;
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
             margin-bottom: 1.5rem;
         }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 157, 214, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--pink-main);
+            width: 24px;
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--pink-neon);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.88rem;
+            color: #d1b3cb;
+            margin-bottom: 1.8rem;
+            line-height: 1.4;
+        }
+
         .form-group { 
             margin-bottom: 1.2rem; 
         }
+
         .form-group label { 
             display: block; 
-            margin-bottom: 0.4rem; 
+            margin-bottom: 0.5rem; 
             color: var(--pink-light); 
-            font-weight: bold; 
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         .form-group input { 
             width: 100%; 
-            padding: 0.8rem; 
-            border-radius: 8px; 
-            border: 1px solid rgba(255, 157, 214, 0.4); 
-            background: rgba(255,255,255,0.05); 
+            padding: 0.9rem 1rem; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255, 157, 214, 0.25); 
+            background: var(--input-bg); 
             color: white; 
             font-size: 1rem;
             box-sizing: border-box; 
+            transition: all 0.25s ease;
         }
+
         .form-group input:focus {
             outline: none;
             border-color: var(--pink-neon);
-            box-shadow: 0 0 10px var(--pink-neon);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.25);
         }
+
         .btn-action { 
             width: 100%; 
-            padding: 0.9rem; 
+            padding: 0.95rem; 
             background: linear-gradient(135deg, var(--pink-main), var(--pink-dark)); 
             color: white; 
             border: none; 
-            border-radius: 8px; 
-            font-size: 1.1rem;
-            font-weight: bold; 
+            border-radius: 10px; 
+            font-size: 1rem;
+            font-weight: 700; 
             cursor: pointer; 
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
-            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 47, 156, 0.4);
+            transition: all 0.25s ease;
             margin-top: 0.5rem;
         }
+
         .btn-action:hover {
             box-shadow: 0 0 25px var(--pink-neon);
             transform: translateY(-2px);
+            filter: brightness(1.08);
         }
+
         .switch-link { 
             text-align: center; 
-            margin-top: 1.5rem; 
+            margin-top: 1.8rem; 
         }
+
         .switch-link a { 
             color: var(--pink-light); 
             text-decoration: none; 
-            font-weight: bold; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
         }
-        .switch-link a:hover {
-            text-decoration: underline;
+
+        .switch-link a:hover { 
+            color: white;
+            text-decoration: underline; 
         }
+
         footer {
-            margin-top: 4rem;
-            padding: 2rem;
+            padding: 1.5rem;
             text-align: center;
-            border-top: 1px solid var(--pink-dark);
-            color: #ffe6f5;
-            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 157, 214, 0.1);
+            color: #a88fa2;
+            font-size: 0.85rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -131,24 +220,30 @@
 
 <header>
     <h1>Luna Support</h1>
-    <p>Neues Passwort vergeben</p>
+    <p>Neues Passwort festlegen</p>
 </header>
 
 <main>
-    <!-- Standardmäßig unsichtbar, bis die PIN-Sicherheitsprüfung greift -->
-    <div class="box" id="contentBox" style="display: none;">
-        <h2>Neues Passwort festlegen</h2>
+    <div class="box fade-in">
+        <!-- Fortschrittsanzeige (Beide Dots voll, da letzter Schritt) -->
+        <div class="step-indicator">
+            <div class="dot active"></div>
+            <div class="dot active"></div>
+        </div>
+
+        <h2>Neues Passwort</h2>
+        <p class="subtitle">Vergib jetzt dein neues Wunschpasswort für deinen Account.</p>
         
-        <form id="resetForm" onsubmit="submitNewPassword(event)">
+        <form id="resetPasswordForm" onsubmit="resetPassword(event)">
             <div class="form-group">
-                <label for="newPassword">Neues Passwort:</label>
-                <input type="password" id="newPassword" placeholder="Gib dein neues Passwort ein" required>
+                <label for="newPassword">Neues Passwort</label>
+                <input type="password" id="newPassword" placeholder="••••••••••••" required autocomplete="new-password">
             </div>
             <button type="submit" class="btn-action">Passwort speichern</button>
         </form>
 
         <div class="switch-link">
-            <a href="/admin">← Abbrechen / Zum Login</a>
+            <a href="https://dsvgo.onrender.com">← Abbrechen & zum Login</a>
         </div>
     </div>
 </main>
@@ -158,46 +253,48 @@
 </footer>
 
 <script>
-    const API_BASE = "https://meinserver-u317.onrender.com";
+    const API_BASE = "https://dsvgo.onrender.com";
 
-    // 🔒 SICHERHEITS-CHECK: Ohne gültigen PIN-Flow im SessionStorage kommt hier niemand rein!
-    const isPinVerified = sessionStorage.getItem("pin_verified") === "true";
-    const verifiedEmail = sessionStorage.getItem("reset_email");
+    // 🔒 SICHERHEITSPRÜFUNG: Direkt beim Laden prüfen, ob der PIN verifiziert wurde!
+    window.addEventListener("DOMContentLoaded", () => {
+        const isVerified = sessionStorage.getItem("pin_verified");
+        const resetEmail = sessionStorage.getItem("reset_email");
 
-    if (!isPinVerified || !verifiedEmail) {
-        alert("🛑 Zugriff verweigert! Bitte fordere zuerst einen PIN über die PIN-Verifizierung an.");
-        window.location.replace("/admin");
-    } else {
-        // Erst wenn verifiziert, Inhalt einblenden
-        document.getElementById("contentBox").style.display = "block";
-    }
+        // Wenn die Sicherheits-Flags fehlen, sofort zur Hauptseite umleiten!
+        if (isVerified !== "true" || !resetEmail) {
+            alert("⚠️ Ungültiger Zugriff! Bitte fordere zuerst einen PIN an.");
+            window.location.href = "https://dsvgo.onrender.com";
+        }
+    });
 
-    // Neues Passwort über den sicheren PIN-Endpunkt abschicken
-    async function submitNewPassword(event) {
+    // Passwort an den Server senden
+    async function resetPassword(event) {
         event.preventDefault();
+        const newPassword = document.getElementById("newPassword").value.trim();
+        const resetEmail = sessionStorage.getItem("reset_email");
 
-        const passwordInput = document.getElementById("newPassword").value;
-        if (!passwordInput || !verifiedEmail) return;
+        if (!newPassword || !resetEmail) return;
 
         try {
             const res = await fetch(`${API_BASE}/api/auth/reset-password-by-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: verifiedEmail, password: passwordInput })
+                body: JSON.stringify({ email: resetEmail, password: newPassword })
             });
 
-            const data = wasResOk(res); // Kleiner Helper oder direkt res.ok prüfen
-            const responseData = await res.json();
+            const data = await res.json();
 
-            if (res.ok && responseData.success) {
-                // Session-Daten direkt aufräumen
+            if (res.ok) {
+                alert("🎉 Passwort erfolgreich geändert! Du kannst dich jetzt anmelden.");
+                
+                // Session-Daten aufräumen, damit der Link nicht nochmal genutzt werden kann
                 sessionStorage.removeItem("pin_verified");
                 sessionStorage.removeItem("reset_email");
 
-                alert("🔒 Dein Passwort wurde erfolgreich geändert! Du kannst dich jetzt einloggen.");
-                window.location.href = "/admin";
+                // Zurück zur Hauptseite / zum Login weiterleiten
+                window.location.href = "https://dsvgo.onrender.com";
             } else {
-                alert("⚠️ " + (responseData.error || "Fehler beim Speichern des Passworts."));
+                alert("⚠️ " + (data.error || "Fehler beim Speichern des Passworts."));
             }
         } catch (err) {
             console.error(err);
