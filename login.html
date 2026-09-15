@@ -180,7 +180,8 @@
 </footer>
 
 <script>
-    const API_BASE = "https://dsvgo.onrender.com";
+    // Korrekte Backend-URL eingetragen
+    const API_BASE = "https://meinserver-u317.onrender.com";
 
     async function loginUser(event) {
         event.preventDefault();
@@ -229,15 +230,12 @@
             let data = {};
             try {
                 data = text ? JSON.parse(text) : {};
-            } catch (e) {
-                // Fängt leere oder nicht-JSON Antworten ab, damit der Code nicht abstürzt
-            }
+            } catch (e) {}
 
-            // Wir werten es als erfolgreich, wenn der Status OK ist ODER wenn der Server ein success: true sendet
             if (res.ok || data.success) {
                 localStorage.setItem("luna_reset_email", email.trim());
                 alert("📩 Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet!");
-                window.location.href = "hpin.html"; // Passt zu deiner PIN-Eingabeseite
+                window.location.href = "pin.html";
             } else {
                 alert("⚠️ " + (data.error || text || "Fehler beim Anfordern des PINs."));
             }
